@@ -1,0 +1,84 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 2.9955 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 2.9955 
+        intervals: size = 7 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.08 
+            text = "<eps>" 
+        intervals [2]:
+            xmin = 0.08 
+            xmax = 0.29 
+            text = "кам" 
+        intervals [3]:
+            xmin = 0.29 
+            xmax = 0.39 
+            text = "<unk>" 
+        intervals [4]:
+            xmin = 0.39 
+            xmax = 0.46 
+            text = "<eps>" 
+        intervals [5]:
+            xmin = 0.46 
+            xmax = 0.67 
+            text = "<unk>" 
+        intervals [6]:
+            xmin = 0.67 
+            xmax = 2.87 
+            text = "<eps>" 
+        intervals [7]:
+            xmin = 2.87 
+            xmax = 2.9955 
+            text = "пулнă" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "phones" 
+        xmin = 0 
+        xmax = 2.9955 
+        intervals: size = 9 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.08 
+            text = "sil" 
+        intervals [2]:
+            xmin = 0.08 
+            xmax = 0.23 
+            text = "k" 
+        intervals [3]:
+            xmin = 0.23 
+            xmax = 0.26 
+            text = "ɑ" 
+        intervals [4]:
+            xmin = 0.26 
+            xmax = 0.29 
+            text = "m" 
+        intervals [5]:
+            xmin = 0.29 
+            xmax = 0.39 
+            text = "spn" 
+        intervals [6]:
+            xmin = 0.39 
+            xmax = 0.46 
+            text = "sil" 
+        intervals [7]:
+            xmin = 0.46 
+            xmax = 0.67 
+            text = "spn" 
+        intervals [8]:
+            xmin = 0.67 
+            xmax = 2.87 
+            text = "sil" 
+        intervals [9]:
+            xmin = 2.87 
+            xmax = 2.9955 
+            text = "spn" 

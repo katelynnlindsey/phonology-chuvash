@@ -1,0 +1,84 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 1.2 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 1.2 
+        intervals: size = 3 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.27 
+            text = "<eps>" 
+        intervals [2]:
+            xmin = 0.27 
+            xmax = 1.02 
+            text = "шутламастӑп" 
+        intervals [3]:
+            xmin = 1.02 
+            xmax = 1.2 
+            text = "<eps>" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "phones" 
+        xmin = 0 
+        xmax = 1.2 
+        intervals: size = 13 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.27 
+            text = "sil" 
+        intervals [2]:
+            xmin = 0.27 
+            xmax = 0.39 
+            text = "ʃ" 
+        intervals [3]:
+            xmin = 0.39 
+            xmax = 0.44 
+            text = "u" 
+        intervals [4]:
+            xmin = 0.44 
+            xmax = 0.48 
+            text = "t" 
+        intervals [5]:
+            xmin = 0.48 
+            xmax = 0.56 
+            text = "l" 
+        intervals [6]:
+            xmin = 0.56 
+            xmax = 0.62 
+            text = "ɑ" 
+        intervals [7]:
+            xmin = 0.62 
+            xmax = 0.69 
+            text = "m" 
+        intervals [8]:
+            xmin = 0.69 
+            xmax = 0.77 
+            text = "ɑ" 
+        intervals [9]:
+            xmin = 0.77 
+            xmax = 0.83 
+            text = "s" 
+        intervals [10]:
+            xmin = 0.83 
+            xmax = 0.92 
+            text = "t" 
+        intervals [11]:
+            xmin = 0.92 
+            xmax = 0.99 
+            text = "ʌ" 
+        intervals [12]:
+            xmin = 0.99 
+            xmax = 1.02 
+            text = "p" 
+        intervals [13]:
+            xmin = 1.02 
+            xmax = 1.2 
+            text = "sil" 

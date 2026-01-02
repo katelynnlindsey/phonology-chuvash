@@ -1,0 +1,84 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 3.0675 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 3.0675 
+        intervals: size = 7 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.56 
+            text = "çур" 
+        intervals [2]:
+            xmin = 0.56 
+            xmax = 0.9 
+            text = "кун" 
+        intervals [3]:
+            xmin = 0.9 
+            xmax = 1.18 
+            text = "<eps>" 
+        intervals [4]:
+            xmin = 1.18 
+            xmax = 2.44 
+            text = "<unk>" 
+        intervals [5]:
+            xmin = 2.44 
+            xmax = 2.7 
+            text = "<unk>" 
+        intervals [6]:
+            xmin = 2.7 
+            xmax = 2.98 
+            text = "<eps>" 
+        intervals [7]:
+            xmin = 2.98 
+            xmax = 3.0675 
+            text = "утрăм" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "phones" 
+        xmin = 0 
+        xmax = 3.0675 
+        intervals: size = 9 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.56 
+            text = "spn" 
+        intervals [2]:
+            xmin = 0.56 
+            xmax = 0.83 
+            text = "k" 
+        intervals [3]:
+            xmin = 0.83 
+            xmax = 0.87 
+            text = "u" 
+        intervals [4]:
+            xmin = 0.87 
+            xmax = 0.9 
+            text = "n" 
+        intervals [5]:
+            xmin = 0.9 
+            xmax = 1.18 
+            text = "sil" 
+        intervals [6]:
+            xmin = 1.18 
+            xmax = 2.44 
+            text = "spn" 
+        intervals [7]:
+            xmin = 2.44 
+            xmax = 2.7 
+            text = "spn" 
+        intervals [8]:
+            xmin = 2.7 
+            xmax = 2.98 
+            text = "sil" 
+        intervals [9]:
+            xmin = 2.98 
+            xmax = 3.0675 
+            text = "spn" 
