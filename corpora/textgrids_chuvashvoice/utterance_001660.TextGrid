@@ -1,0 +1,92 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 1.62 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 1.62 
+        intervals: size = 4 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.28 
+            text = "<eps>" 
+        intervals [2]:
+            xmin = 0.28 
+            xmax = 0.6 
+            text = "ҫав" 
+        intervals [3]:
+            xmin = 0.6 
+            xmax = 1.37 
+            text = "сарӑскер-и" 
+        intervals [4]:
+            xmin = 1.37 
+            xmax = 1.62 
+            text = "<eps>" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "phones" 
+        xmin = 0 
+        xmax = 1.62 
+        intervals: size = 14 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.28 
+            text = "sil" 
+        intervals [2]:
+            xmin = 0.28 
+            xmax = 0.43 
+            text = "ɕ" 
+        intervals [3]:
+            xmin = 0.43 
+            xmax = 0.55 
+            text = "ɑ" 
+        intervals [4]:
+            xmin = 0.55 
+            xmax = 0.6 
+            text = "v" 
+        intervals [5]:
+            xmin = 0.6 
+            xmax = 0.7 
+            text = "s" 
+        intervals [6]:
+            xmin = 0.7 
+            xmax = 0.77 
+            text = "ɑ" 
+        intervals [7]:
+            xmin = 0.77 
+            xmax = 0.82 
+            text = "r" 
+        intervals [8]:
+            xmin = 0.82 
+            xmax = 0.87 
+            text = "ʌ" 
+        intervals [9]:
+            xmin = 0.87 
+            xmax = 0.99 
+            text = "s" 
+        intervals [10]:
+            xmin = 0.99 
+            xmax = 1.05 
+            text = "k" 
+        intervals [11]:
+            xmin = 1.05 
+            xmax = 1.14 
+            text = "e" 
+        intervals [12]:
+            xmin = 1.14 
+            xmax = 1.18 
+            text = "r" 
+        intervals [13]:
+            xmin = 1.18 
+            xmax = 1.37 
+            text = "i" 
+        intervals [14]:
+            xmin = 1.37 
+            xmax = 1.62 
+            text = "sil" 

@@ -1,0 +1,92 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 1.9935 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 1.9935 
+        intervals: size = 5 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.81 
+            text = "<eps>" 
+        intervals [2]:
+            xmin = 0.81 
+            xmax = 1.1 
+            text = "иван" 
+        intervals [3]:
+            xmin = 1.1 
+            xmax = 1.18 
+            text = "<eps>" 
+        intervals [4]:
+            xmin = 1.18 
+            xmax = 1.61 
+            text = "осипов" 
+        intervals [5]:
+            xmin = 1.61 
+            xmax = 1.9935 
+            text = "<eps>" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "phones" 
+        xmin = 0 
+        xmax = 1.9935 
+        intervals: size = 13 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.81 
+            text = "sil" 
+        intervals [2]:
+            xmin = 0.81 
+            xmax = 0.94 
+            text = "i" 
+        intervals [3]:
+            xmin = 0.94 
+            xmax = 1.0 
+            text = "v" 
+        intervals [4]:
+            xmin = 1.0 
+            xmax = 1.05 
+            text = "ɑ" 
+        intervals [5]:
+            xmin = 1.05 
+            xmax = 1.1 
+            text = "n" 
+        intervals [6]:
+            xmin = 1.1 
+            xmax = 1.18 
+            text = "sil" 
+        intervals [7]:
+            xmin = 1.18 
+            xmax = 1.3 
+            text = "o" 
+        intervals [8]:
+            xmin = 1.3 
+            xmax = 1.39 
+            text = "s" 
+        intervals [9]:
+            xmin = 1.39 
+            xmax = 1.42 
+            text = "i" 
+        intervals [10]:
+            xmin = 1.42 
+            xmax = 1.51 
+            text = "p" 
+        intervals [11]:
+            xmin = 1.51 
+            xmax = 1.58 
+            text = "o" 
+        intervals [12]:
+            xmin = 1.58 
+            xmax = 1.61 
+            text = "v" 
+        intervals [13]:
+            xmin = 1.61 
+            xmax = 1.9935 
+            text = "sil" 
