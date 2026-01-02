@@ -1,0 +1,84 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 4.109625 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 4.109625 
+        intervals: size = 8 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.03 
+            text = "<eps>" 
+        intervals [2]:
+            xmin = 0.03 
+            xmax = 0.84 
+            text = "<unk>" 
+        intervals [3]:
+            xmin = 0.84 
+            xmax = 1.48 
+            text = "<unk>" 
+        intervals [4]:
+            xmin = 1.48 
+            xmax = 1.52 
+            text = "<unk>" 
+        intervals [5]:
+            xmin = 1.52 
+            xmax = 3.68 
+            text = "<unk>" 
+        intervals [6]:
+            xmin = 3.68 
+            xmax = 3.72 
+            text = "<eps>" 
+        intervals [7]:
+            xmin = 3.72 
+            xmax = 4.05 
+            text = "<unk>" 
+        intervals [8]:
+            xmin = 4.05 
+            xmax = 4.109625 
+            text = "<eps>" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "phones" 
+        xmin = 0 
+        xmax = 4.109625 
+        intervals: size = 8 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.03 
+            text = "sil" 
+        intervals [2]:
+            xmin = 0.03 
+            xmax = 0.84 
+            text = "spn" 
+        intervals [3]:
+            xmin = 0.84 
+            xmax = 1.48 
+            text = "spn" 
+        intervals [4]:
+            xmin = 1.48 
+            xmax = 1.52 
+            text = "spn" 
+        intervals [5]:
+            xmin = 1.52 
+            xmax = 3.68 
+            text = "spn" 
+        intervals [6]:
+            xmin = 3.68 
+            xmax = 3.72 
+            text = "sil" 
+        intervals [7]:
+            xmin = 3.72 
+            xmax = 4.05 
+            text = "spn" 
+        intervals [8]:
+            xmin = 4.05 
+            xmax = 4.109625 
+            text = "sil" 
