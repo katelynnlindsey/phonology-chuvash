@@ -1,0 +1,7 @@
+# TEMP chuvash-recode.yml for testing
+- rule: test-schwa
+  conditions:
+    - attribute: label
+      relation: ==
+      set: ʌ # (U+028C)
+  return: TEST
