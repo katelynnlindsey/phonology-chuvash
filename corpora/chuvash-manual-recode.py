@@ -168,5 +168,5 @@ for base_name in sorted(list(all_basenames)): # Process in sorted order for cons
         print(f"Warning: No MP3 or WAV audio found for base name '{base_name}'. Skipping audio processing.", file=sys.stderr)
 
 print(f"\nFinished audio preparation for {processed_audio_count} files.")
-print(f"Prepared WAVs are in: {output_converted_audio_dir}")
 print("\nmanual_recode_directory.py script finished.")
+print(f"Prepared WAVs are in: {output_converted_audio_dir}")
