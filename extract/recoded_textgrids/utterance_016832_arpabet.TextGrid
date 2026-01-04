@@ -1,0 +1,116 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 1.86
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 1.86
+		intervals: size = 6
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.23
+				text = "<eps>"
+			intervals [2]:
+				xmin = 0.23
+				xmax = 0.68
+				text = "асту"
+			intervals [3]:
+				xmin = 0.68
+				xmax = 0.95
+				text = "ман"
+			intervals [4]:
+				xmin = 0.95
+				xmax = 1.24
+				text = "атта"
+			intervals [5]:
+				xmin = 1.24
+				xmax = 1.37
+				text = "ан"
+			intervals [6]:
+				xmin = 1.37
+				xmax = 1.86
+				text = "ҫухат"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 1.86
+		intervals: size = 18
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.23
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.23
+				xmax = 0.35
+				text = "AA0"
+			intervals [3]:
+				xmin = 0.35
+				xmax = 0.45
+				text = "S"
+			intervals [4]:
+				xmin = 0.45
+				xmax = 0.53
+				text = "T"
+			intervals [5]:
+				xmin = 0.53
+				xmax = 0.68
+				text = "UW1"
+			intervals [6]:
+				xmin = 0.68
+				xmax = 0.81
+				text = "M"
+			intervals [7]:
+				xmin = 0.81
+				xmax = 0.88
+				text = "AA1"
+			intervals [8]:
+				xmin = 0.88
+				xmax = 0.95
+				text = "N"
+			intervals [9]:
+				xmin = 0.95
+				xmax = 1.08
+				text = "AA0"
+			intervals [10]:
+				xmin = 1.08
+				xmax = 1.14
+				text = "tː"
+			intervals [11]:
+				xmin = 1.14
+				xmax = 1.24
+				text = "AA1"
+			intervals [12]:
+				xmin = 1.24
+				xmax = 1.29
+				text = "AA1"
+			intervals [13]:
+				xmin = 1.29
+				xmax = 1.37
+				text = "N"
+			intervals [14]:
+				xmin = 1.37
+				xmax = 1.43
+				text = "ɕ"
+			intervals [15]:
+				xmin = 1.43
+				xmax = 1.49
+				text = "UW0"
+			intervals [16]:
+				xmin = 1.49
+				xmax = 1.57
+				text = "χ"
+			intervals [17]:
+				xmin = 1.57
+				xmax = 1.68
+				text = "AA1"
+			intervals [18]:
+				xmin = 1.68
+				xmax = 1.86
+				text = "T"

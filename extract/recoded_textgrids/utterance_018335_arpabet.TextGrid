@@ -1,0 +1,116 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 1.74
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 1.74
+		intervals: size = 6
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.25
+				text = "<eps>"
+			intervals [2]:
+				xmin = 0.25
+				xmax = 0.48
+				text = "ан"
+			intervals [3]:
+				xmin = 0.48
+				xmax = 0.85
+				text = "васка"
+			intervals [4]:
+				xmin = 0.85
+				xmax = 1.17
+				text = "вӑхӑт"
+			intervals [5]:
+				xmin = 1.17
+				xmax = 1.69
+				text = "ҫитӗ"
+			intervals [6]:
+				xmin = 1.69
+				xmax = 1.74
+				text = "<eps>"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 1.74
+		intervals: size = 18
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.25
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.25
+				xmax = 0.41
+				text = "AA1"
+			intervals [3]:
+				xmin = 0.41
+				xmax = 0.48
+				text = "N"
+			intervals [4]:
+				xmin = 0.48
+				xmax = 0.53
+				text = "V"
+			intervals [5]:
+				xmin = 0.53
+				xmax = 0.6
+				text = "AA0"
+			intervals [6]:
+				xmin = 0.6
+				xmax = 0.68
+				text = "S"
+			intervals [7]:
+				xmin = 0.68
+				xmax = 0.75
+				text = "K"
+			intervals [8]:
+				xmin = 0.75
+				xmax = 0.85
+				text = "AA1"
+			intervals [9]:
+				xmin = 0.85
+				xmax = 0.95
+				text = "V"
+			intervals [10]:
+				xmin = 0.95
+				xmax = 0.98
+				text = "AH2"
+			intervals [11]:
+				xmin = 0.98
+				xmax = 1.04
+				text = "χ"
+			intervals [12]:
+				xmin = 1.04
+				xmax = 1.12
+				text = "AH0"
+			intervals [13]:
+				xmin = 1.12
+				xmax = 1.17
+				text = "T"
+			intervals [14]:
+				xmin = 1.17
+				xmax = 1.25
+				text = "ɕ"
+			intervals [15]:
+				xmin = 1.25
+				xmax = 1.34
+				text = "IY1"
+			intervals [16]:
+				xmin = 1.34
+				xmax = 1.41
+				text = "T"
+			intervals [17]:
+				xmin = 1.41
+				xmax = 1.69
+				text = "EH0"
+			intervals [18]:
+				xmin = 1.69
+				xmax = 1.74
+				text = "SIL"

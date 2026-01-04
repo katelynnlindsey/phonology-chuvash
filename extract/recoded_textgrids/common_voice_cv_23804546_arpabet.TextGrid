@@ -1,0 +1,116 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 6.22163
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 6.22163
+		intervals: size = 10
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.16
+				text = "ачи"
+			intervals [2]:
+				xmin = 0.16
+				xmax = 0.84
+				text = "<eps>"
+			intervals [3]:
+				xmin = 0.84
+				xmax = 0.92
+				text = "<unk>"
+			intervals [4]:
+				xmin = 0.92
+				xmax = 2.25
+				text = "<unk>"
+			intervals [5]:
+				xmin = 2.25
+				xmax = 2.4
+				text = "<unk>"
+			intervals [6]:
+				xmin = 2.4
+				xmax = 2.53
+				text = "<eps>"
+			intervals [7]:
+				xmin = 2.53
+				xmax = 2.7
+				text = "пур"
+			intervals [8]:
+				xmin = 2.7
+				xmax = 2.81
+				text = "<eps>"
+			intervals [9]:
+				xmin = 2.81
+				xmax = 2.89
+				text = "<unk>"
+			intervals [10]:
+				xmin = 2.89
+				xmax = 6.22163
+				text = "<eps>"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 6.22163
+		intervals: size = 14
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.1
+				text = "AA0"
+			intervals [2]:
+				xmin = 0.1
+				xmax = 0.13
+				text = "tʃ"
+			intervals [3]:
+				xmin = 0.13
+				xmax = 0.16
+				text = "IY1"
+			intervals [4]:
+				xmin = 0.16
+				xmax = 0.84
+				text = "SIL"
+			intervals [5]:
+				xmin = 0.84
+				xmax = 0.92
+				text = "spn"
+			intervals [6]:
+				xmin = 0.92
+				xmax = 2.25
+				text = "spn"
+			intervals [7]:
+				xmin = 2.25
+				xmax = 2.4
+				text = "spn"
+			intervals [8]:
+				xmin = 2.4
+				xmax = 2.53
+				text = "SIL"
+			intervals [9]:
+				xmin = 2.53
+				xmax = 2.63
+				text = "P"
+			intervals [10]:
+				xmin = 2.63
+				xmax = 2.67
+				text = "UW1"
+			intervals [11]:
+				xmin = 2.67
+				xmax = 2.7
+				text = "R"
+			intervals [12]:
+				xmin = 2.7
+				xmax = 2.81
+				text = "SIL"
+			intervals [13]:
+				xmin = 2.81
+				xmax = 2.89
+				text = "spn"
+			intervals [14]:
+				xmin = 2.89
+				xmax = 6.22163
+				text = "SIL"

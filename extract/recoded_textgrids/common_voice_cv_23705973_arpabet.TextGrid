@@ -1,0 +1,116 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 3.94163
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 3.94163
+		intervals: size = 11
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.03
+				text = "<eps>"
+			intervals [2]:
+				xmin = 0.03
+				xmax = 0.62
+				text = "<unk>"
+			intervals [3]:
+				xmin = 0.62
+				xmax = 1.62
+				text = "<unk>"
+			intervals [4]:
+				xmin = 1.62
+				xmax = 2.14
+				text = "<unk>"
+			intervals [5]:
+				xmin = 2.14
+				xmax = 2.17
+				text = "<eps>"
+			intervals [6]:
+				xmin = 2.17
+				xmax = 2.22
+				text = "кĕнеке"
+			intervals [7]:
+				xmin = 2.22
+				xmax = 2.58
+				text = "алла"
+			intervals [8]:
+				xmin = 2.58
+				xmax = 2.7
+				text = "<unk>"
+			intervals [9]:
+				xmin = 2.7
+				xmax = 2.74
+				text = "<eps>"
+			intervals [10]:
+				xmin = 2.74
+				xmax = 3.48
+				text = "<unk>"
+			intervals [11]:
+				xmin = 3.48
+				xmax = 3.94163
+				text = "<eps>"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 3.94163
+		intervals: size = 13
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.03
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.03
+				xmax = 0.62
+				text = "spn"
+			intervals [3]:
+				xmin = 0.62
+				xmax = 1.62
+				text = "spn"
+			intervals [4]:
+				xmin = 1.62
+				xmax = 2.14
+				text = "spn"
+			intervals [5]:
+				xmin = 2.14
+				xmax = 2.17
+				text = "SIL"
+			intervals [6]:
+				xmin = 2.17
+				xmax = 2.22
+				text = "spn"
+			intervals [7]:
+				xmin = 2.22
+				xmax = 2.35
+				text = "AA0"
+			intervals [8]:
+				xmin = 2.35
+				xmax = 2.48
+				text = "lː"
+			intervals [9]:
+				xmin = 2.48
+				xmax = 2.58
+				text = "AA1"
+			intervals [10]:
+				xmin = 2.58
+				xmax = 2.7
+				text = "spn"
+			intervals [11]:
+				xmin = 2.7
+				xmax = 2.74
+				text = "SIL"
+			intervals [12]:
+				xmin = 2.74
+				xmax = 3.48
+				text = "spn"
+			intervals [13]:
+				xmin = 3.48
+				xmax = 3.94163
+				text = "SIL"

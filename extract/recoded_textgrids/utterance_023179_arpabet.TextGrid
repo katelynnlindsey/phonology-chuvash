@@ -1,0 +1,84 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 1.26
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 1.26
+		intervals: size = 3
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.2
+				text = "<eps>"
+			intervals [2]:
+				xmin = 0.2
+				xmax = 0.87
+				text = "чирлемерӗн-и"
+			intervals [3]:
+				xmin = 0.87
+				xmax = 1.26
+				text = "<eps>"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 1.26
+		intervals: size = 13
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.2
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.2
+				xmax = 0.29
+				text = "tʃ"
+			intervals [3]:
+				xmin = 0.29
+				xmax = 0.33
+				text = "IY0"
+			intervals [4]:
+				xmin = 0.33
+				xmax = 0.39
+				text = "R"
+			intervals [5]:
+				xmin = 0.39
+				xmax = 0.44
+				text = "L"
+			intervals [6]:
+				xmin = 0.44
+				xmax = 0.5
+				text = "EY0"
+			intervals [7]:
+				xmin = 0.5
+				xmax = 0.59
+				text = "M"
+			intervals [8]:
+				xmin = 0.59
+				xmax = 0.68
+				text = "EY0"
+			intervals [9]:
+				xmin = 0.68
+				xmax = 0.71
+				text = "R"
+			intervals [10]:
+				xmin = 0.71
+				xmax = 0.76
+				text = "EH0"
+			intervals [11]:
+				xmin = 0.76
+				xmax = 0.83
+				text = "N"
+			intervals [12]:
+				xmin = 0.83
+				xmax = 0.87
+				text = "IY1"
+			intervals [13]:
+				xmin = 0.87
+				xmax = 1.26
+				text = "SIL"

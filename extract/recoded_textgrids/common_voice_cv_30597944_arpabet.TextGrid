@@ -1,0 +1,136 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 4.3635
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 4.3635
+		intervals: size = 9
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.37
+				text = "<eps>"
+			intervals [2]:
+				xmin = 0.37
+				xmax = 1.09
+				text = "утать"
+			intervals [3]:
+				xmin = 1.09
+				xmax = 1.48
+				text = "утать"
+			intervals [4]:
+				xmin = 1.48
+				xmax = 1.89
+				text = "иван"
+			intervals [5]:
+				xmin = 1.89
+				xmax = 2.14
+				text = "<eps>"
+			intervals [6]:
+				xmin = 2.14
+				xmax = 2.32
+				text = "ял"
+			intervals [7]:
+				xmin = 2.32
+				xmax = 3.25
+				text = "<eps>"
+			intervals [8]:
+				xmin = 3.25
+				xmax = 3.37
+				text = "<unk>"
+			intervals [9]:
+				xmin = 3.37
+				xmax = 4.3635
+				text = "<eps>"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 4.3635
+		intervals: size = 20
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.37
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.37
+				xmax = 0.81
+				text = "UW0"
+			intervals [3]:
+				xmin = 0.81
+				xmax = 0.86
+				text = "T"
+			intervals [4]:
+				xmin = 0.86
+				xmax = 1.04
+				text = "AA1"
+			intervals [5]:
+				xmin = 1.04
+				xmax = 1.09
+				text = "T"
+			intervals [6]:
+				xmin = 1.09
+				xmax = 1.2
+				text = "UW0"
+			intervals [7]:
+				xmin = 1.2
+				xmax = 1.25
+				text = "T"
+			intervals [8]:
+				xmin = 1.25
+				xmax = 1.4
+				text = "AA1"
+			intervals [9]:
+				xmin = 1.4
+				xmax = 1.48
+				text = "T"
+			intervals [10]:
+				xmin = 1.48
+				xmax = 1.57
+				text = "IY0"
+			intervals [11]:
+				xmin = 1.57
+				xmax = 1.64
+				text = "V"
+			intervals [12]:
+				xmin = 1.64
+				xmax = 1.77
+				text = "AA1"
+			intervals [13]:
+				xmin = 1.77
+				xmax = 1.89
+				text = "N"
+			intervals [14]:
+				xmin = 1.89
+				xmax = 2.14
+				text = "SIL"
+			intervals [15]:
+				xmin = 2.14
+				xmax = 2.17
+				text = "J"
+			intervals [16]:
+				xmin = 2.17
+				xmax = 2.26
+				text = "AA1"
+			intervals [17]:
+				xmin = 2.26
+				xmax = 2.32
+				text = "L"
+			intervals [18]:
+				xmin = 2.32
+				xmax = 3.25
+				text = "SIL"
+			intervals [19]:
+				xmin = 3.25
+				xmax = 3.37
+				text = "spn"
+			intervals [20]:
+				xmin = 3.37
+				xmax = 4.3635
+				text = "SIL"

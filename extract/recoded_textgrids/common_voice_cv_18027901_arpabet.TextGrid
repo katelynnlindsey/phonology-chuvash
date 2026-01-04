@@ -1,0 +1,120 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 1.75762
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 1.75762
+		intervals: size = 5
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.2
+				text = "вӑт"
+			intervals [2]:
+				xmin = 0.2
+				xmax = 0.39
+				text = "<eps>"
+			intervals [3]:
+				xmin = 0.39
+				xmax = 0.88
+				text = "ҫавнашкал"
+			intervals [4]:
+				xmin = 0.88
+				xmax = 1.7
+				text = "логика"
+			intervals [5]:
+				xmin = 1.7
+				xmax = 1.75762
+				text = "<eps>"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 1.75762
+		intervals: size = 20
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.05
+				text = "V"
+			intervals [2]:
+				xmin = 0.05
+				xmax = 0.08
+				text = "AH2"
+			intervals [3]:
+				xmin = 0.08
+				xmax = 0.2
+				text = "T"
+			intervals [4]:
+				xmin = 0.2
+				xmax = 0.39
+				text = "SIL"
+			intervals [5]:
+				xmin = 0.39
+				xmax = 0.46
+				text = "ɕ"
+			intervals [6]:
+				xmin = 0.46
+				xmax = 0.51
+				text = "AA0"
+			intervals [7]:
+				xmin = 0.51
+				xmax = 0.54
+				text = "V"
+			intervals [8]:
+				xmin = 0.54
+				xmax = 0.59
+				text = "N"
+			intervals [9]:
+				xmin = 0.59
+				xmax = 0.63
+				text = "AA0"
+			intervals [10]:
+				xmin = 0.63
+				xmax = 0.71
+				text = "SH"
+			intervals [11]:
+				xmin = 0.71
+				xmax = 0.77
+				text = "K"
+			intervals [12]:
+				xmin = 0.77
+				xmax = 0.85
+				text = "AA1"
+			intervals [13]:
+				xmin = 0.85
+				xmax = 0.88
+				text = "L"
+			intervals [14]:
+				xmin = 0.88
+				xmax = 0.93
+				text = "L"
+			intervals [15]:
+				xmin = 0.93
+				xmax = 1.0
+				text = "OW0"
+			intervals [16]:
+				xmin = 1.0
+				xmax = 1.03
+				text = "G"
+			intervals [17]:
+				xmin = 1.03
+				xmax = 1.17
+				text = "IY0"
+			intervals [18]:
+				xmin = 1.17
+				xmax = 1.24
+				text = "K"
+			intervals [19]:
+				xmin = 1.24
+				xmax = 1.7
+				text = "AA1"
+			intervals [20]:
+				xmin = 1.7
+				xmax = 1.75762
+				text = "SIL"

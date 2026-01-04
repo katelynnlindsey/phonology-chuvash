@@ -1,0 +1,124 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 5.21363
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 5.21363
+		intervals: size = 9
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.27
+				text = "<eps>"
+			intervals [2]:
+				xmin = 0.27
+				xmax = 0.76
+				text = "каярахпа"
+			intervals [3]:
+				xmin = 0.76
+				xmax = 0.93
+				text = "<eps>"
+			intervals [4]:
+				xmin = 0.93
+				xmax = 1.01
+				text = "<unk>"
+			intervals [5]:
+				xmin = 1.01
+				xmax = 1.45
+				text = "<unk>"
+			intervals [6]:
+				xmin = 1.45
+				xmax = 3.4
+				text = "<unk>"
+			intervals [7]:
+				xmin = 3.4
+				xmax = 4.29
+				text = "<unk>"
+			intervals [8]:
+				xmin = 4.29
+				xmax = 4.38
+				text = "<unk>"
+			intervals [9]:
+				xmin = 4.38
+				xmax = 5.21363
+				text = "<eps>"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 5.21363
+		intervals: size = 17
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.27
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.27
+				xmax = 0.37
+				text = "K"
+			intervals [3]:
+				xmin = 0.37
+				xmax = 0.4
+				text = "AA0"
+			intervals [4]:
+				xmin = 0.4
+				xmax = 0.43
+				text = "J"
+			intervals [5]:
+				xmin = 0.43
+				xmax = 0.46
+				text = "AA0"
+			intervals [6]:
+				xmin = 0.46
+				xmax = 0.49
+				text = "R"
+			intervals [7]:
+				xmin = 0.49
+				xmax = 0.52
+				text = "AA0"
+			intervals [8]:
+				xmin = 0.52
+				xmax = 0.7
+				text = "χ"
+			intervals [9]:
+				xmin = 0.7
+				xmax = 0.73
+				text = "P"
+			intervals [10]:
+				xmin = 0.73
+				xmax = 0.76
+				text = "AA1"
+			intervals [11]:
+				xmin = 0.76
+				xmax = 0.93
+				text = "SIL"
+			intervals [12]:
+				xmin = 0.93
+				xmax = 1.01
+				text = "spn"
+			intervals [13]:
+				xmin = 1.01
+				xmax = 1.45
+				text = "spn"
+			intervals [14]:
+				xmin = 1.45
+				xmax = 3.4
+				text = "spn"
+			intervals [15]:
+				xmin = 3.4
+				xmax = 4.29
+				text = "spn"
+			intervals [16]:
+				xmin = 4.29
+				xmax = 4.38
+				text = "spn"
+			intervals [17]:
+				xmin = 4.38
+				xmax = 5.21363
+				text = "SIL"

@@ -1,0 +1,148 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 2.7
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 2.7
+		intervals: size = 7
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.39
+				text = "<eps>"
+			intervals [2]:
+				xmin = 0.39
+				xmax = 0.99
+				text = "итлетӗп"
+			intervals [3]:
+				xmin = 0.99
+				xmax = 1.17
+				text = "<eps>"
+			intervals [4]:
+				xmin = 1.17
+				xmax = 1.56
+				text = "<unk>"
+			intervals [5]:
+				xmin = 1.56
+				xmax = 1.6
+				text = "<eps>"
+			intervals [6]:
+				xmin = 1.6
+				xmax = 2.65
+				text = "обер-лейтенант"
+			intervals [7]:
+				xmin = 2.65
+				xmax = 2.7
+				text = "<eps>"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 2.7
+		intervals: size = 25
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.39
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.39
+				xmax = 0.49
+				text = "IY0"
+			intervals [3]:
+				xmin = 0.49
+				xmax = 0.56
+				text = "T"
+			intervals [4]:
+				xmin = 0.56
+				xmax = 0.62
+				text = "L"
+			intervals [5]:
+				xmin = 0.62
+				xmax = 0.72
+				text = "EY1"
+			intervals [6]:
+				xmin = 0.72
+				xmax = 0.8
+				text = "T"
+			intervals [7]:
+				xmin = 0.8
+				xmax = 0.88
+				text = "EH0"
+			intervals [8]:
+				xmin = 0.88
+				xmax = 0.99
+				text = "P"
+			intervals [9]:
+				xmin = 0.99
+				xmax = 1.17
+				text = "SIL"
+			intervals [10]:
+				xmin = 1.17
+				xmax = 1.56
+				text = "spn"
+			intervals [11]:
+				xmin = 1.56
+				xmax = 1.6
+				text = "SIL"
+			intervals [12]:
+				xmin = 1.6
+				xmax = 1.68
+				text = "OW0"
+			intervals [13]:
+				xmin = 1.68
+				xmax = 1.75
+				text = "B"
+			intervals [14]:
+				xmin = 1.75
+				xmax = 1.78
+				text = "EY0"
+			intervals [15]:
+				xmin = 1.78
+				xmax = 1.89
+				text = "R"
+			intervals [16]:
+				xmin = 1.89
+				xmax = 1.92
+				text = "L"
+			intervals [17]:
+				xmin = 1.92
+				xmax = 1.96
+				text = "EY0"
+			intervals [18]:
+				xmin = 1.96
+				xmax = 2.04
+				text = "J"
+			intervals [19]:
+				xmin = 2.04
+				xmax = 2.12
+				text = "T"
+			intervals [20]:
+				xmin = 2.12
+				xmax = 2.17
+				text = "EY0"
+			intervals [21]:
+				xmin = 2.17
+				xmax = 2.23
+				text = "N"
+			intervals [22]:
+				xmin = 2.23
+				xmax = 2.33
+				text = "AA1"
+			intervals [23]:
+				xmin = 2.33
+				xmax = 2.44
+				text = "N"
+			intervals [24]:
+				xmin = 2.44
+				xmax = 2.65
+				text = "T"
+			intervals [25]:
+				xmin = 2.65
+				xmax = 2.7
+				text = "SIL"

@@ -1,0 +1,124 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 2.16
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 2.16
+		intervals: size = 4
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.21
+				text = "<eps>"
+			intervals [2]:
+				xmin = 0.21
+				xmax = 0.93
+				text = "чылайранпа"
+			intervals [3]:
+				xmin = 0.93
+				xmax = 1.43
+				text = "ямшӑк"
+			intervals [4]:
+				xmin = 1.43
+				xmax = 2.16
+				text = "чупан"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 2.16
+		intervals: size = 22
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.21
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.21
+				xmax = 0.29
+				text = "tʃ"
+			intervals [3]:
+				xmin = 0.29
+				xmax = 0.34
+				text = "IX0"
+			intervals [4]:
+				xmin = 0.34
+				xmax = 0.42
+				text = "L"
+			intervals [5]:
+				xmin = 0.42
+				xmax = 0.51
+				text = "AA0"
+			intervals [6]:
+				xmin = 0.51
+				xmax = 0.54
+				text = "J"
+			intervals [7]:
+				xmin = 0.54
+				xmax = 0.6
+				text = "R"
+			intervals [8]:
+				xmin = 0.6
+				xmax = 0.66
+				text = "AA0"
+			intervals [9]:
+				xmin = 0.66
+				xmax = 0.76
+				text = "N"
+			intervals [10]:
+				xmin = 0.76
+				xmax = 0.81
+				text = "P"
+			intervals [11]:
+				xmin = 0.81
+				xmax = 0.93
+				text = "AA1"
+			intervals [12]:
+				xmin = 0.93
+				xmax = 1.04
+				text = "J"
+			intervals [13]:
+				xmin = 1.04
+				xmax = 1.12
+				text = "AA1"
+			intervals [14]:
+				xmin = 1.12
+				xmax = 1.16
+				text = "M"
+			intervals [15]:
+				xmin = 1.16
+				xmax = 1.28
+				text = "SH"
+			intervals [16]:
+				xmin = 1.28
+				xmax = 1.35
+				text = "AH0"
+			intervals [17]:
+				xmin = 1.35
+				xmax = 1.43
+				text = "K"
+			intervals [18]:
+				xmin = 1.43
+				xmax = 1.48
+				text = "tʃ"
+			intervals [19]:
+				xmin = 1.48
+				xmax = 1.54
+				text = "UW0"
+			intervals [20]:
+				xmin = 1.54
+				xmax = 1.59
+				text = "P"
+			intervals [21]:
+				xmin = 1.59
+				xmax = 1.7
+				text = "AA1"
+			intervals [22]:
+				xmin = 1.7
+				xmax = 2.16
+				text = "N"

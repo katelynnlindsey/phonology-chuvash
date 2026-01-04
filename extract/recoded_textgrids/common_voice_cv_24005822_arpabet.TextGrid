@@ -1,0 +1,124 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 4.3275
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 4.3275
+		intervals: size = 9
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.1
+				text = "ав"
+			intervals [2]:
+				xmin = 0.1
+				xmax = 0.13
+				text = "<eps>"
+			intervals [3]:
+				xmin = 0.13
+				xmax = 1.4
+				text = "<unk>"
+			intervals [4]:
+				xmin = 1.4
+				xmax = 1.78
+				text = "<eps>"
+			intervals [5]:
+				xmin = 1.78
+				xmax = 2.96
+				text = "хурăнсем"
+			intervals [6]:
+				xmin = 2.96
+				xmax = 3.08
+				text = "пек"
+			intervals [7]:
+				xmin = 3.08
+				xmax = 3.16
+				text = "яштака"
+			intervals [8]:
+				xmin = 3.16
+				xmax = 3.68
+				text = "ванюк"
+			intervals [9]:
+				xmin = 3.68
+				xmax = 4.3275
+				text = "<eps>"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 4.3275
+		intervals: size = 17
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.07
+				text = "AA1"
+			intervals [2]:
+				xmin = 0.07
+				xmax = 0.1
+				text = "V"
+			intervals [3]:
+				xmin = 0.1
+				xmax = 0.13
+				text = "SIL"
+			intervals [4]:
+				xmin = 0.13
+				xmax = 1.4
+				text = "spn"
+			intervals [5]:
+				xmin = 1.4
+				xmax = 1.78
+				text = "SIL"
+			intervals [6]:
+				xmin = 1.78
+				xmax = 2.96
+				text = "spn"
+			intervals [7]:
+				xmin = 2.96
+				xmax = 3.0
+				text = "P"
+			intervals [8]:
+				xmin = 3.0
+				xmax = 3.05
+				text = "EY1"
+			intervals [9]:
+				xmin = 3.05
+				xmax = 3.08
+				text = "K"
+			intervals [10]:
+				xmin = 3.08
+				xmax = 3.16
+				text = "spn"
+			intervals [11]:
+				xmin = 3.16
+				xmax = 3.22
+				text = "V"
+			intervals [12]:
+				xmin = 3.22
+				xmax = 3.27
+				text = "AA0"
+			intervals [13]:
+				xmin = 3.27
+				xmax = 3.36
+				text = "N"
+			intervals [14]:
+				xmin = 3.36
+				xmax = 3.4
+				text = "J"
+			intervals [15]:
+				xmin = 3.4
+				xmax = 3.56
+				text = "UW1"
+			intervals [16]:
+				xmin = 3.56
+				xmax = 3.68
+				text = "K"
+			intervals [17]:
+				xmin = 3.68
+				xmax = 4.3275
+				text = "SIL"
