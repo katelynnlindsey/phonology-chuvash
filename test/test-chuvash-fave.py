@@ -1,11 +1,95 @@
+# chuvash-fave.py
+# -*- coding: utf-8 -*-
 import os
 import sys
 import concurrent.futures
 from tqdm import tqdm
 
+import pandas as pd
+import re
+
 # --- Directory Paths ---
 base_corpus_path = r"C:\Users\profk\Documents\GitHub\phonology-chuvash\test"
 corpora = ["test-mfa", "test-vox"]
+
+# Regex to capture base label and optional bracketed attributes
+ATTR_RE = re.compile(r'^(?P<label>[^\s\[]+)(?:\s*\[(?P<attrs>[^\]]+)\])?$')
+
+def parse_label_attrs(lab):
+    """
+    Returns (label, attrs_dict) where label is like EH1 and attrs_dict contains keys like sidx,sN,pos,oc (if present).
+    """
+    if not isinstance(lab, str):
+        return lab, {}
+    m = ATTR_RE.match(lab.strip())
+    if not m:
+        return lab.strip(), {}
+    base = m.group('label')
+    attrs = {}
+    attrs_text = m.group('attrs')
+    if attrs_text:
+        # attrs_text format: sidx=1/sN=2/pos=initial/oc=closed
+        for part in attrs_text.split('/'):
+            if '=' in part:
+                k, v = part.split('=', 1)
+                attrs[k] = v
+    return base, attrs
+
+def postprocess_points_csv(csv_path):
+    """
+    Read the CSV written by write_data(... which=['points'], separate=False), parse the 'label'
+    column to extract bracketed attributes, and add columns:
+      - label (base label, e.g. EH1)
+      - sidx (int or NaN)
+      - sN (int or NaN)
+      - syl_pos (string or NaN)
+      - syl_open_closed (string or NaN)
+    Overwrites the original CSV.
+    """
+    try:
+        df = pd.read_csv(csv_path)
+    except Exception as e:
+        print(f"Warning: failed to read {csv_path} for postprocessing: {e}", file=sys.stderr)
+        return
+
+    if 'label' not in df.columns:
+        # nothing to do
+        return
+
+    bases = []
+    sidxs = []
+    sNs = []
+    poss = []
+    ocs = []
+    for lab in df['label'].astype(str).tolist():
+        base, attrs = parse_label_attrs(lab)
+        bases.append(base)
+        # sidx and sN might be numeric; attempt int conversion, else None
+        sidx_val = attrs.get('sidx')
+        try:
+            sidxs.append(int(sidx_val) if sidx_val is not None and str(sidx_val).isdigit() else None)
+        except Exception:
+            sidxs.append(None)
+        sN_val = attrs.get('sN') or attrs.get('SN')  # tolerate capitalization
+        try:
+            sNs.append(int(sN_val) if sN_val is not None and str(sN_val).isdigit() else None)
+        except Exception:
+            sNs.append(None)
+        poss.append(attrs.get('pos'))
+        ocs.append(attrs.get('oc'))
+
+    # Replace label with base and add new columns
+    df['label'] = bases
+    df['sidx'] = sidxs
+    df['sN'] = sNs
+    df['syl_pos'] = poss
+    df['syl_open_closed'] = ocs
+
+    # Overwrite CSV (if you prefer writing a new file, change path)
+    try:
+        df.to_csv(csv_path, index=False)
+    except Exception as e:
+        print(f"Warning: failed to write postprocessed CSV to {csv_path}: {e}", file=sys.stderr)
 
 # --- Function to process a single audio/TextGrid pair ---
 def process_single_pair(args):
@@ -33,6 +117,14 @@ def process_single_pair(args):
             which=["points"],
             separate=False
         )
+
+        # Post-process the created points CSV to split label attributes into columns
+        csv_path = os.path.join(output_dir, f"{base_name}_points.csv")
+        if os.path.exists(csv_path):
+            postprocess_points_csv(csv_path)
+        else:
+            print(f"Warning: expected points CSV '{os.path.basename(csv_path)}' not found after write_data.", file=sys.stderr)
+
         return True
     except Exception as e:
         print(f"Error processing '{base_name}': {e}. Skipping.", file=sys.stderr)
