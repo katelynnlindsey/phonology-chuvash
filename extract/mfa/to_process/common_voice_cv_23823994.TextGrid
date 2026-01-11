@@ -1,0 +1,84 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 3.173625 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 3.173625 
+        intervals: size = 6 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.07 
+            text = "ирина" 
+        intervals [2]:
+            xmin = 0.07 
+            xmax = 0.23 
+            text = "ятлă" 
+        intervals [3]:
+            xmin = 0.23 
+            xmax = 1.34 
+            text = "пулса" 
+        intervals [4]:
+            xmin = 1.34 
+            xmax = 2.37 
+            text = "<eps>" 
+        intervals [5]:
+            xmin = 2.37 
+            xmax = 2.6 
+            text = "<unk>" 
+        intervals [6]:
+            xmin = 2.6 
+            xmax = 3.173625 
+            text = "<eps>" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "phones" 
+        xmin = 0 
+        xmax = 3.173625 
+        intervals: size = 10 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.07 
+            text = "spn" 
+        intervals [2]:
+            xmin = 0.07 
+            xmax = 0.23 
+            text = "spn" 
+        intervals [3]:
+            xmin = 0.23 
+            xmax = 0.7 
+            text = "p" 
+        intervals [4]:
+            xmin = 0.7 
+            xmax = 0.76 
+            text = "u" 
+        intervals [5]:
+            xmin = 0.76 
+            xmax = 0.79 
+            text = "l" 
+        intervals [6]:
+            xmin = 0.79 
+            xmax = 1.22 
+            text = "s" 
+        intervals [7]:
+            xmin = 1.22 
+            xmax = 1.34 
+            text = "ɑ" 
+        intervals [8]:
+            xmin = 1.34 
+            xmax = 2.37 
+            text = "sil" 
+        intervals [9]:
+            xmin = 2.37 
+            xmax = 2.6 
+            text = "spn" 
+        intervals [10]:
+            xmin = 2.6 
+            xmax = 3.173625 
+            text = "sil" 

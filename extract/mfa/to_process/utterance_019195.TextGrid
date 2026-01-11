@@ -1,0 +1,88 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 1.38 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 1.38 
+        intervals: size = 3 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.2 
+            text = "<eps>" 
+        intervals [2]:
+            xmin = 0.2 
+            xmax = 0.75 
+            text = "саккуна" 
+        intervals [3]:
+            xmin = 0.75 
+            xmax = 1.38 
+            text = "пӗлетӗп" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "phones" 
+        xmin = 0 
+        xmax = 1.38 
+        intervals: size = 14 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.2 
+            text = "sil" 
+        intervals [2]:
+            xmin = 0.2 
+            xmax = 0.33 
+            text = "s" 
+        intervals [3]:
+            xmin = 0.33 
+            xmax = 0.45 
+            text = "ɑ" 
+        intervals [4]:
+            xmin = 0.45 
+            xmax = 0.52 
+            text = "kː" 
+        intervals [5]:
+            xmin = 0.52 
+            xmax = 0.6 
+            text = "u" 
+        intervals [6]:
+            xmin = 0.6 
+            xmax = 0.65 
+            text = "n" 
+        intervals [7]:
+            xmin = 0.65 
+            xmax = 0.75 
+            text = "ɑ" 
+        intervals [8]:
+            xmin = 0.75 
+            xmax = 0.81 
+            text = "p" 
+        intervals [9]:
+            xmin = 0.81 
+            xmax = 0.88 
+            text = "ɛ" 
+        intervals [10]:
+            xmin = 0.88 
+            xmax = 0.92 
+            text = "l" 
+        intervals [11]:
+            xmin = 0.92 
+            xmax = 1.04 
+            text = "e" 
+        intervals [12]:
+            xmin = 1.04 
+            xmax = 1.11 
+            text = "t" 
+        intervals [13]:
+            xmin = 1.11 
+            xmax = 1.18 
+            text = "ɛ" 
+        intervals [14]:
+            xmin = 1.18 
+            xmax = 1.38 
+            text = "p" 

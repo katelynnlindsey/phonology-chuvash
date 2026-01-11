@@ -1,0 +1,84 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 3.749625 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 3.749625 
+        intervals: size = 8 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.04 
+            text = "<eps>" 
+        intervals [2]:
+            xmin = 0.04 
+            xmax = 0.17 
+            text = "<unk>" 
+        intervals [3]:
+            xmin = 0.17 
+            xmax = 0.39 
+            text = "<eps>" 
+        intervals [4]:
+            xmin = 0.39 
+            xmax = 2.83 
+            text = "<unk>" 
+        intervals [5]:
+            xmin = 2.83 
+            xmax = 3.02 
+            text = "<unk>" 
+        intervals [6]:
+            xmin = 3.02 
+            xmax = 3.06 
+            text = "<unk>" 
+        intervals [7]:
+            xmin = 3.06 
+            xmax = 3.1 
+            text = "<eps>" 
+        intervals [8]:
+            xmin = 3.1 
+            xmax = 3.749625 
+            text = "сăнарăм" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "phones" 
+        xmin = 0 
+        xmax = 3.749625 
+        intervals: size = 8 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.04 
+            text = "sil" 
+        intervals [2]:
+            xmin = 0.04 
+            xmax = 0.17 
+            text = "spn" 
+        intervals [3]:
+            xmin = 0.17 
+            xmax = 0.39 
+            text = "sil" 
+        intervals [4]:
+            xmin = 0.39 
+            xmax = 2.83 
+            text = "spn" 
+        intervals [5]:
+            xmin = 2.83 
+            xmax = 3.02 
+            text = "spn" 
+        intervals [6]:
+            xmin = 3.02 
+            xmax = 3.06 
+            text = "spn" 
+        intervals [7]:
+            xmin = 3.06 
+            xmax = 3.1 
+            text = "sil" 
+        intervals [8]:
+            xmin = 3.1 
+            xmax = 3.749625 
+            text = "spn" 

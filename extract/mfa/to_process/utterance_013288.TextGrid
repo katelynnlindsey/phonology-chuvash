@@ -1,0 +1,84 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 1.74 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 1.74 
+        intervals: size = 4 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.45 
+            text = "<eps>" 
+        intervals [2]:
+            xmin = 0.45 
+            xmax = 0.83 
+            text = "ури" 
+        intervals [3]:
+            xmin = 0.83 
+            xmax = 1.17 
+            text = "шурӗ" 
+        intervals [4]:
+            xmin = 1.17 
+            xmax = 1.74 
+            text = "унӑн" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "phones" 
+        xmin = 0 
+        xmax = 1.74 
+        intervals: size = 12 
+        intervals [1]:
+            xmin = 0.0 
+            xmax = 0.45 
+            text = "sil" 
+        intervals [2]:
+            xmin = 0.45 
+            xmax = 0.6 
+            text = "u" 
+        intervals [3]:
+            xmin = 0.6 
+            xmax = 0.66 
+            text = "r" 
+        intervals [4]:
+            xmin = 0.66 
+            xmax = 0.83 
+            text = "i" 
+        intervals [5]:
+            xmin = 0.83 
+            xmax = 0.93 
+            text = "ʃ" 
+        intervals [6]:
+            xmin = 0.93 
+            xmax = 1.03 
+            text = "u" 
+        intervals [7]:
+            xmin = 1.03 
+            xmax = 1.07 
+            text = "r" 
+        intervals [8]:
+            xmin = 1.07 
+            xmax = 1.17 
+            text = "ɛ" 
+        intervals [9]:
+            xmin = 1.17 
+            xmax = 1.31 
+            text = "u" 
+        intervals [10]:
+            xmin = 1.31 
+            xmax = 1.41 
+            text = "n" 
+        intervals [11]:
+            xmin = 1.41 
+            xmax = 1.5 
+            text = "ʌ" 
+        intervals [12]:
+            xmin = 1.5 
+            xmax = 1.74 
+            text = "n" 
