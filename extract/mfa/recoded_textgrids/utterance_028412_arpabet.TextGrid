@@ -1,0 +1,316 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 5.34
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 5.34
+		intervals: size = 13
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.38
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.38
+				xmax = 0.99
+				text = "J.AAHHN.'OWP.AA"
+			intervals [3]:
+				xmin = 0.99
+				xmax = 1.02
+				text = "SIL"
+			intervals [4]:
+				xmin = 1.02
+				xmax = 1.65
+				text = "spn"
+			intervals [5]:
+				xmin = 1.65
+				xmax = 1.94
+				text = "'K.EHTN.EH"
+			intervals [6]:
+				xmin = 1.94
+				xmax = 2.17
+				text = "'M.AAJ"
+			intervals [7]:
+				xmin = 2.17
+				xmax = 2.66
+				text = "V.'EHS.EYM"
+			intervals [8]:
+				xmin = 2.66
+				xmax = 3.37
+				text = "S.'AALHH.UWL.AHN"
+			intervals [9]:
+				xmin = 3.37
+				xmax = 3.7
+				text = "'J.AAP.AHHH"
+			intervals [10]:
+				xmin = 3.7
+				xmax = 4.14
+				text = "ɕ.'AANT.AAL.AHK"
+			intervals [11]:
+				xmin = 4.14
+				xmax = 4.54
+				text = "ɕ.'IYNtʃ.EYN"
+			intervals [12]:
+				xmin = 4.54
+				xmax = 5.29
+				text = "S.AHM.'AAHHL.AAR.EHɕ"
+			intervals [13]:
+				xmin = 5.29
+				xmax = 5.34
+				text = "SIL"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 5.34
+		intervals: size = 61
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.38
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.38
+				xmax = 0.41
+				text = "J"
+			intervals [3]:
+				xmin = 0.41
+				xmax = 0.47
+				text = "AA0 [sidx=1/sN=3/pos=initial/oc=closed]"
+			intervals [4]:
+				xmin = 0.47
+				xmax = 0.56
+				text = "HH"
+			intervals [5]:
+				xmin = 0.56
+				xmax = 0.61
+				text = "N"
+			intervals [6]:
+				xmin = 0.61
+				xmax = 0.75
+				text = "OW0 [sidx=2/sN=3/pos=med/oc=open]"
+			intervals [7]:
+				xmin = 0.75
+				xmax = 0.81
+				text = "P"
+			intervals [8]:
+				xmin = 0.81
+				xmax = 0.99
+				text = "AA1 [sidx=3/sN=3/pos=final/oc=open]"
+			intervals [9]:
+				xmin = 0.99
+				xmax = 1.02
+				text = "SIL"
+			intervals [10]:
+				xmin = 1.02
+				xmax = 1.65
+				text = "spn"
+			intervals [11]:
+				xmin = 1.65
+				xmax = 1.7
+				text = "K"
+			intervals [12]:
+				xmin = 1.7
+				xmax = 1.74
+				text = "EH1 [sidx=1/sN=2/pos=initial/oc=closed]"
+			intervals [13]:
+				xmin = 1.74
+				xmax = 1.85
+				text = "T"
+			intervals [14]:
+				xmin = 1.85
+				xmax = 1.89
+				text = "N"
+			intervals [15]:
+				xmin = 1.89
+				xmax = 1.94
+				text = "EH0 [sidx=2/sN=2/pos=final/oc=open]"
+			intervals [16]:
+				xmin = 1.94
+				xmax = 2.04
+				text = "M"
+			intervals [17]:
+				xmin = 2.04
+				xmax = 2.11
+				text = "AA1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [18]:
+				xmin = 2.11
+				xmax = 2.17
+				text = "J"
+			intervals [19]:
+				xmin = 2.17
+				xmax = 2.36
+				text = "V"
+			intervals [20]:
+				xmin = 2.36
+				xmax = 2.41
+				text = "EH0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [21]:
+				xmin = 2.41
+				xmax = 2.51
+				text = "S"
+			intervals [22]:
+				xmin = 2.51
+				xmax = 2.59
+				text = "EY1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [23]:
+				xmin = 2.59
+				xmax = 2.66
+				text = "M"
+			intervals [24]:
+				xmin = 2.66
+				xmax = 2.79
+				text = "S"
+			intervals [25]:
+				xmin = 2.79
+				xmax = 2.94
+				text = "AA0 [sidx=1/sN=3/pos=initial/oc=closed]"
+			intervals [26]:
+				xmin = 2.94
+				xmax = 2.98
+				text = "L"
+			intervals [27]:
+				xmin = 2.98
+				xmax = 3.02
+				text = "HH"
+			intervals [28]:
+				xmin = 3.02
+				xmax = 3.08
+				text = "UW1 [sidx=2/sN=3/pos=med/oc=open]"
+			intervals [29]:
+				xmin = 3.08
+				xmax = 3.2
+				text = "L"
+			intervals [30]:
+				xmin = 3.2
+				xmax = 3.27
+				text = "AH0 [sidx=3/sN=3/pos=final/oc=closed]"
+			intervals [31]:
+				xmin = 3.27
+				xmax = 3.37
+				text = "N"
+			intervals [32]:
+				xmin = 3.37
+				xmax = 3.49
+				text = "J"
+			intervals [33]:
+				xmin = 3.49
+				xmax = 3.56
+				text = "AA1 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [34]:
+				xmin = 3.56
+				xmax = 3.61
+				text = "P"
+			intervals [35]:
+				xmin = 3.61
+				xmax = 3.64
+				text = "AH0 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [36]:
+				xmin = 3.64
+				xmax = 3.7
+				text = "HH"
+			intervals [37]:
+				xmin = 3.7
+				xmax = 3.79
+				text = "ɕ"
+			intervals [38]:
+				xmin = 3.79
+				xmax = 3.86
+				text = "AA0 [sidx=1/sN=3/pos=initial/oc=closed]"
+			intervals [39]:
+				xmin = 3.86
+				xmax = 3.92
+				text = "N"
+			intervals [40]:
+				xmin = 3.92
+				xmax = 3.96
+				text = "T"
+			intervals [41]:
+				xmin = 3.96
+				xmax = 4.02
+				text = "AA1 [sidx=2/sN=3/pos=med/oc=open]"
+			intervals [42]:
+				xmin = 4.02
+				xmax = 4.06
+				text = "L"
+			intervals [43]:
+				xmin = 4.06
+				xmax = 4.09
+				text = "AH0 [sidx=3/sN=3/pos=final/oc=closed]"
+			intervals [44]:
+				xmin = 4.09
+				xmax = 4.14
+				text = "K"
+			intervals [45]:
+				xmin = 4.14
+				xmax = 4.25
+				text = "ɕ"
+			intervals [46]:
+				xmin = 4.25
+				xmax = 4.3
+				text = "IY0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [47]:
+				xmin = 4.3
+				xmax = 4.37
+				text = "N"
+			intervals [48]:
+				xmin = 4.37
+				xmax = 4.43
+				text = "tʃ"
+			intervals [49]:
+				xmin = 4.43
+				xmax = 4.51
+				text = "EY1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [50]:
+				xmin = 4.51
+				xmax = 4.54
+				text = "N"
+			intervals [51]:
+				xmin = 4.54
+				xmax = 4.65
+				text = "S"
+			intervals [52]:
+				xmin = 4.65
+				xmax = 4.69
+				text = "AH0 [sidx=1/sN=4/pos=initial/oc=open]"
+			intervals [53]:
+				xmin = 4.69
+				xmax = 4.75
+				text = "M"
+			intervals [54]:
+				xmin = 4.75
+				xmax = 4.79
+				text = "AA0 [sidx=2/sN=4/pos=med/oc=closed]"
+			intervals [55]:
+				xmin = 4.79
+				xmax = 4.9
+				text = "HH"
+			intervals [56]:
+				xmin = 4.9
+				xmax = 4.96
+				text = "L"
+			intervals [57]:
+				xmin = 4.96
+				xmax = 5.05
+				text = "AA1 [sidx=3/sN=4/pos=med/oc=open]"
+			intervals [58]:
+				xmin = 5.05
+				xmax = 5.09
+				text = "R"
+			intervals [59]:
+				xmin = 5.09
+				xmax = 5.16
+				text = "EH0 [sidx=4/sN=4/pos=final/oc=open]"
+			intervals [60]:
+				xmin = 5.16
+				xmax = 5.29
+				text = "ɕ"
+			intervals [61]:
+				xmin = 5.29
+				xmax = 5.34
+				text = "SIL"

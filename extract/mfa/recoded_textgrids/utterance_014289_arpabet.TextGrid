@@ -1,0 +1,108 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 2.04
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 2.04
+		intervals: size = 5
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.25
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.25
+				xmax = 0.75
+				text = "'K.EHR.EHR"
+			intervals [3]:
+				xmin = 0.75
+				xmax = 1.02
+				text = "'T.EYR.EH"
+			intervals [4]:
+				xmin = 1.02
+				xmax = 1.5
+				text = "M.'UWST.AAJ"
+			intervals [5]:
+				xmin = 1.5
+				xmax = 2.04
+				text = "SIL"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 2.04
+		intervals: size = 17
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.25
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.25
+				xmax = 0.33
+				text = "K"
+			intervals [3]:
+				xmin = 0.33
+				xmax = 0.43
+				text = "EH1 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [4]:
+				xmin = 0.43
+				xmax = 0.48
+				text = "R"
+			intervals [5]:
+				xmin = 0.48
+				xmax = 0.59
+				text = "EH0 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [6]:
+				xmin = 0.59
+				xmax = 0.75
+				text = "R"
+			intervals [7]:
+				xmin = 0.75
+				xmax = 0.82
+				text = "T"
+			intervals [8]:
+				xmin = 0.82
+				xmax = 0.91
+				text = "EY1 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [9]:
+				xmin = 0.91
+				xmax = 0.95
+				text = "R"
+			intervals [10]:
+				xmin = 0.95
+				xmax = 1.02
+				text = "EH0 [sidx=2/sN=2/pos=final/oc=open]"
+			intervals [11]:
+				xmin = 1.02
+				xmax = 1.12
+				text = "M"
+			intervals [12]:
+				xmin = 1.12
+				xmax = 1.16
+				text = "UW0 [sidx=1/sN=2/pos=initial/oc=closed]"
+			intervals [13]:
+				xmin = 1.16
+				xmax = 1.28
+				text = "S"
+			intervals [14]:
+				xmin = 1.28
+				xmax = 1.34
+				text = "T"
+			intervals [15]:
+				xmin = 1.34
+				xmax = 1.43
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [16]:
+				xmin = 1.43
+				xmax = 1.5
+				text = "J"
+			intervals [17]:
+				xmin = 1.5
+				xmax = 2.04
+				text = "SIL"
