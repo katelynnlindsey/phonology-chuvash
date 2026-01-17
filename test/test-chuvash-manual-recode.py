@@ -9,76 +9,63 @@ import sys
 from pydub import AudioSegment
 
 # DEBUG: Print path of loaded textgrid module
-print(f"DEBUG: 'textgrid' module loaded from: {textgrid.__file__}")
+# print(f"DEBUG: 'textgrid' module loaded from: {textgrid.__file__}", file=sys.stderr)
 
+# --- 1. Vowel and Consonant Definitions (IPA to ARPAbet mapping is here) ---
+# IMPORTANT: These IPA keys must EXACTLY match the IPA symbols in your input TextGrids.
+# The values are ARPAbet for the output.
 ipa_to_arpabet_map = {
     'ʌ': 'AH', 'ɑ': 'AA', 'u': 'UW', 'y': 'UX', 'ɛ': 'EH', 'e': 'EY', 'o': 'OW', 'i': 'IY', 'ɯ': 'IX',
-    'sil': 'SIL', 'v': 'V', 'j': 'J', 'n': 'N', 'ʃ': 'SH', 'p': 'P', 'k': 'K', 'm': 'M', 'r': 'R',
+    'sil': 'SIL', '<eps>': 'SIL', # Add <eps> for silence/empty intervals from MFA output
+    'v': 'V', 'j': 'J', 'n': 'N', 'ʃ': 'SH', 'p': 'P', 'k': 'K', 'm': 'M', 'r': 'R',
     's': 'S', 't': 'T', 'd': 'D', 'l': 'L', 'z': 'Z', 'ŋ': 'NG', 'ð': 'DH', 'θ': 'TH', 'f': 'F',
     'w': 'W', 'h': 'HH', 'ʔ': 'Q', 'b': 'B', 'g': 'G', 'd͡ʒ': 'JH', 't͡ʃ': 'CH', 'ʒ': 'ZH', 'ɾ': 'DX',
+    'tː': 'T', # Assuming geminates map to base consonant, adjust if needed
+    'lː': 'L',
+    'pː': 'P',
+    'mː': 'M',
+    'nː': 'N',
+    'rː': 'R',
+    'sː': 'S',
+    'kː': 'K',
+    'χ': 'HH' # Assuming your χ is mapped to HH, adjust if different
 }
 
+# Define strong/weak vowels using their *IPA symbols* as they appear in the input TextGrid 'phones' tier.
+# This must be consistent with the *keys* in ipa_to_arpabet_map for vowels.
 STRONG_VOWELS_IPA = {'ɑ', 'u', 'y', 'e', 'o', 'i', 'ɯ'}
-WEAK_VOWELS_IPA = {'ʌ', 'ɛ'}
+WEAK_VOWELS_IPA = {'ʌ', 'ɛ'} # Based on your input: AH and EH are weak.
 ALL_VOWELS_IPA = STRONG_VOWELS_IPA.union(WEAK_VOWELS_IPA)
 
-# token-based consonant/vowel classes for syllabification decisions
+# token-based consonant/vowel classes
 VOWEL_TOKENS = ALL_VOWELS_IPA
-CONSONANT_TOKENS = set([k for k in ipa_to_arpabet_map.keys() if k not in VOWEL_TOKENS and k != 'sil'])
+CONSONANT_TOKENS = set([k for k in ipa_to_arpabet_map.keys() if k not in VOWEL_TOKENS and k not in ['sil', '<eps>']])
 
-# helper: get phone intervals wholly within a word interval
+
+# Helper: get phone intervals wholly within a word interval, excluding silence/eps
 def phones_within_interval(phones_tier, wmin, wmax):
     phones = []
     for p in phones_tier.intervals:
+        phone_mark = p.mark.strip().lower()
+        if phone_mark in ['sil', '<eps>']: # Skip explicit silence/epsilon phones
+            continue
         if p.minTime >= wmin and p.maxTime <= wmax:
             phones.append(p)
     return phones
 
-# helper: build a list of token strings from phone intervals
-def phone_tokens_from_intervals(intervals):
-    tokens = [iv.mark.strip().lower() for iv in intervals]
-    return tokens
 
-# token-level partitioning adapted from your create_partitions
-def create_partitions_tokens(token_list, left_env_pred, right_env_pred):
-    results = []
-    L = len(token_list)
-    if L == 0:
-        return [[]]
-    any_match = False
-    for cut in range(1, L):
-        if left_env_pred(token_list[:cut]) and right_env_pred(token_list[cut:]):
-            any_match = True
-            break
-    if not any_match:
-        return [token_list]
-    for i in range(1, L):
-        Lpart = token_list[:i]
-        Rpart = token_list[i:]
-        if left_env_pred(Lpart) and right_env_pred(Rpart):
-            results.append(Lpart)
-            rest = create_partitions_tokens(Rpart, left_env_pred, right_env_pred)
-            results += rest
-            break
-    return results
-
-# small predicate helpers
-def ends_with_vowel(tokens):
-    return len(tokens) > 0 and tokens[-1] in VOWEL_TOKENS
-
-def starts_with_vowel(tokens):
-    return len(tokens) > 0 and tokens[0] in VOWEL_TOKENS
-
-# main processing per TextGrid (enhanced with syllabification & annotation)
+# Main processing function per TextGrid
 def process_single_textgrid(input_tg_path, output_tg_path, mapping):
     temp_filepath = None
     try:
+        # Robustly read TextGrid, handling encoding issues
         content = None
         encodings_to_try = ['utf-8', 'latin-1', 'cp1252', 'iso-8859-1']
         for enc in encodings_to_try:
             try:
                 with codecs.open(input_tg_path, 'r', encoding=enc) as f:
                     content = f.read()
+                    # Basic check for TextGrid format presence
                     if "File type" in content and "Object class" in content and ("text =" in content or "intervals:" in content):
                         break
                     else:
@@ -108,141 +95,185 @@ def process_single_textgrid(input_tg_path, output_tg_path, mapping):
         if not phones_tier:
             print(f"Warning: 'phones' tier not found in '{os.path.basename(input_tg_path)}'. No recoding or stress assignment performed.", file=sys.stderr)
             return
-
-        if not isinstance(phones_tier, textgrid.IntervalTier):
-            print(f"Warning: 'phones' tier in '{os.path.basename(input_tg_path)}' is not an IntervalTier ({type(phones_tier).__name__}). Skipping interval-based stress assignment. Only direct label recoding will occur.", file=sys.stderr)
-            for interval in phones_tier:
-                original_label = interval.mark.strip()
-                recoded_label = mapping.get(original_label.lower(), original_label)
+        
+        if not words_tier or not isinstance(words_tier, textgrid.IntervalTier):
+            print(f"Warning: 'words' tier in '{os.path.basename(input_tg_path)}' not found or not an IntervalTier. Only basic recoding to ARPAbet will occur for 'phones' tier.", file=sys.stderr)
+            # Perform basic recoding to ARPAbet for phones tier
+            for interval in phones_tier.intervals:
+                original_label = interval.mark.strip().lower()
+                recoded_label = mapping.get(original_label, original_label)
                 interval.mark = recoded_label
             tg.write(output_tg_path)
             return
 
-        # First pass: default stress assignment for vowels (0) and recode mapping later
-        phone_stress_assignments = {}
-        for p_interval in phones_tier.intervals:
-            original_label_ipa = p_interval.mark.strip().lower()
-            interval_key = (p_interval.minTime, p_interval.maxTime)
-            if original_label_ipa in ALL_VOWELS_IPA:
-                phone_stress_assignments[interval_key] = '0'
-            else:
-                phone_stress_assignments[interval_key] = ''
+        # --- Main Logic for Word-Level Processing (Syllable and Stress Annotation) ---
+        for w_interval in words_tier.intervals:
+            word_text_lower = w_interval.mark.strip().lower()
+            # Skip empty or non-linguistic word intervals
+            if word_text_lower in ['', 'sil', '<eps>']:
+                w_interval.mark = mapping.get(word_text_lower, word_text_lower).upper() # Recode word tier itself
+                continue 
 
-        # If words tier exists, syllabify and set stress
-        if not words_tier or not isinstance(words_tier, textgrid.IntervalTier):
-            print(f"Warning: 'words' tier in '{os.path.basename(input_tg_path)}' not found or not an IntervalTier ({type(words_tier).__name__ if words_tier else 'None'}). Cannot assign word-level stress or syllabification. Phones will only be ARPAbet (vowels default to 0 stress).", file=sys.stderr)
-        else:
-            for w_interval in words_tier.intervals:
-                pintervals = phones_within_interval(phones_tier, w_interval.minTime, w_interval.maxTime)
-                if not pintervals:
-                    continue
-                tokens = phone_tokens_from_intervals(pintervals)
+            # Get phones strictly within this word interval, skipping silence/eps
+            pintervals_in_word = phones_within_interval(phones_tier, w_interval.minTime, w_interval.maxTime)
+            if not pintervals_in_word:
+                # print(f"DEBUG: No linguistic phones found for word '{w_interval.mark}'", file=sys.stderr)
+                w_interval.mark = mapping.get(word_text_lower, word_text_lower).upper() # Ensure words tier is ARPAbet
+                continue
+            
+            # --- Syllable Identification (Each vowel is a syllable nucleus) ---
+            vowel_syllable_info = [] # Stores dicts for each identified vowel-based syllable
+            
+            current_sidx = 0
+            for p_idx, p_interval in enumerate(pintervals_in_word):
+                phone_ipa = p_interval.mark.strip().lower()
+                if phone_ipa in ALL_VOWELS_IPA:
+                    current_sidx += 1 # 1-based syllable index
+                    
+                    # Determine oc_status: look at phones *following* this vowel
+                    oc_determining_consonants_count = 0
+                    look_ahead_idx = p_idx + 1
+                    while look_ahead_idx < len(pintervals_in_word):
+                        next_phone_ipa = pintervals_in_word[look_ahead_idx].mark.strip().lower()
+                        if next_phone_ipa in ALL_VOWELS_IPA: # Next vowel starts new syllable
+                            break 
+                        elif next_phone_ipa in CONSONANT_TOKENS:
+                            oc_determining_consonants_count += 1
+                        look_ahead_idx += 1
+                    
+                    oc_status = 'open' # Default
+                    # oc_status = 'closed' if (oc_determining_consonants_count >= 2) or \
+                    #                            (oc_determining_consonants_count == 1 and look_ahead_idx == len(pintervals_in_word)) else 'open'
+                    # Per your rule: "vowel preceding two consonants or a consonant and the end of the word will be oc=closed and a vowel preceding one consonant will be oc=open"
+                    # This implies:
+                    # - V CC -> closed
+                    # - V C# -> closed
+                    # - V C V -> open (C is onset of next syllable)
+                    # - V # -> open
+                    if oc_determining_consonants_count >= 2: # VCC
+                        oc_status = 'closed'
+                    elif oc_determining_consonants_count == 1 and look_ahead_idx == len(pintervals_in_word): # V C # (word final consonant)
+                        oc_status = 'closed'
+                    elif oc_determining_consonants_count == 1: # V C V (C is onset of next syllable)
+                        oc_status = 'open' # This is the original meaning of open for VC
+                    # If oc_determining_consonants_count == 0, it's V#, which is also open by this def
+                    
+                    vowel_syllable_info.append({
+                        'sidx': current_sidx,
+                        'phone_interval_obj': p_interval, # Store the actual interval object
+                        'ipa': phone_ipa,
+                        'arpabet': mapping.get(phone_ipa, phone_ipa),
+                        'is_strong': phone_ipa in STRONG_VOWELS_IPA,
+                        'oc_status': oc_status
+                    })
+            
+            total_syllables_in_word = current_sidx # Total count of vowel-based syllables
 
-                # apply partition passes (heuristic adaptation of your string-based rules)
-                chunks = [tokens]
+            # --- Stress Assignment Logic ("Rightmost strong, else leftmost weak") ---
+            stressed_syl_sidx = None # This will store the 1-based index of the stressed syllable
+            
+            strong_syl_sidx_candidates = sorted([v['sidx'] for v in vowel_syllable_info if v['is_strong']])
+            weak_syl_sidx_candidates = sorted([v['sidx'] for v in vowel_syllable_info if not v['is_strong']])
+            
+            if strong_syl_sidx_candidates:
+                stressed_syl_sidx = max(strong_syl_sidx_candidates) # Rightmost strong vowel's syllable
+            elif weak_syl_sidx_candidates:
+                stressed_syl_sidx = min(weak_syl_sidx_candidates) # Leftmost weak vowel's syllable (only if no strong)
+            
+            # --- Update `phones` tier and prepare `words` tier string ---
+            word_arpabet_syllable_parts = [] # Collects ARPAbet phones+stress, then joined by '.' for words tier
+            
+            last_vowel_sidx = 0 # To group consonants with their following vowel's syllable
+            
+            for p_idx, p_interval in enumerate(pintervals_in_word):
+                phone_ipa = p_interval.mark.strip().lower()
+                recoded_arpabet_label = mapping.get(phone_ipa, phone_ipa)
+                
+                # Update phone interval mark
+                if phone_ipa in ALL_VOWELS_IPA: # It's a vowel
+                    v_info = next((v for v in vowel_syllable_info if v['phone_interval_obj'] == p_interval), None)
+                    if v_info:
+                        phone_stress_digit = '1' if v_info['sidx'] == stressed_syl_sidx else '0'
+                        
+                        # Determine current syllable position for attrs
+                        current_syl_pos_attr = 'med'
+                        if total_syllables_in_word == 1:
+                            current_syl_pos_attr = 'initial' # Single syllable word
+                        elif v_info['sidx'] == 1:
+                            current_syl_pos_attr = 'initial'
+                        elif v_info['sidx'] == total_syllables_in_word:
+                            current_syl_pos_attr = 'final'
+                        
+                        p_interval.mark = f"{recoded_arpabet_label}{phone_stress_digit} [sidx={v_info['sidx']}/sN={total_syllables_in_word}/pos={current_syl_pos_attr}/oc={v_info['oc_status']}]"
+                        last_vowel_sidx = v_info['sidx'] # Mark that we just processed a vowel
+                    else: # Fallback if vowel_info somehow missing (shouldn't happen for identified vowels)
+                         p_interval.mark = recoded_arpabet_label + '0' # Default to unstressed if no info
+                         last_vowel_sidx = 0 # Reset if we can't find its info
+                else: # It's a consonant
+                    p_interval.mark = recoded_arpabet_label # Consonants get only ARPAbet label
+                
+                # For building the `words` tier string, we need to group phones into syllables
+                # Simple rule: Consonants attach to the *following* vowel's syllable.
+                # The first vowel starts the first syllable.
+                
+                if not word_arpabet_syllable_parts: # If this is the very first phone to add
+                    word_arpabet_syllable_parts.append([recoded_arpabet_label])
+                else:
+                    # If this phone is a vowel, start a new syllable string entry
+                    if phone_ipa in ALL_VOWELS_IPA:
+                         word_arpabet_syllable_parts.append([recoded_arpabet_label])
+                    # If this phone is a consonant, attach it to the LAST syllable string (the one with the previous vowel)
+                    else:
+                        word_arpabet_syllable_parts[-1].append(recoded_arpabet_label)
+                        
 
-                def apply_pass(chunks, left_pred, right_pred):
-                    newchunks = []
-                    for ch in chunks:
-                        parts = create_partitions_tokens(ch, left_pred, right_pred)
-                        newchunks.extend(parts)
-                    return newchunks
+            # --- Construct Final `words` Tier Mark ---
+            word_display_str = ''
+            if word_arpabet_syllable_parts:
+                # Now, join the inner lists into syllable strings, handling the stress apostrophe
+                final_syllable_strings = []
+                for s_idx, syl_parts in enumerate(word_arpabet_syllable_parts):
+                    syl_str = ''.join(syl_parts)
+                    # The s_idx here is 0-based, corresponding to the 1-based stressed_syl_sidx
+                    if stressed_syl_sidx is not None and (s_idx + 1) == stressed_syl_sidx:
+                        # Find the first vowel in the syllable string to place apostrophe correctly
+                        vowel_match = re.search(r'([A-Z]+[01])', syl_str) # Matches ARPAbet vowel + stress digit
+                        if vowel_match:
+                            syl_str = syl_str[:vowel_match.start()] + "'" + syl_str[vowel_match.start():]
+                        else: # Fallback if no clear vowel found (shouldn't happen)
+                            syl_str = "'" + syl_str # Just put at beginning
+                    final_syllable_strings.append(syl_str)
+                word_display_str = '.'.join(final_syllable_strings)
+            else: # Fallback if no syllables were identified, keep original recoded word
+                word_display_str = mapping.get(w_interval.mark.strip().lower(), w_interval.mark.strip().lower()).upper()
 
-                # 1) vowel-vowel boundary
-                chunks = apply_pass(chunks, lambda t: ends_with_vowel(t), lambda t: starts_with_vowel(t))
-                # 2) two consonants before a consonant
-                chunks = apply_pass(chunks, lambda t: len(t) >= 2 and t[-2] in CONSONANT_TOKENS and t[-1] in CONSONANT_TOKENS, lambda t: len(t) > 0 and t[0] in CONSONANT_TOKENS)
-                # 3) consonant | consonant+vowel
-                chunks = apply_pass(chunks, lambda t: len(t) > 0 and t[-1] in CONSONANT_TOKENS, lambda t: len(t) >= 2 and t[0] in CONSONANT_TOKENS and t[1] in VOWEL_TOKENS)
-                # 4) vowel | consonant+vowel
-                chunks = apply_pass(chunks, lambda t: ends_with_vowel(t), lambda t: len(t) >= 2 and t[0] in CONSONANT_TOKENS and t[1] in VOWEL_TOKENS)
 
-                # map chunks back to original phone-interval objects
-                syllable_intervals = []
-                idx = 0
-                for syl_tokens in chunks:
-                    syl_len = len(syl_tokens)
-                    syl_pints = pintervals[idx: idx + syl_len]
-                    syllable_intervals.append(syl_pints)
-                    idx += syl_len
+            w_interval.mark = word_display_str
 
-                # determine stressed syllable using your strong/weak vowel rules
-                syl_with_strong = []
-                syl_with_weak = []
-                for s_idx, syl in enumerate(syllable_intervals):
-                    if any(iv.mark.strip().lower() in STRONG_VOWELS_IPA for iv in syl):
-                        syl_with_strong.append((s_idx, syl))
-                    elif any(iv.mark.strip().lower() in WEAK_VOWELS_IPA for iv in syl):
-                        syl_with_weak.append((s_idx, syl))
 
-                stressed_syl_index = None
-                if syl_with_strong:
-                    stressed_syl_index = max(idx for idx, _ in syl_with_strong)
-                elif syl_with_weak:
-                    stressed_syl_index = min(idx for idx, _ in syl_with_weak)
-
-                total_sylls = len(syllable_intervals)
-                for sidx, syl in enumerate(syllable_intervals):
-                    for i, iv in enumerate(syl):
-                        tok = iv.mark.strip()
-                        tok_l = tok.lower()
-                        is_vowel = tok_l in ALL_VOWELS_IPA
-                        syl_pos = 'med'
-                        if sidx == 0:
-                            syl_pos = 'initial'
-                        elif sidx == total_sylls - 1:
-                            syl_pos = 'final'
-                        syl_is_open = False
-                        if len(syl) > 0 and syl[-1].mark.strip().lower() in ALL_VOWELS_IPA:
-                            syl_is_open = True
-                        open_closed = 'open' if syl_is_open else 'closed'
-                        stress_digit = ''
-                        if is_vowel:
-                            key = (iv.minTime, iv.maxTime)
-                            if stressed_syl_index is not None and sidx == stressed_syl_index:
-                                stress_digit = '1'
-                            else:
-                                stress_digit = phone_stress_assignments.get((iv.minTime, iv.maxTime), '0')
-                        else:
-                            stress_digit = ''
-                        recoded_label = mapping.get(tok_l, tok)
-                        new_label = recoded_label + (stress_digit if stress_digit else '')
-                        attrs = f"[sidx={sidx+1}/sN={total_sylls}/pos={syl_pos}/oc={open_closed}]"
-                        if is_vowel:
-                            iv.mark = new_label + " " + attrs
-                        else:
-                            iv.mark = new_label
-
-                # update word label with syllabified phone tokens and apostrophe on stressed syllable
-                syll_strings = ['.'.join([t for t in syl]) for syl in chunks]
-                if stressed_syl_index is None:
-                    stressed_syl_index = 0
-                syll_strings[stressed_syl_index] = "'" + syll_strings[stressed_syl_index]
-                word_display = '.'.join(syll_strings)
-                w_interval.mark = word_display
-
-        # finalize recoding for any phones not annotated above
+        # --- Final cleanup for phones tier (for any phones not part of a word interval, like leading/trailing SIL) ---
         for interval in phones_tier.intervals:
-            mark = interval.mark.strip()
-            if mark == '':
-                continue
-            if '[' in mark and 'sidx=' in mark:
-                continue
-            original_label = mark
-            recoded_label = ipa_to_arpabet_map.get(original_label.lower(), original_label)
-            if original_label.lower() in ALL_VOWELS_IPA:
-                interval.mark = recoded_label + phone_stress_assignments.get((interval.minTime, interval.maxTime), '0')
-            else:
-                interval.mark = recoded_label
+            mark_lower = interval.mark.strip().lower()
+            # If it's a raw IPA label that hasn't been processed into [sidx=...] format
+            if '[' not in mark_lower and mark_lower in mapping: 
+                interval.mark = mapping.get(mark_lower, mark_lower) # Just recode to ARPAbet
+            elif '[' not in mark_lower and mark_lower in ALL_VOWELS_IPA: # Unprocessed vowel outside word intervals
+                 interval.mark = mapping.get(mark_lower, mark_lower) + '0' # Default to unstressed 0
+            elif mark_lower in ['sil', '<eps>']: # Ensure silence/eps intervals are correctly ARPAbet'd if they weren't skipped
+                 interval.mark = mapping.get(mark_lower, mark_lower).upper()
+
 
         tg.write(output_tg_path)
 
     except Exception as e:
         print(f"An unexpected error occurred during TG processing '{os.path.basename(input_tg_path)}': {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
     finally:
         if temp_filepath and os.path.exists(temp_filepath):
             os.remove(temp_filepath)
 
+# --- Audio Conversion Utility (No Change) ---
 def convert_or_copy_audio(input_audio_path, output_wav_path):
     base_name = os.path.basename(input_audio_path)
     output_base_name = os.path.basename(output_wav_path)
@@ -252,7 +283,6 @@ def convert_or_copy_audio(input_audio_path, output_wav_path):
             audio = AudioSegment.from_mp3(input_audio_path)
             audio = audio.set_frame_rate(16000).set_channels(1).set_sample_width(2)
             audio.export(output_wav_path, format='wav')
-            print(f"Converted '{base_name}' to '{output_base_name}'.")
             return True
         except Exception as e:
             print(f"Error converting MP3 '{base_name}' to WAV: {e}. Skipping audio conversion.", file=sys.stderr)
@@ -268,9 +298,9 @@ def convert_or_copy_audio(input_audio_path, output_wav_path):
         print(f"Warning: Unsupported audio format for '{base_name}'. Skipping audio processing.", file=sys.stderr)
         return False
 
-# --- Main Directory Processing for both corpora ---
+# --- Main Directory Processing for both corpora (No Change) ---
 base_corpus_path = r"C:\Users\profk\Documents\GitHub\phonology-chuvash\test"
-corpora = ["test-mfa", "test-vox"]
+corpora = ["test-mfa", "test-vox"] # Assuming 'mfa' is your Chuvash Voice and 'vox' is Common Voice
 
 for corpus in corpora:
     corpus_dir = os.path.join(base_corpus_path, corpus)
@@ -304,28 +334,31 @@ for corpus in corpora:
 
     for base_name in sorted(list(all_basenames)):
         input_tg_path = os.path.join(input_dir, f"{base_name}.TextGrid")
-        if not os.path.exists(input_tg_path):
+        if not os.path.exists(input_tg_path): # Check for lowercase .textgrid if .TextGrid not found
             input_tg_path = os.path.join(input_dir, f"{base_name}.textgrid")
         output_tg_path = os.path.join(output_recoded_tg_dir, f"{base_name}_arpabet.TextGrid")
+        
+        # Check if output TG already exists and input TG exists
         if os.path.exists(output_tg_path):
-            print(f"Skipping TextGrid '{base_name}.TextGrid': Recoded TextGrid already exists at '{os.path.basename(output_tg_path)}'.")
+            print(f"Skipping TextGrid '{base_name}': Recoded TextGrid already exists at '{os.path.basename(output_tg_path)}'.")
             processed_tgs_count += 1
+        elif not os.path.exists(input_tg_path):
+            print(f"Warning: No TextGrid found for '{base_name}'. Skipping TextGrid recoding.", file=sys.stderr)
         else:
-            if not os.path.exists(input_tg_path):
-                print(f"Warning: No TextGrid found for '{base_name}'. Skipping TextGrid recoding.", file=sys.stderr)
-            else:
-                process_single_textgrid(input_tg_path, output_tg_path, ipa_to_arpabet_map)
-                processed_tgs_count += 1
+            print(f"Processing TextGrid '{base_name}'...", file=sys.stderr)
+            process_single_textgrid(input_tg_path, output_tg_path, ipa_to_arpabet_map)
+            processed_tgs_count += 1
 
     print(f"Finished recoding {processed_tgs_count} TextGrids for corpus '{corpus}'.")
 
+    # Audio processing remains largely the same
     for base_name in sorted(list(all_basenames)):
         original_mp3_path = os.path.join(input_dir, f"{base_name}.mp3")
         original_wav_path = os.path.join(input_dir, f"{base_name}.wav")
         target_output_wav_path = os.path.join(output_converted_audio_dir, f"{base_name}.wav")
 
         if os.path.exists(target_output_wav_path):
-            print(f"Skipping audio for '{base_name}': Prepared WAV already exists at '{os.path.basename(target_output_wav_path)}'.")
+            # print(f"Skipping audio for '{base_name}': Prepared WAV already exists at '{os.path.basename(target_output_wav_path)}'.")
             processed_audio_count += 1
             continue
 
@@ -336,7 +369,8 @@ for corpus in corpora:
             if convert_or_copy_audio(original_wav_path, target_output_wav_path):
                 processed_audio_count += 1
         else:
-            print(f"Warning: No MP3 or WAV audio found for base name '{base_name}'. Skipping audio processing.", file=sys.stderr)
+            # print(f"Warning: No MP3 or WAV audio found for base name '{base_name}'. Skipping audio processing.", file=sys.stderr)
+            pass # Suppress warning for missing audio if it's expected in some cases
 
     print(f"Finished audio preparation for {processed_audio_count} files in corpus '{corpus}'.")
     print(f"Prepared WAVs are in: {output_converted_audio_dir}")

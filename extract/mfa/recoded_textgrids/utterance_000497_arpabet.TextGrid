@@ -15,27 +15,27 @@ item []:
 			intervals [1]:
 				xmin = 0.0
 				xmax = 0.39
-				text = "'sil"
+				text = "SIL"
 			intervals [2]:
 				xmin = 0.39
 				xmax = 0.96
-				text = "'ɛ.ɕ.l.e.t.ɛ.r"
+				text = "EHɕL.'EYT.EHR"
 			intervals [3]:
 				xmin = 0.96
 				xmax = 1.23
-				text = "'sil"
+				text = "SIL"
 			intervals [4]:
 				xmin = 1.23
 				xmax = 1.9
-				text = "'j.ɑ.tʃ.e.j.k.ʌ.r"
+				text = "J.'AAtʃ.EYJK.AHR"
 			intervals [5]:
 				xmin = 1.9
 				xmax = 2.2
-				text = "v.ɑ.'r.ɑ"
+				text = "V.'AAR.AA"
 			intervals [6]:
 				xmin = 2.2
 				xmax = 2.88
-				text = "y.s.'m.e.s.t"
+				text = "UXSM.'EYST"
 	item [2]:
 		class = "IntervalTier"
 		name = "phones"
@@ -49,7 +49,7 @@ item []:
 			intervals [2]:
 				xmin = 0.39
 				xmax = 0.48
-				text = "EH1 [sidx=1/sN=2/pos=initial/oc=open]"
+				text = "EH0 [sidx=1/sN=3/pos=initial/oc=open]"
 			intervals [3]:
 				xmin = 0.48
 				xmax = 0.6
@@ -61,7 +61,7 @@ item []:
 			intervals [5]:
 				xmin = 0.65
 				xmax = 0.75
-				text = "EY1 [sidx=1/sN=2/pos=initial/oc=open]"
+				text = "EY1 [sidx=2/sN=3/pos=med/oc=open]"
 			intervals [6]:
 				xmin = 0.75
 				xmax = 0.85
@@ -69,7 +69,7 @@ item []:
 			intervals [7]:
 				xmin = 0.85
 				xmax = 0.93
-				text = "EH0 [sidx=2/sN=2/pos=final/oc=closed]"
+				text = "EH0 [sidx=3/sN=3/pos=final/oc=closed]"
 			intervals [8]:
 				xmin = 0.93
 				xmax = 0.96
@@ -85,7 +85,7 @@ item []:
 			intervals [11]:
 				xmin = 1.3
 				xmax = 1.39
-				text = "AA1 [sidx=1/sN=2/pos=initial/oc=closed]"
+				text = "AA0 [sidx=1/sN=3/pos=initial/oc=open]"
 			intervals [12]:
 				xmin = 1.39
 				xmax = 1.51
@@ -93,7 +93,7 @@ item []:
 			intervals [13]:
 				xmin = 1.51
 				xmax = 1.6
-				text = "EY1 [sidx=1/sN=2/pos=initial/oc=closed]"
+				text = "EY1 [sidx=2/sN=3/pos=med/oc=closed]"
 			intervals [14]:
 				xmin = 1.6
 				xmax = 1.64
@@ -105,7 +105,7 @@ item []:
 			intervals [16]:
 				xmin = 1.77
 				xmax = 1.81
-				text = "AH0 [sidx=2/sN=2/pos=final/oc=closed]"
+				text = "AH0 [sidx=3/sN=3/pos=final/oc=closed]"
 			intervals [17]:
 				xmin = 1.81
 				xmax = 1.9

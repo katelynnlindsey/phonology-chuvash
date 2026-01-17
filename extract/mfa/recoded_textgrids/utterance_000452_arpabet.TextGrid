@@ -15,23 +15,23 @@ item []:
 			intervals [1]:
 				xmin = 0.0
 				xmax = 0.29
-				text = "'sil"
+				text = "SIL"
 			intervals [2]:
 				xmin = 0.29
 				xmax = 0.84
-				text = "k.ɑ.'j.ɑ.m.χ.ɑ"
+				text = "K.AAJ.'AAMHH.AA"
 			intervals [3]:
 				xmin = 0.84
 				xmax = 1.02
-				text = "'e.p"
+				text = "'EYP"
 			intervals [4]:
 				xmin = 1.02
 				xmax = 1.49
-				text = "'k.ɑ.ɕ.ɑ.r.ʌ.r"
+				text = "K.'AAɕ.AAR.AHR"
 			intervals [5]:
 				xmin = 1.49
 				xmax = 1.86
-				text = "'sil"
+				text = "SIL"
 	item [2]:
 		class = "IntervalTier"
 		name = "phones"
@@ -49,7 +49,7 @@ item []:
 			intervals [3]:
 				xmin = 0.37
 				xmax = 0.44
-				text = "AA0 [sidx=1/sN=2/pos=initial/oc=open]"
+				text = "AA0 [sidx=1/sN=3/pos=initial/oc=open]"
 			intervals [4]:
 				xmin = 0.44
 				xmax = 0.5
@@ -57,7 +57,7 @@ item []:
 			intervals [5]:
 				xmin = 0.5
 				xmax = 0.56
-				text = "AA1 [sidx=2/sN=2/pos=final/oc=open]"
+				text = "AA0 [sidx=2/sN=3/pos=med/oc=closed]"
 			intervals [6]:
 				xmin = 0.56
 				xmax = 0.63
@@ -65,11 +65,11 @@ item []:
 			intervals [7]:
 				xmin = 0.63
 				xmax = 0.7
-				text = "χ"
+				text = "HH"
 			intervals [8]:
 				xmin = 0.7
 				xmax = 0.84
-				text = "AA1 [sidx=2/sN=2/pos=final/oc=open]"
+				text = "AA1 [sidx=3/sN=3/pos=final/oc=open]"
 			intervals [9]:
 				xmin = 0.84
 				xmax = 0.92
@@ -85,7 +85,7 @@ item []:
 			intervals [12]:
 				xmin = 1.09
 				xmax = 1.14
-				text = "AA1 [sidx=1/sN=2/pos=initial/oc=open]"
+				text = "AA0 [sidx=1/sN=3/pos=initial/oc=open]"
 			intervals [13]:
 				xmin = 1.14
 				xmax = 1.23
@@ -93,7 +93,7 @@ item []:
 			intervals [14]:
 				xmin = 1.23
 				xmax = 1.33
-				text = "AA1 [sidx=1/sN=2/pos=initial/oc=open]"
+				text = "AA1 [sidx=2/sN=3/pos=med/oc=open]"
 			intervals [15]:
 				xmin = 1.33
 				xmax = 1.38
@@ -101,7 +101,7 @@ item []:
 			intervals [16]:
 				xmin = 1.38
 				xmax = 1.45
-				text = "AH0 [sidx=2/sN=2/pos=final/oc=closed]"
+				text = "AH0 [sidx=3/sN=3/pos=final/oc=closed]"
 			intervals [17]:
 				xmin = 1.45
 				xmax = 1.49

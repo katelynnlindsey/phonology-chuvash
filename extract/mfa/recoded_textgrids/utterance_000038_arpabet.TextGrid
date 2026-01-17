@@ -15,79 +15,79 @@ item []:
 			intervals [1]:
 				xmin = 0.0
 				xmax = 0.34
-				text = "'sil"
+				text = "SIL"
 			intervals [2]:
 				xmin = 0.34
 				xmax = 1.04
-				text = "v.i.ɕ.ɛ.m.'k.u.n"
+				text = "V.IYɕ.'EHMK.UWN"
 			intervals [3]:
 				xmin = 1.04
 				xmax = 1.41
-				text = "'sil"
+				text = "SIL"
 			intervals [4]:
 				xmin = 1.41
 				xmax = 2.0
-				text = "j.u.r.ɕ.y.'r.e.n"
+				text = "J.UWRɕ.'UXR.EYN"
 			intervals [5]:
 				xmin = 2.0
 				xmax = 2.31
-				text = "ɕ.i.'n.e"
+				text = "ɕ.'IYN.EY"
 			intervals [6]:
 				xmin = 2.31
 				xmax = 2.41
-				text = "'sil"
+				text = "SIL"
 			intervals [7]:
 				xmin = 2.41
 				xmax = 3.01
-				text = "u.t.'l.ɑ.n.t.ʌ.m"
+				text = "UWTL.'AANT.AHM"
 			intervals [8]:
 				xmin = 3.01
 				xmax = 3.34
-				text = "'t.ɑ"
+				text = "'T.AA"
 			intervals [9]:
 				xmin = 3.34
 				xmax = 3.37
-				text = "'sil"
+				text = "SIL"
 			intervals [10]:
 				xmin = 3.37
 				xmax = 3.75
-				text = "'χ.ɑ.m"
+				text = "'HH.AAM"
 			intervals [11]:
 				xmin = 3.75
 				xmax = 4.28
-				text = "t.ʌ.v.ɑ.n.'s.e.m"
+				text = "T.AHV.'AANS.EYM"
 			intervals [12]:
 				xmin = 4.28
 				xmax = 4.74
-				text = "p.ɑ.t.'n.e"
+				text = "P.'AATN.EY"
 			intervals [13]:
 				xmin = 4.74
 				xmax = 4.92
-				text = "'sil"
+				text = "SIL"
 			intervals [14]:
 				xmin = 4.92
 				xmax = 5.51
-				text = "'χ.u.r.ʌ.n.l.ʌ.χ"
+				text = "'HH.UWR.AHNL.AHHH"
 			intervals [15]:
 				xmin = 5.51
 				xmax = 5.85
-				text = "j.ɑ.l.'n.e"
+				text = "J.'AALN.EY"
 			intervals [16]:
 				xmin = 5.85
 				xmax = 6.36
-				text = "χ.ʌ.n.ɑ.'n.ɑ"
+				text = "HH.AHN.'AAN.AA"
 			intervals [17]:
 				xmin = 6.36
 				xmax = 6.67
-				text = "k.ɑ.j.'s.ɑ"
+				text = "K.'AAJS.AA"
 			intervals [18]:
 				xmin = 6.67
 				xmax = 7.1
-				text = "'k.i.l.t.ɛ.m"
+				text = "'K.IYLT.EHM"
 			intervals [19]:
 				xmin = 7.1
 				xmax = 7.44
-				text = "'sil"
+				text = "SIL"
 	item [2]:
 		class = "IntervalTier"
 		name = "phones"
@@ -105,7 +105,7 @@ item []:
 			intervals [3]:
 				xmin = 0.41
 				xmax = 0.54
-				text = "IY0 [sidx=1/sN=2/pos=initial/oc=closed]"
+				text = "IY0 [sidx=1/sN=3/pos=initial/oc=open]"
 			intervals [4]:
 				xmin = 0.54
 				xmax = 0.62
@@ -113,7 +113,7 @@ item []:
 			intervals [5]:
 				xmin = 0.62
 				xmax = 0.7
-				text = "EH0 [sidx=1/sN=2/pos=initial/oc=closed]"
+				text = "EH0 [sidx=2/sN=3/pos=med/oc=closed]"
 			intervals [6]:
 				xmin = 0.7
 				xmax = 0.79
@@ -125,7 +125,7 @@ item []:
 			intervals [8]:
 				xmin = 0.85
 				xmax = 1.0
-				text = "UW1 [sidx=2/sN=2/pos=final/oc=closed]"
+				text = "UW1 [sidx=3/sN=3/pos=final/oc=closed]"
 			intervals [9]:
 				xmin = 1.0
 				xmax = 1.04
@@ -141,7 +141,7 @@ item []:
 			intervals [12]:
 				xmin = 1.5
 				xmax = 1.57
-				text = "UW0 [sidx=1/sN=2/pos=initial/oc=open]"
+				text = "UW0 [sidx=1/sN=3/pos=initial/oc=open]"
 			intervals [13]:
 				xmin = 1.57
 				xmax = 1.64
@@ -153,7 +153,7 @@ item []:
 			intervals [15]:
 				xmin = 1.73
 				xmax = 1.79
-				text = "UX0 [sidx=1/sN=2/pos=initial/oc=open]"
+				text = "UX0 [sidx=2/sN=3/pos=med/oc=open]"
 			intervals [16]:
 				xmin = 1.79
 				xmax = 1.84
@@ -161,7 +161,7 @@ item []:
 			intervals [17]:
 				xmin = 1.84
 				xmax = 1.93
-				text = "EY1 [sidx=2/sN=2/pos=final/oc=closed]"
+				text = "EY1 [sidx=3/sN=3/pos=final/oc=closed]"
 			intervals [18]:
 				xmin = 1.93
 				xmax = 2.0
@@ -233,7 +233,7 @@ item []:
 			intervals [35]:
 				xmin = 3.37
 				xmax = 3.57
-				text = "χ"
+				text = "HH"
 			intervals [36]:
 				xmin = 3.57
 				xmax = 3.67
@@ -301,7 +301,7 @@ item []:
 			intervals [52]:
 				xmin = 4.92
 				xmax = 5.03
-				text = "χ"
+				text = "HH"
 			intervals [53]:
 				xmin = 5.03
 				xmax = 5.12
@@ -329,7 +329,7 @@ item []:
 			intervals [59]:
 				xmin = 5.4
 				xmax = 5.51
-				text = "χ"
+				text = "HH"
 			intervals [60]:
 				xmin = 5.51
 				xmax = 5.57
@@ -353,7 +353,7 @@ item []:
 			intervals [65]:
 				xmin = 5.85
 				xmax = 5.99
-				text = "χ"
+				text = "HH"
 			intervals [66]:
 				xmin = 5.99
 				xmax = 6.04

@@ -15,35 +15,35 @@ item []:
 			intervals [1]:
 				xmin = 0.0
 				xmax = 0.22
-				text = "'sil"
+				text = "SIL"
 			intervals [2]:
 				xmin = 0.22
 				xmax = 0.42
-				text = "'p.ɛ.r"
+				text = "'P.EHR"
 			intervals [3]:
 				xmin = 0.42
 				xmax = 0.72
-				text = "'v.ʌ.χ.ʌ.t"
+				text = "'V.AHHH.AHT"
 			intervals [4]:
 				xmin = 0.72
 				xmax = 1.12
-				text = "'χ.u.ʃː.i"
+				text = "HH.'UWʃː.IY"
 			intervals [5]:
 				xmin = 1.12
 				xmax = 1.48
-				text = "'n.i.m.ɛ.n"
+				text = "'N.IYM.EHN"
 			intervals [6]:
 				xmin = 1.48
 				xmax = 1.61
-				text = "'t.e"
+				text = "'T.EY"
 			intervals [7]:
 				xmin = 1.61
 				xmax = 2.36
-				text = "t.u.p.ʌ.n.'m.ɑ.r.ɛ"
+				text = "T.UWP.'AHNM.AAR.EH"
 			intervals [8]:
 				xmin = 2.36
 				xmax = 2.76
-				text = "'sil"
+				text = "SIL"
 	item [2]:
 		class = "IntervalTier"
 		name = "phones"
@@ -73,15 +73,15 @@ item []:
 			intervals [6]:
 				xmin = 0.5
 				xmax = 0.55
-				text = "AH1 [sidx=1/sN=1/pos=initial/oc=closed]"
+				text = "AH1 [sidx=1/sN=2/pos=initial/oc=open]"
 			intervals [7]:
 				xmin = 0.55
 				xmax = 0.62
-				text = "χ"
+				text = "HH"
 			intervals [8]:
 				xmin = 0.62
 				xmax = 0.68
-				text = "AH1 [sidx=1/sN=1/pos=initial/oc=closed]"
+				text = "AH0 [sidx=2/sN=2/pos=final/oc=closed]"
 			intervals [9]:
 				xmin = 0.68
 				xmax = 0.72
@@ -89,11 +89,11 @@ item []:
 			intervals [10]:
 				xmin = 0.72
 				xmax = 0.83
-				text = "χ"
+				text = "HH"
 			intervals [11]:
 				xmin = 0.83
 				xmax = 0.91
-				text = "UW1 [sidx=1/sN=1/pos=initial/oc=open]"
+				text = "UW0 [sidx=1/sN=2/pos=initial/oc=open]"
 			intervals [12]:
 				xmin = 0.91
 				xmax = 1.05
@@ -101,7 +101,7 @@ item []:
 			intervals [13]:
 				xmin = 1.05
 				xmax = 1.12
-				text = "IY1 [sidx=1/sN=1/pos=initial/oc=open]"
+				text = "IY1 [sidx=2/sN=2/pos=final/oc=open]"
 			intervals [14]:
 				xmin = 1.12
 				xmax = 1.21

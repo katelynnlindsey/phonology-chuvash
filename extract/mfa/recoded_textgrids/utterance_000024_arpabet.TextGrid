@@ -15,35 +15,35 @@ item []:
 			intervals [1]:
 				xmin = 0.0
 				xmax = 0.32
-				text = "'sil"
+				text = "SIL"
 			intervals [2]:
 				xmin = 0.32
 				xmax = 0.57
-				text = "'χ.ʌ.ʃ"
+				text = "'HH.AHSH"
 			intervals [3]:
 				xmin = 0.57
 				xmax = 1.06
-				text = "p.ɛ.r.i.'s.e.m"
+				text = "P.EHR.'IYS.EYM"
 			intervals [4]:
 				xmin = 1.06
 				xmax = 1.42
-				text = "k.u.n.'t.ɑ"
+				text = "K.'UWNT.AA"
 			intervals [5]:
 				xmin = 1.42
 				xmax = 1.74
-				text = "'u.n.s.ʌ.r"
+				text = "'UWNS.AHR"
 			intervals [6]:
 				xmin = 1.74
 				xmax = 2.1
-				text = "'p.i.t.ɛ"
+				text = "'P.IYT.EH"
 			intervals [7]:
 				xmin = 2.1
 				xmax = 3.07
-				text = "t.u.n.'s.ʌ.χ.l.ɑ.ɕː.ɛ"
+				text = "T.UWNS.'AHHHL.AAɕː.EH"
 			intervals [8]:
 				xmin = 3.07
 				xmax = 3.12
-				text = "'sil"
+				text = "SIL"
 	item [2]:
 		class = "IntervalTier"
 		name = "phones"
@@ -57,7 +57,7 @@ item []:
 			intervals [2]:
 				xmin = 0.32
 				xmax = 0.41
-				text = "χ"
+				text = "HH"
 			intervals [3]:
 				xmin = 0.41
 				xmax = 0.47
@@ -157,7 +157,7 @@ item []:
 			intervals [27]:
 				xmin = 2.2
 				xmax = 2.26
-				text = "UW0 [sidx=1/sN=2/pos=initial/oc=closed]"
+				text = "UW0 [sidx=1/sN=4/pos=initial/oc=closed]"
 			intervals [28]:
 				xmin = 2.26
 				xmax = 2.32
@@ -169,11 +169,11 @@ item []:
 			intervals [30]:
 				xmin = 2.39
 				xmax = 2.44
-				text = "AH1 [sidx=2/sN=2/pos=final/oc=open]"
+				text = "AH0 [sidx=2/sN=4/pos=med/oc=closed]"
 			intervals [31]:
 				xmin = 2.44
 				xmax = 2.53
-				text = "χ"
+				text = "HH"
 			intervals [32]:
 				xmin = 2.53
 				xmax = 2.59
@@ -181,7 +181,7 @@ item []:
 			intervals [33]:
 				xmin = 2.59
 				xmax = 2.66
-				text = "AA1 [sidx=2/sN=2/pos=final/oc=open]"
+				text = "AA1 [sidx=3/sN=4/pos=med/oc=open]"
 			intervals [34]:
 				xmin = 2.66
 				xmax = 2.83
@@ -189,7 +189,7 @@ item []:
 			intervals [35]:
 				xmin = 2.83
 				xmax = 3.07
-				text = "EH1 [sidx=2/sN=2/pos=final/oc=open]"
+				text = "EH0 [sidx=4/sN=4/pos=final/oc=open]"
 			intervals [36]:
 				xmin = 3.07
 				xmax = 3.12

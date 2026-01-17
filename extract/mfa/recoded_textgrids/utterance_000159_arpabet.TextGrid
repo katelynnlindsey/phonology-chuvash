@@ -15,55 +15,55 @@ item []:
 			intervals [1]:
 				xmin = 0.0
 				xmax = 0.41
-				text = "'sil"
+				text = "SIL"
 			intervals [2]:
 				xmin = 0.41
 				xmax = 0.98
-				text = "χ.ʌ.j.'s.e.n"
+				text = "HH.'AHJS.EYN"
 			intervals [3]:
 				xmin = 0.98
 				xmax = 1.05
-				text = "'sil"
+				text = "SIL"
 			intervals [4]:
 				xmin = 1.05
 				xmax = 1.99
-				text = "'spn"
+				text = "spn"
 			intervals [5]:
 				xmin = 1.99
 				xmax = 2.3
-				text = "'t.u.r.t.n.ʌ"
+				text = "'T.UWRTN.AH"
 			intervals [6]:
 				xmin = 2.3
 				xmax = 2.83
-				text = "'tʃ.u.χ.n.e"
+				text = "tʃ.'UWHHN.EY"
 			intervals [7]:
 				xmin = 2.83
 				xmax = 3.28
-				text = "t.e.m.'l.e"
+				text = "T.'EYML.EY"
 			intervals [8]:
 				xmin = 3.28
 				xmax = 4.22
-				text = "χ.ɑ.v.ɑ.s.'l.ʌ.χ.p.ɑ"
+				text = "HH.AAV.AASL.'AHHHP.AA"
 			intervals [9]:
 				xmin = 4.22
 				xmax = 4.56
-				text = "'sil"
+				text = "SIL"
 			intervals [10]:
 				xmin = 4.56
 				xmax = 5.1
-				text = "ɯ.r.'l.ʌ.χ.p.ɑ"
+				text = "IXRL.AHHHP.'AA"
 			intervals [11]:
 				xmin = 5.1
 				xmax = 5.79
-				text = "k.i.l.e.'n.e.ɕː.ɛ"
+				text = "K.IYL.'EYN.EYɕː.EH"
 			intervals [12]:
 				xmin = 5.79
 				xmax = 6.19
-				text = "'t.e.j.ɛ.n"
+				text = "'T.EYJ.EHN"
 			intervals [13]:
 				xmin = 6.19
 				xmax = 6.42
-				text = "'sil"
+				text = "SIL"
 	item [2]:
 		class = "IntervalTier"
 		name = "phones"
@@ -77,7 +77,7 @@ item []:
 			intervals [2]:
 				xmin = 0.41
 				xmax = 0.52
-				text = "χ"
+				text = "HH"
 			intervals [3]:
 				xmin = 0.52
 				xmax = 0.61
@@ -137,11 +137,11 @@ item []:
 			intervals [17]:
 				xmin = 2.4
 				xmax = 2.47
-				text = "UW1 [sidx=1/sN=1/pos=initial/oc=open]"
+				text = "UW0 [sidx=1/sN=2/pos=initial/oc=closed]"
 			intervals [18]:
 				xmin = 2.47
 				xmax = 2.57
-				text = "χ"
+				text = "HH"
 			intervals [19]:
 				xmin = 2.57
 				xmax = 2.63
@@ -149,7 +149,7 @@ item []:
 			intervals [20]:
 				xmin = 2.63
 				xmax = 2.83
-				text = "EY1 [sidx=1/sN=1/pos=initial/oc=open]"
+				text = "EY1 [sidx=2/sN=2/pos=final/oc=open]"
 			intervals [21]:
 				xmin = 2.83
 				xmax = 3.01
@@ -173,11 +173,11 @@ item []:
 			intervals [26]:
 				xmin = 3.28
 				xmax = 3.38
-				text = "χ"
+				text = "HH"
 			intervals [27]:
 				xmin = 3.38
 				xmax = 3.43
-				text = "AA0 [sidx=1/sN=3/pos=initial/oc=open]"
+				text = "AA0 [sidx=1/sN=4/pos=initial/oc=open]"
 			intervals [28]:
 				xmin = 3.43
 				xmax = 3.5
@@ -185,7 +185,7 @@ item []:
 			intervals [29]:
 				xmin = 3.5
 				xmax = 3.59
-				text = "AA0 [sidx=2/sN=3/pos=med/oc=closed]"
+				text = "AA0 [sidx=2/sN=4/pos=med/oc=closed]"
 			intervals [30]:
 				xmin = 3.59
 				xmax = 3.68
@@ -197,11 +197,11 @@ item []:
 			intervals [32]:
 				xmin = 3.73
 				xmax = 3.78
-				text = "AH1 [sidx=3/sN=3/pos=final/oc=open]"
+				text = "AH0 [sidx=3/sN=4/pos=med/oc=closed]"
 			intervals [33]:
 				xmin = 3.78
 				xmax = 3.9
-				text = "χ"
+				text = "HH"
 			intervals [34]:
 				xmin = 3.9
 				xmax = 3.96
@@ -209,7 +209,7 @@ item []:
 			intervals [35]:
 				xmin = 3.96
 				xmax = 4.22
-				text = "AA1 [sidx=3/sN=3/pos=final/oc=open]"
+				text = "AA1 [sidx=4/sN=4/pos=final/oc=open]"
 			intervals [36]:
 				xmin = 4.22
 				xmax = 4.56
@@ -217,7 +217,7 @@ item []:
 			intervals [37]:
 				xmin = 4.56
 				xmax = 4.67
-				text = "IX0 [sidx=1/sN=2/pos=initial/oc=closed]"
+				text = "IX0 [sidx=1/sN=3/pos=initial/oc=closed]"
 			intervals [38]:
 				xmin = 4.67
 				xmax = 4.72
@@ -229,11 +229,11 @@ item []:
 			intervals [40]:
 				xmin = 4.8
 				xmax = 4.85
-				text = "AH1 [sidx=2/sN=2/pos=final/oc=open]"
+				text = "AH0 [sidx=2/sN=3/pos=med/oc=closed]"
 			intervals [41]:
 				xmin = 4.85
 				xmax = 4.95
-				text = "χ"
+				text = "HH"
 			intervals [42]:
 				xmin = 4.95
 				xmax = 5.01
@@ -241,7 +241,7 @@ item []:
 			intervals [43]:
 				xmin = 5.01
 				xmax = 5.1
-				text = "AA1 [sidx=2/sN=2/pos=final/oc=open]"
+				text = "AA1 [sidx=3/sN=3/pos=final/oc=open]"
 			intervals [44]:
 				xmin = 5.1
 				xmax = 5.21
@@ -249,7 +249,7 @@ item []:
 			intervals [45]:
 				xmin = 5.21
 				xmax = 5.27
-				text = "IY0 [sidx=1/sN=3/pos=initial/oc=open]"
+				text = "IY0 [sidx=1/sN=4/pos=initial/oc=open]"
 			intervals [46]:
 				xmin = 5.27
 				xmax = 5.32
@@ -257,7 +257,7 @@ item []:
 			intervals [47]:
 				xmin = 5.32
 				xmax = 5.4
-				text = "EY0 [sidx=2/sN=3/pos=med/oc=open]"
+				text = "EY0 [sidx=2/sN=4/pos=med/oc=open]"
 			intervals [48]:
 				xmin = 5.4
 				xmax = 5.49
@@ -265,7 +265,7 @@ item []:
 			intervals [49]:
 				xmin = 5.49
 				xmax = 5.56
-				text = "EY1 [sidx=3/sN=3/pos=final/oc=open]"
+				text = "EY1 [sidx=3/sN=4/pos=med/oc=open]"
 			intervals [50]:
 				xmin = 5.56
 				xmax = 5.7
@@ -273,7 +273,7 @@ item []:
 			intervals [51]:
 				xmin = 5.7
 				xmax = 5.79
-				text = "EH1 [sidx=3/sN=3/pos=final/oc=open]"
+				text = "EH0 [sidx=4/sN=4/pos=final/oc=open]"
 			intervals [52]:
 				xmin = 5.79
 				xmax = 5.86

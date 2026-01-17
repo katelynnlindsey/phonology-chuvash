@@ -15,51 +15,51 @@ item []:
 			intervals [1]:
 				xmin = 0.0
 				xmax = 0.41
-				text = "'sil"
+				text = "SIL"
 			intervals [2]:
 				xmin = 0.41
 				xmax = 1.08
-				text = "t.ɛ.r.ɛ.sː.i.'p.e"
+				text = "T.EHR.EHS.'IYP.EY"
 			intervals [3]:
 				xmin = 1.08
 				xmax = 1.38
-				text = "'sil"
+				text = "SIL"
 			intervals [4]:
 				xmin = 1.38
 				xmax = 1.79
-				text = "'v.ɑ.sː.ɑ.n"
+				text = "V.'AAS.AAN"
 			intervals [5]:
 				xmin = 1.79
 				xmax = 2.17
-				text = "'χ.ʌ.j.ɛ.n"
+				text = "'HH.AHJ.EHN"
 			intervals [6]:
 				xmin = 2.17
 				xmax = 2.35
-				text = "'t.e"
+				text = "'T.EY"
 			intervals [7]:
 				xmin = 2.35
 				xmax = 2.81
-				text = "'tʃ.ʌ.n.tʃ.ʌ.n"
+				text = "'tʃ.AHNtʃ.AHN"
 			intervals [8]:
 				xmin = 2.81
 				xmax = 3.39
-				text = "p.u.r.'n.ʌ.ɕ.r.ɑ.n"
+				text = "P.UWRN.'AHɕR.AAN"
 			intervals [9]:
 				xmin = 3.39
 				xmax = 3.53
-				text = "'sil"
+				text = "SIL"
 			intervals [10]:
 				xmin = 3.53
 				xmax = 3.87
-				text = "j.u.'l.ɑ.s"
+				text = "J.'UWL.AAS"
 			intervals [11]:
 				xmin = 3.87
 				xmax = 4.34
-				text = "k.i.l.'m.e.s.t"
+				text = "K.'IYLM.EYST"
 			intervals [12]:
 				xmin = 4.34
 				xmax = 4.8
-				text = "'sil"
+				text = "SIL"
 	item [2]:
 		class = "IntervalTier"
 		name = "phones"
@@ -77,7 +77,7 @@ item []:
 			intervals [3]:
 				xmin = 0.48
 				xmax = 0.54
-				text = "EH0 [sidx=1/sN=3/pos=initial/oc=open]"
+				text = "EH0 [sidx=1/sN=4/pos=initial/oc=open]"
 			intervals [4]:
 				xmin = 0.54
 				xmax = 0.6
@@ -85,15 +85,15 @@ item []:
 			intervals [5]:
 				xmin = 0.6
 				xmax = 0.68
-				text = "EH0 [sidx=2/sN=3/pos=med/oc=open]"
+				text = "EH0 [sidx=2/sN=4/pos=med/oc=open]"
 			intervals [6]:
 				xmin = 0.68
 				xmax = 0.8
-				text = "sː"
+				text = "S"
 			intervals [7]:
 				xmin = 0.8
 				xmax = 0.87
-				text = "IY0 [sidx=2/sN=3/pos=med/oc=open]"
+				text = "IY0 [sidx=3/sN=4/pos=med/oc=open]"
 			intervals [8]:
 				xmin = 0.87
 				xmax = 0.94
@@ -101,7 +101,7 @@ item []:
 			intervals [9]:
 				xmin = 0.94
 				xmax = 1.08
-				text = "EY1 [sidx=3/sN=3/pos=final/oc=open]"
+				text = "EY1 [sidx=4/sN=4/pos=final/oc=open]"
 			intervals [10]:
 				xmin = 1.08
 				xmax = 1.38
@@ -113,15 +113,15 @@ item []:
 			intervals [12]:
 				xmin = 1.41
 				xmax = 1.47
-				text = "AA1 [sidx=1/sN=1/pos=initial/oc=closed]"
+				text = "AA0 [sidx=1/sN=2/pos=initial/oc=open]"
 			intervals [13]:
 				xmin = 1.47
 				xmax = 1.61
-				text = "sː"
+				text = "S"
 			intervals [14]:
 				xmin = 1.61
 				xmax = 1.71
-				text = "AA1 [sidx=1/sN=1/pos=initial/oc=closed]"
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=closed]"
 			intervals [15]:
 				xmin = 1.71
 				xmax = 1.79
@@ -129,7 +129,7 @@ item []:
 			intervals [16]:
 				xmin = 1.79
 				xmax = 1.89
-				text = "χ"
+				text = "HH"
 			intervals [17]:
 				xmin = 1.89
 				xmax = 1.97
@@ -161,7 +161,7 @@ item []:
 			intervals [24]:
 				xmin = 2.46
 				xmax = 2.51
-				text = "AH1 [sidx=1/sN=1/pos=initial/oc=closed]"
+				text = "AH1 [sidx=1/sN=2/pos=initial/oc=open]"
 			intervals [25]:
 				xmin = 2.51
 				xmax = 2.6
@@ -173,7 +173,7 @@ item []:
 			intervals [27]:
 				xmin = 2.66
 				xmax = 2.7
-				text = "AH1 [sidx=1/sN=1/pos=initial/oc=closed]"
+				text = "AH0 [sidx=2/sN=2/pos=final/oc=closed]"
 			intervals [28]:
 				xmin = 2.7
 				xmax = 2.81
@@ -185,7 +185,7 @@ item []:
 			intervals [30]:
 				xmin = 2.87
 				xmax = 2.92
-				text = "UW0 [sidx=1/sN=2/pos=initial/oc=closed]"
+				text = "UW0 [sidx=1/sN=3/pos=initial/oc=closed]"
 			intervals [31]:
 				xmin = 2.92
 				xmax = 2.97
@@ -197,7 +197,7 @@ item []:
 			intervals [33]:
 				xmin = 3.02
 				xmax = 3.07
-				text = "AH1 [sidx=2/sN=2/pos=final/oc=closed]"
+				text = "AH0 [sidx=2/sN=3/pos=med/oc=open]"
 			intervals [34]:
 				xmin = 3.07
 				xmax = 3.19
@@ -209,7 +209,7 @@ item []:
 			intervals [36]:
 				xmin = 3.25
 				xmax = 3.34
-				text = "AA1 [sidx=2/sN=2/pos=final/oc=closed]"
+				text = "AA1 [sidx=3/sN=3/pos=final/oc=closed]"
 			intervals [37]:
 				xmin = 3.34
 				xmax = 3.39

@@ -15,35 +15,35 @@ item []:
 			intervals [1]:
 				xmin = 0.0
 				xmax = 0.32
-				text = "'sil"
+				text = "SIL"
 			intervals [2]:
 				xmin = 0.32
 				xmax = 0.84
-				text = "tʃ.ɛ.r.e.'r.e"
+				text = "tʃ.EHR.'EYR.EY"
 			intervals [3]:
 				xmin = 0.84
 				xmax = 1.26
-				text = "v.ɛ.'s.e.m"
+				text = "V.'EHS.EYM"
 			intervals [4]:
 				xmin = 1.26
 				xmax = 1.29
-				text = "'sil"
+				text = "SIL"
 			intervals [5]:
 				xmin = 1.29
 				xmax = 1.82
-				text = "u.j.r.ʌ.l.'s.ɑ"
+				text = "UWJR.AHLS.'AA"
 			intervals [6]:
 				xmin = 1.82
 				xmax = 2.29
-				text = "k.ɑ.'j.ɑ.sː.ɑ"
+				text = "K.AAJ.'AAS.AA"
 			intervals [7]:
 				xmin = 2.29
 				xmax = 2.7
-				text = "'k.ɛ.ts.e"
+				text = "K.'EHts.EY"
 			intervals [8]:
 				xmin = 2.7
 				xmax = 3.12
-				text = "'sil"
+				text = "SIL"
 	item [2]:
 		class = "IntervalTier"
 		name = "phones"
@@ -137,7 +137,7 @@ item []:
 			intervals [22]:
 				xmin = 1.89
 				xmax = 1.96
-				text = "AA0 [sidx=1/sN=2/pos=initial/oc=open]"
+				text = "AA0 [sidx=1/sN=3/pos=initial/oc=open]"
 			intervals [23]:
 				xmin = 1.96
 				xmax = 1.99
@@ -145,15 +145,15 @@ item []:
 			intervals [24]:
 				xmin = 1.99
 				xmax = 2.07
-				text = "AA1 [sidx=2/sN=2/pos=final/oc=open]"
+				text = "AA0 [sidx=2/sN=3/pos=med/oc=open]"
 			intervals [25]:
 				xmin = 2.07
 				xmax = 2.2
-				text = "sː"
+				text = "S"
 			intervals [26]:
 				xmin = 2.2
 				xmax = 2.29
-				text = "AA1 [sidx=2/sN=2/pos=final/oc=open]"
+				text = "AA1 [sidx=3/sN=3/pos=final/oc=open]"
 			intervals [27]:
 				xmin = 2.29
 				xmax = 2.36
@@ -161,7 +161,7 @@ item []:
 			intervals [28]:
 				xmin = 2.36
 				xmax = 2.42
-				text = "EH1 [sidx=1/sN=1/pos=initial/oc=open]"
+				text = "EH0 [sidx=1/sN=2/pos=initial/oc=open]"
 			intervals [29]:
 				xmin = 2.42
 				xmax = 2.58
@@ -169,7 +169,7 @@ item []:
 			intervals [30]:
 				xmin = 2.58
 				xmax = 2.7
-				text = "EY1 [sidx=1/sN=1/pos=initial/oc=open]"
+				text = "EY1 [sidx=2/sN=2/pos=final/oc=open]"
 			intervals [31]:
 				xmin = 2.7
 				xmax = 3.12
