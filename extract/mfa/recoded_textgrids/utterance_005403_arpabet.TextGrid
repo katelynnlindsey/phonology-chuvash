@@ -1,0 +1,96 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 1.86
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 1.86
+		intervals: size = 7
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.03
+				text = "'sil"
+			intervals [2]:
+				xmin = 0.03
+				xmax = 0.37
+				text = "ʃ.ʌ.'p.ɑ.χ"
+			intervals [3]:
+				xmin = 0.37
+				xmax = 0.42
+				text = "'sil"
+			intervals [4]:
+				xmin = 0.42
+				xmax = 0.95
+				text = "'spn"
+			intervals [5]:
+				xmin = 0.95
+				xmax = 0.99
+				text = "'sil"
+			intervals [6]:
+				xmin = 0.99
+				xmax = 1.27
+				text = "'χ.ɑ"
+			intervals [7]:
+				xmin = 1.27
+				xmax = 1.86
+				text = "'sil"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 1.86
+		intervals: size = 12
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.03
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.03
+				xmax = 0.11
+				text = "SH"
+			intervals [3]:
+				xmin = 0.11
+				xmax = 0.18
+				text = "AH0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [4]:
+				xmin = 0.18
+				xmax = 0.24
+				text = "P"
+			intervals [5]:
+				xmin = 0.24
+				xmax = 0.33
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [6]:
+				xmin = 0.33
+				xmax = 0.37
+				text = "χ"
+			intervals [7]:
+				xmin = 0.37
+				xmax = 0.42
+				text = "SIL"
+			intervals [8]:
+				xmin = 0.42
+				xmax = 0.95
+				text = "spn"
+			intervals [9]:
+				xmin = 0.95
+				xmax = 0.99
+				text = "SIL"
+			intervals [10]:
+				xmin = 0.99
+				xmax = 1.05
+				text = "χ"
+			intervals [11]:
+				xmin = 1.05
+				xmax = 1.27
+				text = "AA1 [sidx=1/sN=1/pos=initial/oc=open]"
+			intervals [12]:
+				xmin = 1.27
+				xmax = 1.86
+				text = "SIL"
