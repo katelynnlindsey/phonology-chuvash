@@ -1,0 +1,116 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 2.04
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 2.04
+		intervals: size = 6
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.57
+				text = "'M.EHN"
+			intervals [2]:
+				xmin = 0.57
+				xmax = 0.79
+				text = "'SH.UWT"
+			intervals [3]:
+				xmin = 0.79
+				xmax = 1.19
+				text = "'T.IXTR.AHR"
+			intervals [4]:
+				xmin = 1.19
+				xmax = 1.53
+				text = "EYS.'IYR"
+			intervals [5]:
+				xmin = 1.53
+				xmax = 1.74
+				text = "'EY"
+			intervals [6]:
+				xmin = 1.74
+				xmax = 2.04
+				text = "SIL"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 2.04
+		intervals: size = 18
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.43
+				text = "M"
+			intervals [2]:
+				xmin = 0.43
+				xmax = 0.5
+				text = "EH1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [3]:
+				xmin = 0.5
+				xmax = 0.57
+				text = "N"
+			intervals [4]:
+				xmin = 0.57
+				xmax = 0.65
+				text = "SH"
+			intervals [5]:
+				xmin = 0.65
+				xmax = 0.7
+				text = "UW1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [6]:
+				xmin = 0.7
+				xmax = 0.79
+				text = "T"
+			intervals [7]:
+				xmin = 0.79
+				xmax = 0.84
+				text = "T"
+			intervals [8]:
+				xmin = 0.84
+				xmax = 0.91
+				text = "IX1 [sidx=1/sN=2/pos=initial/oc=closed]"
+			intervals [9]:
+				xmin = 0.91
+				xmax = 1.02
+				text = "T"
+			intervals [10]:
+				xmin = 1.02
+				xmax = 1.07
+				text = "R"
+			intervals [11]:
+				xmin = 1.07
+				xmax = 1.13
+				text = "AH0 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [12]:
+				xmin = 1.13
+				xmax = 1.19
+				text = "R"
+			intervals [13]:
+				xmin = 1.19
+				xmax = 1.32
+				text = "EY0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [14]:
+				xmin = 1.32
+				xmax = 1.4
+				text = "S"
+			intervals [15]:
+				xmin = 1.4
+				xmax = 1.49
+				text = "IY1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [16]:
+				xmin = 1.49
+				xmax = 1.53
+				text = "R"
+			intervals [17]:
+				xmin = 1.53
+				xmax = 1.74
+				text = "EY1 [sidx=1/sN=1/pos=initial/oc=open]"
+			intervals [18]:
+				xmin = 1.74
+				xmax = 2.04
+				text = "SIL"

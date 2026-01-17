@@ -1,0 +1,96 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 1.74
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 1.74
+		intervals: size = 6
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.06
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.06
+				xmax = 0.36
+				text = "AHN.'AA"
+			intervals [3]:
+				xmin = 0.36
+				xmax = 0.59
+				text = "spn"
+			intervals [4]:
+				xmin = 0.59
+				xmax = 0.99
+				text = "'J.AAT"
+			intervals [5]:
+				xmin = 0.99
+				xmax = 1.69
+				text = "'HH.UWN.AH"
+			intervals [6]:
+				xmin = 1.69
+				xmax = 1.74
+				text = "SIL"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 1.74
+		intervals: size = 13
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.06
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.06
+				xmax = 0.15
+				text = "AH0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [3]:
+				xmin = 0.15
+				xmax = 0.23
+				text = "N"
+			intervals [4]:
+				xmin = 0.23
+				xmax = 0.36
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=open]"
+			intervals [5]:
+				xmin = 0.36
+				xmax = 0.59
+				text = "spn"
+			intervals [6]:
+				xmin = 0.59
+				xmax = 0.83
+				text = "J"
+			intervals [7]:
+				xmin = 0.83
+				xmax = 0.92
+				text = "AA1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [8]:
+				xmin = 0.92
+				xmax = 0.99
+				text = "T"
+			intervals [9]:
+				xmin = 0.99
+				xmax = 1.09
+				text = "HH"
+			intervals [10]:
+				xmin = 1.09
+				xmax = 1.17
+				text = "UW1 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [11]:
+				xmin = 1.17
+				xmax = 1.23
+				text = "N"
+			intervals [12]:
+				xmin = 1.23
+				xmax = 1.69
+				text = "AH0 [sidx=2/sN=2/pos=final/oc=open]"
+			intervals [13]:
+				xmin = 1.69
+				xmax = 1.74
+				text = "SIL"
