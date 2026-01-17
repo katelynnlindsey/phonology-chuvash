@@ -1,0 +1,108 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 1.5
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 1.5
+		intervals: size = 6
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.27
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.27
+				xmax = 0.63
+				text = "AAHH.'AAL"
+			intervals [3]:
+				xmin = 0.63
+				xmax = 0.76
+				text = "'T.EY"
+			intervals [4]:
+				xmin = 0.76
+				xmax = 0.97
+				text = "'HH.AHJ"
+			intervals [5]:
+				xmin = 0.97
+				xmax = 1.22
+				text = "'P.EYK"
+			intervals [6]:
+				xmin = 1.22
+				xmax = 1.5
+				text = "'M.AAR"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 1.5
+		intervals: size = 16
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.27
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.27
+				xmax = 0.4
+				text = "AA0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [3]:
+				xmin = 0.4
+				xmax = 0.49
+				text = "HH"
+			intervals [4]:
+				xmin = 0.49
+				xmax = 0.57
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [5]:
+				xmin = 0.57
+				xmax = 0.63
+				text = "L"
+			intervals [6]:
+				xmin = 0.63
+				xmax = 0.69
+				text = "T"
+			intervals [7]:
+				xmin = 0.69
+				xmax = 0.76
+				text = "EY1 [sidx=1/sN=1/pos=initial/oc=open]"
+			intervals [8]:
+				xmin = 0.76
+				xmax = 0.85
+				text = "HH"
+			intervals [9]:
+				xmin = 0.85
+				xmax = 0.89
+				text = "AH1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [10]:
+				xmin = 0.89
+				xmax = 0.97
+				text = "J"
+			intervals [11]:
+				xmin = 0.97
+				xmax = 1.01
+				text = "P"
+			intervals [12]:
+				xmin = 1.01
+				xmax = 1.1
+				text = "EY1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [13]:
+				xmin = 1.1
+				xmax = 1.22
+				text = "K"
+			intervals [14]:
+				xmin = 1.22
+				xmax = 1.27
+				text = "M"
+			intervals [15]:
+				xmin = 1.27
+				xmax = 1.36
+				text = "AA1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [16]:
+				xmin = 1.36
+				xmax = 1.5
+				text = "R"
