@@ -1,0 +1,116 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 1.8
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 1.8
+		intervals: size = 6
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.33
+				text = "'sil"
+			intervals [2]:
+				xmin = 0.33
+				xmax = 0.79
+				text = "s.tʃ.e.t.'r.ɑ"
+			intervals [3]:
+				xmin = 0.79
+				xmax = 0.82
+				text = "'sil"
+			intervals [4]:
+				xmin = 0.82
+				xmax = 1.13
+				text = "'m.i.ɕ.e"
+			intervals [5]:
+				xmin = 1.13
+				xmax = 1.47
+				text = "'t.e.n.k.ɛ"
+			intervals [6]:
+				xmin = 1.47
+				xmax = 1.8
+				text = "'sil"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 1.8
+		intervals: size = 18
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.33
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.33
+				xmax = 0.41
+				text = "S"
+			intervals [3]:
+				xmin = 0.41
+				xmax = 0.48
+				text = "tʃ"
+			intervals [4]:
+				xmin = 0.48
+				xmax = 0.56
+				text = "EY0 [sidx=1/sN=2/pos=initial/oc=closed]"
+			intervals [5]:
+				xmin = 0.56
+				xmax = 0.67
+				text = "T"
+			intervals [6]:
+				xmin = 0.67
+				xmax = 0.72
+				text = "R"
+			intervals [7]:
+				xmin = 0.72
+				xmax = 0.79
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=open]"
+			intervals [8]:
+				xmin = 0.79
+				xmax = 0.82
+				text = "SIL"
+			intervals [9]:
+				xmin = 0.82
+				xmax = 0.89
+				text = "M"
+			intervals [10]:
+				xmin = 0.89
+				xmax = 0.94
+				text = "IY1 [sidx=1/sN=1/pos=initial/oc=open]"
+			intervals [11]:
+				xmin = 0.94
+				xmax = 1.04
+				text = "ɕ"
+			intervals [12]:
+				xmin = 1.04
+				xmax = 1.13
+				text = "EY1 [sidx=1/sN=1/pos=initial/oc=open]"
+			intervals [13]:
+				xmin = 1.13
+				xmax = 1.2
+				text = "T"
+			intervals [14]:
+				xmin = 1.2
+				xmax = 1.29
+				text = "EY1 [sidx=1/sN=2/pos=initial/oc=closed]"
+			intervals [15]:
+				xmin = 1.29
+				xmax = 1.37
+				text = "N"
+			intervals [16]:
+				xmin = 1.37
+				xmax = 1.43
+				text = "K"
+			intervals [17]:
+				xmin = 1.43
+				xmax = 1.47
+				text = "EH0 [sidx=2/sN=2/pos=final/oc=open]"
+			intervals [18]:
+				xmin = 1.47
+				xmax = 1.8
+				text = "SIL"
