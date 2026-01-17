@@ -1,0 +1,204 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 3.06
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 3.06
+		intervals: size = 9
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.13
+				text = "'sil"
+			intervals [2]:
+				xmin = 0.13
+				xmax = 0.54
+				text = "'ɑ.n.tʃ.ɑ.χ"
+			intervals [3]:
+				xmin = 0.54
+				xmax = 0.7
+				text = "'v.ʌ.l"
+			intervals [4]:
+				xmin = 0.7
+				xmax = 0.99
+				text = "'ɕ.ɑ.v"
+			intervals [5]:
+				xmin = 0.99
+				xmax = 1.21
+				text = "'tʃ.i.r"
+			intervals [6]:
+				xmin = 1.21
+				xmax = 1.79
+				text = "p.ɑ.lː.i.'s.e.m"
+			intervals [7]:
+				xmin = 1.79
+				xmax = 2.24
+				text = "m.ɛ.n.l.i.'n.e"
+			intervals [8]:
+				xmin = 2.24
+				xmax = 2.99
+				text = "p.ɛ.l.'m.e.s.t"
+			intervals [9]:
+				xmin = 2.99
+				xmax = 3.06
+				text = "'sil"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 3.06
+		intervals: size = 37
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.13
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.13
+				xmax = 0.24
+				text = "AA1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [3]:
+				xmin = 0.24
+				xmax = 0.3
+				text = "N"
+			intervals [4]:
+				xmin = 0.3
+				xmax = 0.37
+				text = "tʃ"
+			intervals [5]:
+				xmin = 0.37
+				xmax = 0.45
+				text = "AA1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [6]:
+				xmin = 0.45
+				xmax = 0.54
+				text = "χ"
+			intervals [7]:
+				xmin = 0.54
+				xmax = 0.59
+				text = "V"
+			intervals [8]:
+				xmin = 0.59
+				xmax = 0.66
+				text = "AH1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [9]:
+				xmin = 0.66
+				xmax = 0.7
+				text = "L"
+			intervals [10]:
+				xmin = 0.7
+				xmax = 0.84
+				text = "ɕ"
+			intervals [11]:
+				xmin = 0.84
+				xmax = 0.93
+				text = "AA1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [12]:
+				xmin = 0.93
+				xmax = 0.99
+				text = "V"
+			intervals [13]:
+				xmin = 0.99
+				xmax = 1.09
+				text = "tʃ"
+			intervals [14]:
+				xmin = 1.09
+				xmax = 1.17
+				text = "IY1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [15]:
+				xmin = 1.17
+				xmax = 1.21
+				text = "R"
+			intervals [16]:
+				xmin = 1.21
+				xmax = 1.31
+				text = "P"
+			intervals [17]:
+				xmin = 1.31
+				xmax = 1.41
+				text = "AA0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [18]:
+				xmin = 1.41
+				xmax = 1.47
+				text = "lː"
+			intervals [19]:
+				xmin = 1.47
+				xmax = 1.55
+				text = "IY0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [20]:
+				xmin = 1.55
+				xmax = 1.64
+				text = "S"
+			intervals [21]:
+				xmin = 1.64
+				xmax = 1.72
+				text = "EY1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [22]:
+				xmin = 1.72
+				xmax = 1.79
+				text = "M"
+			intervals [23]:
+				xmin = 1.79
+				xmax = 1.83
+				text = "M"
+			intervals [24]:
+				xmin = 1.83
+				xmax = 1.86
+				text = "EH0 [sidx=1/sN=3/pos=initial/oc=closed]"
+			intervals [25]:
+				xmin = 1.86
+				xmax = 1.96
+				text = "N"
+			intervals [26]:
+				xmin = 1.96
+				xmax = 2.01
+				text = "L"
+			intervals [27]:
+				xmin = 2.01
+				xmax = 2.09
+				text = "IY0 [sidx=2/sN=3/pos=med/oc=open]"
+			intervals [28]:
+				xmin = 2.09
+				xmax = 2.16
+				text = "N"
+			intervals [29]:
+				xmin = 2.16
+				xmax = 2.24
+				text = "EY1 [sidx=3/sN=3/pos=final/oc=open]"
+			intervals [30]:
+				xmin = 2.24
+				xmax = 2.34
+				text = "P"
+			intervals [31]:
+				xmin = 2.34
+				xmax = 2.41
+				text = "EH0 [sidx=1/sN=2/pos=initial/oc=closed]"
+			intervals [32]:
+				xmin = 2.41
+				xmax = 2.44
+				text = "L"
+			intervals [33]:
+				xmin = 2.44
+				xmax = 2.52
+				text = "M"
+			intervals [34]:
+				xmin = 2.52
+				xmax = 2.64
+				text = "EY1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [35]:
+				xmin = 2.64
+				xmax = 2.75
+				text = "S"
+			intervals [36]:
+				xmin = 2.75
+				xmax = 2.99
+				text = "T"
+			intervals [37]:
+				xmin = 2.99
+				xmax = 3.06
+				text = "SIL"
