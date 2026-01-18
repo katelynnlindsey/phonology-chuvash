@@ -1,0 +1,112 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 5.4795
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 5.4795
+		intervals: size = 8
+			intervals [1]:
+				xmin = 0.0
+				xmax = 1.24
+				text = ""
+			intervals [2]:
+				xmin = 1.24
+				xmax = 2.15
+				text = "spn"
+			intervals [3]:
+				xmin = 2.15
+				xmax = 2.55
+				text = "spn"
+			intervals [4]:
+				xmin = 2.55
+				xmax = 3.54
+				text = "spn"
+			intervals [5]:
+				xmin = 3.54
+				xmax = 3.62
+				text = ""
+			intervals [6]:
+				xmin = 3.62
+				xmax = 3.86
+				text = "'T.UWJ"
+			intervals [7]:
+				xmin = 3.86
+				xmax = 4.38
+				text = "L.'AART.AAR"
+			intervals [8]:
+				xmin = 4.38
+				xmax = 5.4795
+				text = ""
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 5.4795
+		intervals: size = 15
+			intervals [1]:
+				xmin = 0.0
+				xmax = 1.24
+				text = ""
+			intervals [2]:
+				xmin = 1.24
+				xmax = 2.15
+				text = "spn"
+			intervals [3]:
+				xmin = 2.15
+				xmax = 2.55
+				text = "spn"
+			intervals [4]:
+				xmin = 2.55
+				xmax = 3.54
+				text = "spn"
+			intervals [5]:
+				xmin = 3.54
+				xmax = 3.62
+				text = ""
+			intervals [6]:
+				xmin = 3.62
+				xmax = 3.65
+				text = "T"
+			intervals [7]:
+				xmin = 3.65
+				xmax = 3.71
+				text = "UW1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [8]:
+				xmin = 3.71
+				xmax = 3.86
+				text = "J"
+			intervals [9]:
+				xmin = 3.86
+				xmax = 3.92
+				text = "L"
+			intervals [10]:
+				xmin = 3.92
+				xmax = 3.95
+				text = "AA0 [sidx=1/sN=2/pos=initial/oc=closed]"
+			intervals [11]:
+				xmin = 3.95
+				xmax = 4.09
+				text = "R"
+			intervals [12]:
+				xmin = 4.09
+				xmax = 4.13
+				text = "T"
+			intervals [13]:
+				xmin = 4.13
+				xmax = 4.2
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [14]:
+				xmin = 4.2
+				xmax = 4.38
+				text = "R"
+			intervals [15]:
+				xmin = 4.38
+				xmax = 5.4795
+				text = ""
