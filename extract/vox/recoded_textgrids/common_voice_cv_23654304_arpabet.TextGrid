@@ -1,0 +1,120 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 4.10963
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 4.10963
+		intervals: size = 10
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.82
+				text = ""
+			intervals [2]:
+				xmin = 0.82
+				xmax = 1.16
+				text = "spn"
+			intervals [3]:
+				xmin = 1.16
+				xmax = 1.66
+				text = "spn"
+			intervals [4]:
+				xmin = 1.66
+				xmax = 2.0
+				text = "spn"
+			intervals [5]:
+				xmin = 2.0
+				xmax = 2.35
+				text = "'M.AAR"
+			intervals [6]:
+				xmin = 2.35
+				xmax = 2.42
+				text = ""
+			intervals [7]:
+				xmin = 2.42
+				xmax = 2.8
+				text = "spn"
+			intervals [8]:
+				xmin = 2.8
+				xmax = 2.86
+				text = ""
+			intervals [9]:
+				xmin = 2.86
+				xmax = 3.22
+				text = "UWNR.'AA"
+			intervals [10]:
+				xmin = 3.22
+				xmax = 4.10963
+				text = ""
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 4.10963
+		intervals: size = 15
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.82
+				text = ""
+			intervals [2]:
+				xmin = 0.82
+				xmax = 1.16
+				text = "spn"
+			intervals [3]:
+				xmin = 1.16
+				xmax = 1.66
+				text = "spn"
+			intervals [4]:
+				xmin = 1.66
+				xmax = 2.0
+				text = "spn"
+			intervals [5]:
+				xmin = 2.0
+				xmax = 2.18
+				text = "M"
+			intervals [6]:
+				xmin = 2.18
+				xmax = 2.3
+				text = "AA1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [7]:
+				xmin = 2.3
+				xmax = 2.35
+				text = "R"
+			intervals [8]:
+				xmin = 2.35
+				xmax = 2.42
+				text = ""
+			intervals [9]:
+				xmin = 2.42
+				xmax = 2.8
+				text = "spn"
+			intervals [10]:
+				xmin = 2.8
+				xmax = 2.86
+				text = ""
+			intervals [11]:
+				xmin = 2.86
+				xmax = 2.94
+				text = "UW0 [sidx=1/sN=2/pos=initial/oc=closed]"
+			intervals [12]:
+				xmin = 2.94
+				xmax = 3.09
+				text = "N"
+			intervals [13]:
+				xmin = 3.09
+				xmax = 3.1
+				text = "R"
+			intervals [14]:
+				xmin = 3.1
+				xmax = 3.22
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=open]"
+			intervals [15]:
+				xmin = 3.22
+				xmax = 4.10963
+				text = ""
