@@ -1,5 +1,7 @@
 library(dplyr)
 library(stringr)
+library(partykit) # For the ctree function
+library(ggplot2)  # For plot visualization, if desired (ctree has its own plot method)
 
 all_chuvash_vowel_points <- read.csv("~/GitHub/phonology-chuvash/extract/all_chuvash_vowel_points.csv", encoding="UTF-8")
 
@@ -60,3 +62,30 @@ print(paste("Final Filtered DataFrame shape:", nrow(filtered_df), "rows,", ncol(
 
 total_rows_removed <- nrow(all_chuvash_vowel_points) - nrow(filtered_df)
 print(paste("Total", total_rows_removed, "rows removed from the original DataFrame."))
+
+# C-Tree for Duration
+print(paste("DataFrame shape for ctree analysis:", nrow(filtered_df), "rows,", ncol(filtered_df), "columns"))
+print("Columns available:")
+print(colnames(filtered_df))
+
+ctree_data <- filtered_df %>%
+  mutate(
+    label = as.factor(label),
+    phon_stress = as.factor(phon_stress),
+    syl_open_closed = as.factor(syl_open_closed),
+    corpus = as.factor(corpus),
+    pre_seg = as.factor(pre_seg),
+    fol_seg = as.factor(fol_seg),
+    syl_pos = as.factor(syl_pos)
+  )
+
+ctree_formula <- dur ~ label + phon_stress + F1 + syl_pos + syl_open_closed
+
+chuvash_ctree_model_controlled <- ctree(ctree_formula, data = ctree_data,
+                                        control = ctree_control(
+                                          mincriterion = 0.99, # More stringent significance level (alpha = 0.01)
+                                          minbucket = 3000,     # Min observations in terminal node
+                                          maxdepth = 3        # Max depth of the tree
+                                        ))
+
+plot(chuvash_ctree_model_controlled, type = "simple", main = "Conditional Inference Tree for Chuvash Vowel Duration (Controlled)")
