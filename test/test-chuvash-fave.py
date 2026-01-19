@@ -13,18 +13,35 @@ base_corpus_path = r"C:\Users\profk\Documents\GitHub\phonology-chuvash\test"
 corpora = ["test-mfa", "test-vox"]
 
 # Regex to capture base label and optional bracketed attributes
-ATTR_RE = re.compile(r'^(?P<label>[^\s\[]+)(?:\s*\[(?P<attrs>[^\]]+)\])?$')
+ATTR_RE = re.compile(r'^(?P<base_label>[A-Z]+)(?P<stress_digit>[01]?)(?:\s*\[(?P<attrs>[^\]]+)\])?$')
 
 def parse_label_attrs(lab):
     """
-    Returns (label, attrs_dict) where label is like EH1 and attrs_dict contains keys like sidx,sN,pos,oc (if present).
+    Returns (label_without_stress_digit, stress_digit_int, attrs_dict)
+    where label is like EH, stress_digit is 1 or 0 (or None), and attrs_dict contains keys like sidx,sN,pos,oc (if present).
     """
     if not isinstance(lab, str):
-        return lab, {}
-    m = ATTR_RE.match(lab.strip())
+        return lab, None, {} # Return None for stress_digit for non-strings
+    
+    lab_strip = lab.strip()
+    if lab_strip in ["SIL", "<eps>"]: # Handle silence labels distinctly
+        return lab_strip, None, {}
+
+    m = ATTR_RE.match(lab_strip)
     if not m:
-        return lab.strip(), {}
-    base = m.group('label')
+        # Fallback if the pattern doesn't match, e.g., if it's a consonant without attrs
+        return lab_strip, None, {}
+    
+    base = m.group('base_label')
+    stress_digit_str = m.group('stress_digit')
+    
+    stress_digit_int = None
+    if stress_digit_str:
+        try:
+            stress_digit_int = int(stress_digit_str)
+        except ValueError:
+            pass # Should not happen if regex correctly captures only '0' or '1'
+            
     attrs = {}
     attrs_text = m.group('attrs')
     if attrs_text:
@@ -33,13 +50,14 @@ def parse_label_attrs(lab):
             if '=' in part:
                 k, v = part.split('=', 1)
                 attrs[k] = v
-    return base, attrs
+    return base, stress_digit_int, attrs
 
 def postprocess_points_csv(csv_path):
     """
     Read the CSV written by write_data(... which=['points'], separate=False), parse the 'label'
-    column to extract bracketed attributes, and add columns:
-      - label (base label, e.g. EH1)
+    column to extract bracketed attributes AND the phonological stress digit, and add columns:
+      - label (base ARPAbet label, e.g. EH)
+      - phon_stress (0 or 1 or NaN) <--- NEW
       - sidx (int or NaN)
       - sN (int or NaN)
       - syl_pos (string or NaN)
@@ -57,13 +75,19 @@ def postprocess_points_csv(csv_path):
         return
 
     bases = []
+    phon_stresses = [] # <--- NEW list for phonological stress
     sidxs = []
     sNs = []
     poss = []
     ocs = []
+    
     for lab in df['label'].astype(str).tolist():
-        base, attrs = parse_label_attrs(lab)
+        # Call the updated parse_label_attrs
+        base, phon_stress_val, attrs = parse_label_attrs(lab) # <--- UPDATED call
+        
         bases.append(base)
+        phon_stresses.append(phon_stress_val) # <--- APPEND NEW stress value
+
         # sidx and sN might be numeric; attempt int conversion, else None
         sidx_val = attrs.get('sidx')
         try:
@@ -80,10 +104,20 @@ def postprocess_points_csv(csv_path):
 
     # Replace label with base and add new columns
     df['label'] = bases
+    df['phon_stress'] = phon_stresses # <--- ADD NEW COLUMN
     df['sidx'] = sidxs
     df['sN'] = sNs
     df['syl_pos'] = poss
     df['syl_open_closed'] = ocs
+
+    # Optional: If you want to drop FAVE's original 'stress' column if it conflicts
+    # This might be useful if FAVE's stress is not relevant for your analysis
+    if 'stress' in df.columns: # FAVE's original stress column
+        # Rename FAVE's stress column if you want to keep it but distinguish it
+        # df.rename(columns={'stress': 'fave_acoustic_stress'}, inplace=True)
+        # Or just drop it if you only care about your phonological stress
+        df.drop(columns=['stress'], inplace=True)
+
 
     # Overwrite CSV (if you prefer writing a new file, change path)
     try:
