@@ -1,9 +1,22 @@
-library(dplyr)
-library(stringr)
-library(partykit) # For the ctree function
-library(ggplot2)  # For plot visualization, if desired (ctree has its own plot method)
+library(tidyverse)
+library(scales)
+library(rcompanion)
+library(gmodels)
+library(vowels)
+library(graphics)
+library(gmodels)
+library(ggplot2)
+library(ggpubr)
+library(phonR)
+library(hrbrthemes)
+library(viridis)
+library(forcats)
+library(patchwork)
+library(partykit)
 
 all_chuvash_vowel_points <- read.csv("~/GitHub/phonology-chuvash/extract/all_chuvash_vowel_points.csv", encoding="UTF-8")
+
+all_chuvash_vowel_points$dur <- all_chuvash_vowel_points$dur*1000
 
 #REMOVE NON-VOWELS
 vowel_labels <- c('AA', 'AH', 'EH', 'EY', 'IX', 'IY', 'UX', 'UW')
@@ -14,6 +27,15 @@ df_vowels_only <- all_chuvash_vowel_points %>%
 vowels_removed_count <- nrow(all_chuvash_vowel_points) - nrow(df_vowels_only)
 print(paste(vowels_removed_count, "rows removed because 'label' was not identified as a vowel."))
 print(paste("DataFrame shape after vowel filtering:", nrow(df_vowels_only), "rows,", ncol(df_vowels_only), "columns"))
+
+df_vowels_only$label <- str_replace(df_vowels_only$label,"AA","a")
+df_vowels_only$label <- str_replace(df_vowels_only$label,"IY","i")
+df_vowels_only$label <- str_replace(df_vowels_only$label,"UX","y")
+df_vowels_only$label <- str_replace(df_vowels_only$label,"EY","e")
+df_vowels_only$label <- str_replace(df_vowels_only$label,"EH","ø")
+df_vowels_only$label <- str_replace(df_vowels_only$label,"IX","ʉ")
+df_vowels_only$label <- str_replace(df_vowels_only$label,"UW","u")
+df_vowels_only$label <- str_replace(df_vowels_only$label,"AH","ɵ")
 
 #REMOVE RUSSIAN LOANWORDS
 russian_latin_sequences <- c('ZH','ts','B','G','D','F','Z','O','Б','Г','Д','О','Ж','Ц','Ф','З','Ë','ё','Ё')
@@ -39,7 +61,7 @@ outlier_columns <- c('F1', 'F2', 'dur', 'intensity', 'f0')
 
 
 for (col in outlier_columns) {
-  print(paste("\nFiltering outliers for column:", col))
+  print(paste("Filtering outliers for column:", col))
     
   filtered_df <- filtered_df %>%
     group_by(label, phon_stress) %>%
@@ -89,3 +111,495 @@ chuvash_ctree_model_controlled <- ctree(ctree_formula, data = ctree_data,
                                         ))
 
 plot(chuvash_ctree_model_controlled, type = "simple", main = "Conditional Inference Tree for Chuvash Vowel Duration (Controlled)")
+
+## F1xF2 plot
+
+palatal_segments <- c("J","SH","ɕ","ɕː","tʃ","ʃː")
+palatal_pattern <- paste(palatal_segments, collapse = "|")
+
+non_palatal_data <- filtered_df %>%
+  mutate(
+    pre_is_palatal = str_detect(pre_seg, palatal_pattern),
+    context_type = case_when(
+      pre_is_palatal ~ "Palatal Context",
+      TRUE ~ "Non-Palatal Context"
+    )
+  ) %>%
+  filter(context_type == "Non-Palatal Context") %>%
+  select(label, F1, F2,pre_seg,word)
+
+
+with(non_palatal_data, plotVowels(F1, F2, label, output = "pdf", plot.tokens = FALSE, pch.tokens = label, 
+                      cex.tokens = 1.2, alpha.tokens = 0.2, plot.means = TRUE, pch.means = label, 
+                      cex.means = 2, var.col.by = label, family = "Charis SIL", pretty = TRUE, 
+                      ellipse.line=TRUE, xlim = c(3200, 600), ylim = c(1000, 200), xlab="F2 (Hz.)", ylab="F1 (Hz.)"))
+
+
+# DURATION plot
+filtered_df %>% ggplot(aes(x=dur, y=label, fill=label)) + 
+  geom_boxplot(notch=TRUE) +
+  scale_fill_viridis(discrete = TRUE, alpha=0.6) +
+  #geom_jitter(color="black", size=0.4, alpha=0.9) +
+  theme_minimal() +
+  theme(legend.position="none",plot.title=element_text(size=11)) +
+  ggtitle("Chuvash vowel duration") +
+  xlab("Duration (ms)") +
+  ylab("Vowel")
+
+# Violin plots for medial unstressed vowels
+filtered_vowels_for_plots <- filtered_df %>%
+  filter(phon_stress == "0", syl_pos == "med")
+
+strong_vowels <- c("a", "i", "y", "e","ʉ","u")
+weak_vowels <- c("ø", "ɵ")
+
+filtered_vowels_for_plots <- filtered_vowels_for_plots %>%
+  mutate(
+    vowel_strength_type = case_when(
+      label %in% strong_vowels ~ "Strong",
+      label %in% weak_vowels  ~ "Weak",
+      TRUE                     ~ "Undefined" # Catch any labels not classified
+    ) %>% factor(levels = c("Weak", "Strong")) # Set factor levels for desired order in legend
+  )
+
+ordered_labels_dur <- filtered_vowels_for_plots %>%
+  group_by(label) %>%
+  summarise(mean_val = mean(dur, na.rm = TRUE)) %>%
+  arrange(mean_val) %>%
+  pull(label) # Extract just the ordered labels
+
+ordered_labels_f0 <- filtered_vowels_for_plots %>%
+  group_by(label) %>%
+  summarise(mean_val = mean(f0, na.rm = TRUE)) %>%
+  arrange(mean_val) %>%
+  pull(label)
+
+ordered_labels_intensity <- filtered_vowels_for_plots %>%
+  group_by(label) %>%
+  summarise(mean_val = mean(intensity, na.rm = TRUE)) %>%
+  arrange(mean_val) %>%
+  pull(label)
+
+long_format_data <- filtered_vowels_for_plots %>%
+  select(label, vowel_strength_type, dur, f0, intensity) %>%
+  pivot_longer(
+    cols = c(dur, f0, intensity),
+    names_to = "measure_type",
+    values_to = "value"
+  ) %>%
+  mutate(
+    measure_type = factor(measure_type,
+                          levels = c("dur", "f0", "intensity"),
+                          labels = c("Duration (ms)", "f0 (Hz)", "Intensity (dB)"))
+  )
+
+plot_dur <- ggplot(filter(long_format_data, measure_type == "Duration (ms)"),
+                   aes(x = factor(label, levels = ordered_labels_dur), y = value, fill = vowel_strength_type)) +
+  geom_violin(trim = TRUE, scale = "width") +
+  geom_boxplot(width = 0.15, fill = "white", alpha = 0.6, outlier.shape = NA) +
+  labs(title = "Duration (ms)", x = NULL, y = "Duration (ms)") + # x=NULL removes 'Vowel' label
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10, face = "bold"),
+    axis.text.y = element_text(size = 10),
+    legend.position = "none" # Hide legend for individual plots
+  ) +
+  scale_fill_manual(values = c("Weak" = "#FD8D3C", "Strong" = "#9ECAE1"))
+
+# Plot for f0
+plot_f0 <- ggplot(filter(long_format_data, measure_type == "f0 (Hz)"),
+                  aes(x = factor(label, levels = ordered_labels_f0), y = value, fill = vowel_strength_type)) +
+  geom_violin(trim = TRUE, scale = "width") +
+  geom_boxplot(width = 0.15, fill = "white", alpha = 0.6, outlier.shape = NA) +
+  labs(title = "f0 (Hz)", x = NULL, y = "f0 (Hz)") + # x=NULL removes 'Vowel' label
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10, face = "bold"),
+    axis.text.y = element_text(size = 10),
+    legend.position = "none"
+  ) +
+  scale_fill_manual(values = c("Weak" = "#FD8D3C", "Strong" = "#9ECAE1"))
+
+# Plot for Intensity
+plot_intensity <- ggplot(filter(long_format_data, measure_type == "Intensity (dB)"),
+                         aes(x = factor(label, levels = ordered_labels_intensity), y = value, fill = vowel_strength_type)) +
+  geom_violin(trim = TRUE, scale = "width") +
+  geom_boxplot(width = 0.15, fill = "white", alpha = 0.6, outlier.shape = NA) +
+  labs(title = "Intensity (dB)", x = NULL, y = "Intensity (dB)") + # x=NULL removes 'Vowel' label
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10, face = "bold"),
+    axis.text.y = element_text(size = 10),
+    legend.position = "none",
+    legend.title = element_text(size = 11, face = "bold"),
+    legend.text = element_text(size = 10)
+  ) +
+  scale_fill_manual(values = c("Weak" = "#FD8D3C", "Strong" = "#9ECAE1"), name = "Vowel Type")
+
+combined_plots <- plot_dur / plot_f0 / plot_intensity + # Use '/' operator for vertical stacking
+  plot_layout(ncol = 1) + # Explicitly set to 1 column for vertical stack (though '/' implies it)
+  plot_annotation(theme = theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 18))
+  )
+
+# Print the combined plot
+print(combined_plots)
+
+ggsave("chuvash_vowels.pdf",
+       plot = combined_plots,
+       width = 8.5,
+       height = 10,
+       device = cairo_pdf,
+       family = "Charis SIL"
+)
+
+
+# Required packages
+pkgs <- c("ggplot2","dplyr","tidyr","lme4","lmerTest","rstatix","cowplot","emmeans")
+install_if_missing <- function(p) if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
+invisible(lapply(pkgs, install_if_missing))
+library(ggplot2); library(dplyr); library(tidyr)
+library(lme4); library(lmerTest); library(rstatix); library(cowplot); library(emmeans)
+
+# Use your data frame name here
+df <- filtered_df
+
+# Quick data checks / standardization
+# Ensure key columns exist and types are sensible
+df <- df %>%
+  mutate(
+    dur = as.numeric(dur),
+    f0 = as.numeric(f0),
+    intensity = as.numeric(intensity),
+    speaker = factor(speaker_num),   # or speaker if you have that
+    word = factor(word),
+    phon_stress = as.character(phon_stress) # adjust as needed
+  )
+
+# Create a stress factor "stressed"/"unstressed" if phon_stress is 0/1
+if(all(df$phon_stress %in% c("0","1","0 ","1 "))) {
+  df <- df %>% mutate(stress = factor(ifelse(trimws(phon_stress) %in% c("1"), "stressed", "unstressed"),
+                                      levels = c("unstressed","stressed")))
+} else if(!"stressed" %in% unique(df$phon_stress)) {
+  # if phon_stress already uses other labels, adapt here as needed
+  df <- df %>% mutate(stress = factor(phon_stress))
+} else {
+  df <- df %>% mutate(stress = factor(phon_stress, levels = c("unstressed","stressed")))
+}
+
+# You said "weak" and "strong" — if you have a column for that, use it; otherwise create it:
+# Example: assume label or another column has markers for strength; replace with your logic.
+# If you already have vowel_strength column, skip this.
+
+strong_vowels <- c("a", "i", "y", "e","ʉ","u")
+weak_vowels <- c("ø", "ɵ")
+
+df <- df %>%
+  mutate(
+    vowel_strength_type = case_when(
+      label %in% strong_vowels ~ "Strong",
+      label %in% weak_vowels  ~ "Weak",
+      TRUE                     ~ "Undefined" # Catch any labels not classified
+    ) %>% factor(levels = c("Weak", "Strong")) # Set factor levels for desired order in legend
+  )
+
+
+# Subsets for comparisons
+# 1) initial position, weak vowels
+# Assume syl_pos or sidx/sN indicates position; using syl_pos (values like "initial","med","final")
+initial_weak <- df %>% filter(syl_pos == "initial", vowel_strength_type == "Weak")
+
+# 2) words that contain only weak vowels: you said you have many files; create word-level flag
+# Identify words where every vowel token in that word is weak
+words_weak_only <- df %>%
+  group_by(word) %>%
+  summarize(all_weak = all(vowel_strength_type == "Weak"), .groups = "drop") %>%
+  filter(all_weak) %>%
+  pull(word)
+
+only_weak_words <- df %>% filter(word %in% words_weak_only, vowel_strength_type == "Weak")
+
+# 3) strong vowels (stressed vs unstressed)
+strong_vowel <- df %>% filter(vowel_strength_type == "Strong")
+
+# A plotting helper
+plot_metric_by_stress <- function(data, metric, title = NULL, palette = c("#66c2a5","#fc8d62")) {
+  metric_sym <- rlang::sym(metric)
+  # remove NA
+  data2 <- data %>% filter(!is.na(!!metric_sym), !is.na(stress))
+  if(nrow(data2) < 2) {
+    message("Not enough data for ", title)
+    return(NULL)
+  }
+  p <- ggplot(data2, aes(x = stress, y = !!metric_sym, fill = stress)) +
+    geom_violin(trim = TRUE, alpha = 0.35) +
+    geom_boxplot(width = 0.12, outlier.shape = NA, alpha = 0.7) +
+    #geom_jitter(width = 0.15, alpha = 0.6, size = 1) +
+    scale_fill_manual(values = palette) +
+    theme_minimal(base_size = 13) +
+    labs(title = title, x = "Stress", y = metric) +
+    theme(legend.position = "none")
+}
+
+plot_metric_with_meddiff <- function(data, metric, title = NULL, palette = c("#66c2a5","#fc8d62"),
+                                     label_fmt = function(x) sprintf("%.3f", x)) {
+  # data: data.frame with columns 'stress' and metric column, stress has two levels: unstressed, stressed
+  metric_sym <- rlang::sym(metric)
+  data2 <- data %>% filter(!is.na(.data[[metric]]), !is.na(stress))
+  if(nrow(data2) < 2) return(ggplot() + ggtitle("Not enough data"))
+  # compute medians
+  med_df <- data2 %>%
+    group_by(stress) %>%
+    summarise(med = median(.data[[metric]], na.rm = TRUE), .groups = "drop")
+  # ensure ordering: unstressed first, stressed second
+  med_un <- med_df$med[med_df$stress == "unstressed"]
+  med_st  <- med_df$med[med_df$stress == "stressed"]
+  # handle missing levels gracefully
+  if(length(med_un) == 0 || length(med_st) == 0) {
+    stop("stress factor must contain 'unstressed' and 'stressed' levels")
+  }
+  med_diff <- med_st - med_un
+  # format label: customize for metric (e.g., dur in seconds -> ms)
+  label_text <- label_fmt(med_diff)
+  # y positions for connector and label
+  ymax <- max(data2[[metric]], na.rm = TRUE)
+  ymin <- min(data2[[metric]], na.rm = TRUE)
+  y_connector <- max(med_un, med_st) + 0.03 * (ymax - ymin)   # connector slightly above higher median
+  y_label <- y_connector + 0.02 * (ymax - ymin)
+  # build plot
+  ggplot(data2, aes(x = stress, y = .data[[metric]], fill = stress)) +
+    geom_violin(trim = TRUE, alpha = 0.35, color = "black") +
+    geom_boxplot(width = 0.12, outlier.shape = NA, alpha = 0.8) +
+    stat_summary(fun = median, geom = "point", size = 2, color = "black") +
+    scale_fill_manual(values = palette) +
+    labs(title = title, y = metric, x = "Stress") +
+    theme_minimal(base_size = 12) +
+    theme(legend.position = "none") +
+    # median connector
+    geom_segment(aes(x = 1, xend = 2, y = med_un, yend = med_st), inherit.aes = FALSE, color = "black", size = 0.8) +
+    # small vertical caps to make connector look like bracket
+    geom_segment(aes(x = 1, xend = 1, y = med_un, yend = med_un + 0.01 * (ymax - ymin)), inherit.aes = FALSE, color = "black", size = 0.8) +
+    geom_segment(aes(x = 2, xend = 2, y = med_st, yend = med_st + 0.01 * (ymax - ymin)), inherit.aes = FALSE, color = "black", size = 0.8) +
+    # label showing median difference
+    annotate("text", x = 1.5, y = y_label, label = paste0("Δ median = ", label_text), vjust = 0, size = 3.5)
+}
+
+# Make plots for each comparison and metric
+p_init_dur <- plot_metric_with_meddiff(initial_weak, "dur", "Initial position, weak vowels: Duration (ms)")
+p_onlyweak_dur <- plot_metric_with_meddiff(only_weak_words, "dur", "Only-weak words: Duration (ms)")
+p_strong_dur <- plot_metric_with_meddiff(strong_vowel, "dur", "Strong vowels: Duration (ms)")
+
+p_init_f0 <- plot_metric_with_meddiff(initial_weak, "f0", "Initial position, weak vowels: f0 (Hz)")
+p_onlyweak_f0 <- plot_metric_with_meddiff(only_weak_words, "f0", "Only-weak words: f0 (Hz)")
+p_strong_f0 <- plot_metric_with_meddiff(strong_vowel, "f0", "Strong vowels: f0 (Hz)")
+
+p_init_int <- plot_metric_with_meddiff(initial_weak, "intensity", "Initial position, weak vowels: Intensity (dB)")
+p_onlyweak_int <- plot_metric_with_meddiff(only_weak_words, "intensity", "Only-weak words: Intensity (dB)")
+p_strong_int <- plot_metric_with_meddiff(strong_vowel, "intensity", "Strong vowels: Intensity (dB)")
+
+# Example: show duration plots in one row (if running interactively)
+plot_grid(p_init_dur, p_onlyweak_dur, p_strong_dur, nrow = 1)
+plot_grid(p_init_dur, p_init_f0, p_init_int, nrow = 3)
+
+
+top_row <- plot_grid(p_init_dur, p_onlyweak_dur, p_strong_dur, nrow = 1)
+mid_row <- plot_grid(p_init_f0, p_onlyweak_f0, p_strong_f0, nrow = 1)
+bot_row <- plot_grid(p_init_int, p_onlyweak_int, p_strong_int, nrow = 1)
+
+full_plot <- plot_grid(top_row, mid_row, bot_row, ncol = 1, rel_heights = c(1,1,1))
+print(full_plot)
+
+
+# Required packages
+pkgs <- c("dplyr","tidyr","ggplot2","rlang")
+for(p in pkgs) if(!requireNamespace(p, quietly = TRUE)) install.packages(p)
+library(dplyr); library(tidyr); library(ggplot2); library(rlang)
+
+# Assume your main data.frame is df
+# Ensure important columns exist and are correct type
+df <- df %>%
+  mutate(
+    sN = as.integer(sN),             # number of syllables in word
+    syl_pos = as.character(syl_pos), # e.g., "initial", "med", "final" or numeric index if you have one
+    dur = as.numeric(dur),
+    f0 = as.numeric(f0),
+    intensity = as.numeric(intensity),
+    word = as.character(word),
+  )
+
+
+# Next: identify syllable index within the word.
+# If you have an explicit syllable index column (e.g., sidx), use that. Otherwise try to infer from prop_time or rel_time.
+# Here I assume sidx or an index-like column exists; if not, replace with your syllable-index variable.
+# We'll try to use sidx if present; otherwise assume syl_pos encodes position strings we can map.
+
+if("sidx" %in% names(df)) {
+  df <- df %>% mutate(syll_idx = as.integer(sidx))
+} else {
+  # attempt mapping from syl_pos strings like "initial","med","final" -> 1,2,...
+  df <- df %>% mutate(syll_idx = case_when(
+    tolower(syl_pos) %in% c("initial","onset","1","first","first_syll") ~ 1L,
+    tolower(syl_pos) %in% c("med","middle","2","second") ~ 2L,
+    tolower(syl_pos) %in% c("final","last","3","third") ~ 3L,
+    TRUE ~ NA_integer_
+  ))
+}
+
+# Filter to two-syllable words
+df2 <- df %>% filter(!is.na(syll_idx), sN == 2)
+
+# Keep only one token per syllable per word (if there are multiple tokens per syllable choose the vowel token you use).
+# We'll compute median per word/syllable for dur, f0, intensity to robustly summarize the syllable's acoustic values.
+word_syll_meds <- df2 %>%
+  group_by(word, speaker, syll_idx, vowel_strength_type) %>%
+  summarise(
+    med_dur = median(dur, na.rm = TRUE),
+    med_f0 = median(f0, na.rm = TRUE),
+    med_intensity = median(intensity, na.rm = TRUE),
+    n_tokens = n(),
+    .groups = "drop"
+  )
+
+# We want one row per word with columns for syllable1 and syllable2 medians.
+# Pivot wider so we have medians for syl1 and syl2 in the same row.
+word_pair <- word_syll_meds %>%
+  filter(syll_idx %in% c(1,2)) %>%
+  select(word, speaker, syll_idx, vowel_strength_type, med_dur, med_f0, med_intensity) %>%
+  pivot_wider(
+    names_from = syll_idx,
+    names_prefix = "syl",
+    values_from = c(vowel_strength_type, med_dur, med_f0, med_intensity),
+    names_sep = ""
+  ) %>%
+  # Only keep rows where both syllables present
+  filter(!is.na(vowel_strength_typesyl1), !is.na(vowel_strength_typesyl2))
+
+# Create sequence type: e.g. "WS", "SS", "SW", "WW"
+word_pair <- word_pair %>%
+  mutate(
+    seq = paste0(substr(vowel_strength_typesyl1,1,1) %>% toupper(), substr(vowel_strength_typesyl2,1,1) %>% toupper())
+  )
+
+# Keep only the sequences of interest (WW, WS, SW, SS)
+word_pair <- word_pair %>% filter(seq %in% c("WW","WS","SW","SS"))
+
+# Compute median differences (syl2 - syl1) per metric and per seq
+seq_summary <- word_pair %>%
+  group_by(seq) %>%
+  summarise(
+    n_words = n(),
+    med_dur_syl1 = median(med_dursyl1, na.rm = TRUE),
+    med_dur_syl2 = median(med_dursyl2, na.rm = TRUE),
+    med_dur_diff = median(med_dursyl2 - med_dursyl1, na.rm = TRUE),
+    med_dur_pct = 100 * (med_dur_syl2 - med_dur_syl1) / med_dur_syl1,
+    med_f0_syl1 = median(med_f0syl1, na.rm = TRUE),
+    med_f0_syl2 = median(med_f0syl2, na.rm = TRUE),
+    med_f0_diff = median(med_f0syl2 - med_f0syl1, na.rm = TRUE),
+    med_f0_cents = median(1200 * log2(med_f0syl2 / med_f0syl1), na.rm = TRUE),
+    med_int_syl1 = median(med_intensitysyl1, na.rm = TRUE),
+    med_int_syl2 = median(med_intensitysyl2, na.rm = TRUE),
+    med_int_diff = median(med_intensitysyl2 - med_intensitysyl1, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Print summary table
+print(seq_summary)
+
+
+# OPTIONAL: Visualize — paired medians for each sequence type (syl1 vs syl2)
+plot_paired <- function(dfpair, metric_prefix, metric_label, units_label = "") {
+  # metric_prefix like "med_dur" -> expects med_dursyl1, med_dursyl2 present
+  m1 <- paste0(metric_prefix, "syl1")
+  m2 <- paste0(metric_prefix, "syl2")
+  ggplot(dfpair, aes(x = factor(1), y = .data[[m1]])) + # dummy plot to set up facets below
+    geom_blank() +
+    facet_wrap(~ seq, scales = "free_y") +
+    theme_minimal() +
+    labs(y = paste(metric_label, units_label), x = NULL) +
+    # overlay paired points and connecting lines using the underlying data:
+    geom_segment(data = dfpair, aes(x = 0.9, xend = 1.1, y = .data[[m1]], yend = .data[[m2]]),
+                 color = "gray70", alpha = 0.4, inherit.aes = FALSE) +
+    geom_point(data = dfpair, aes(x = 0.9, y = .data[[m1]]), color = "#66c2a5", size = 1.6) +
+    geom_point(data = dfpair, aes(x = 1.1, y = .data[[m2]]), color = "#fc8d62", size = 1.6) +
+    # add median markers per facet
+    stat_summary(data = dfpair, aes(x = 0.9, y = .data[[m1]]), fun = median, geom = "point", color = "black", size = 3) +
+    stat_summary(data = dfpair, aes(x = 1.1, y = .data[[m2]]), fun = median, geom = "point", color = "black", size = 3) +
+    scale_x_continuous(breaks = c(0.9,1.1), labels = c("syl1","syl2"))
+}
+
+p_dur_pairs <- ggplot() # simpler to create separate small plots below if desired
+
+word_pair <- word_pair %>% mutate(dur_diff = med_dursyl2 - med_dursyl1,
+                                  f0_diff = med_f0syl2 - med_f0syl1,
+                                  f0_diff_cents = 1200 * log2(med_f0syl2 / med_f0syl1),
+                                  int_diff = med_intensitysyl2 - med_intensitysyl1)
+
+med_labels_dur <- word_pair %>%
+  group_by(seq) %>%
+  summarise(med = median(dur_diff, na.rm = TRUE),
+            ymax = max(dur_diff, na.rm = TRUE),
+            ymin = min(dur_diff, na.rm = TRUE),
+            .groups = "drop") %>%
+  # position the label a bit above the max for that seq
+  mutate(label_y = ymax + 0.05 * (ymax - ymin),
+         label = sprintf("%.3f ms", med))
+
+med_labels_f0 <- word_pair %>%
+  group_by(seq) %>%
+  summarise(med = median(f0_diff, na.rm = TRUE),
+            ymax = max(f0_diff, na.rm = TRUE),
+            ymin = min(f0_diff, na.rm = TRUE),
+            .groups = "drop") %>%
+  # position the label a bit above the max for that seq
+  mutate(label_y = ymax + 0.05 * (ymax - ymin),
+         label = sprintf("%.3f Hz", med))
+
+med_labels_int <- word_pair %>%
+  group_by(seq) %>%
+  summarise(med = median(int_diff, na.rm = TRUE),
+            ymax = max(int_diff, na.rm = TRUE),
+            ymin = min(int_diff, na.rm = TRUE),
+            .groups = "drop") %>%
+  # position the label a bit above the max for that seq
+  mutate(label_y = ymax + 0.05 * (ymax - ymin),
+         label = sprintf("%.3f dB", med))
+
+# Example: quick boxplot of median differences per sequence
+SSdur <- ggplot(word_pair, aes(x = seq, y = med_dursyl2 - med_dursyl1)) +
+  geom_boxplot() + theme_minimal() + labs(y = "Median dur (ms) difference: syl2 - syl1", x = "Sequence")
+top <- SSdur + geom_text(data = med_labels_dur, aes(x = seq, y = label_y, label = label), inherit.aes = FALSE, size = 3)
+
+SSf0 <- ggplot(word_pair, aes(x = seq, y = med_f0syl2 - med_f0syl1)) +
+  geom_boxplot() + theme_minimal() + labs(y = "Median f0 difference (Hz): syl2 vs syl1", x = "Sequence")
+mid <- SSf0 + geom_text(data = med_labels_f0, aes(x = seq, y = label_y, label = label), inherit.aes = FALSE, size = 3)
+
+SSint <- ggplot(word_pair, aes(x = seq, y = med_intensitysyl2 - med_intensitysyl1)) +
+  geom_boxplot() + theme_minimal() + labs(y = "Median intensity (dB) difference: syl2 - syl1", x = "Sequence")
+bot <- SSint + geom_text(data = med_labels_int, aes(x = seq, y = label_y, label = label), inherit.aes = FALSE, size = 3)
+
+plot_grid(top, mid, bot, nrow = 3)
+
+
+# OPTIONAL: fit LMMs on word-level medians to test whether seq predicts the within-word median difference
+# Example: dur difference as outcome
+
+# LMM requires lme4
+if(!"lme4" %in% installed.packages()) install.packages("lme4")
+library(lme4)
+# Random intercept for speaker, if present
+m_dur_seq <- lmer(dur_diff ~ seq + (1 | speaker), data = word_pair, REML = FALSE)
+summary(m_dur_seq)
+anova(m_dur_seq)
+
+m_f0_seq <- lmer(f0_diff ~ seq + (1 | speaker), data = word_pair, REML = FALSE)
+summary(m_f0_seq)
+anova(m_f0_seq)
+
+m_int_seq <- lmer(int_diff ~ seq + (1 | speaker), data = word_pair, REML = FALSE)
+summary(m_int_seq)
+anova(m_int_seq)
+
+# End of script
+
