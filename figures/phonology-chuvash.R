@@ -601,5 +601,269 @@ m_int_seq <- lmer(int_diff ~ seq + (1 | speaker), data = word_pair, REML = FALSE
 summary(m_int_seq)
 anova(m_int_seq)
 
-# End of script
 
+# Required packages
+pkgs <- c("ggplot2","dplyr","rlang")
+for (p in pkgs) if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
+library(ggplot2); library(dplyr); library(rlang)
+
+# --- Prepare data --------------------------------
+# Use your data frame name (replace df below if needed)
+# Ensure columns: f0 (numeric), syll_idx or syl_pos, vowel_strength (values 'weak'/'strong')
+
+# Example canonicalization (adapt if your columns differ)
+df <- df %>%
+  mutate(
+    f0 = as.numeric(f0),
+    vowel_strength_type = ifelse(is.na(vowel_strength_type), "unknown", as.character(vowel_strength_type)),
+    vowel_strength_type = factor(vowel_strength_type, levels = c("Weak","Strong")),
+    # syllable index: prefer an existing numeric index; if not, map syl_pos strings
+    syll_idx = if ("sidx" %in% names(df)) as.integer(sidx) else case_when(
+      tolower(syl_pos) %in% c("initial","1","first") ~ 1L,
+      tolower(syl_pos) %in% c("med","2","second") ~ 2L,
+      tolower(syl_pos) %in% c("final","3","third","last") ~ 2L, # conservative fallback
+      TRUE ~ NA_integer_
+    )
+  )
+
+# Filter out NA f0
+df_f0 <- df %>% filter(!is.na(f0))
+
+# Create grouping variable:
+# - "initial_weak": syll_idx == 1 & vowel_strength == "weak"
+# - "initial_strong": syll_idx == 1 & vowel_strength == "strong"
+# - "non_initial": syll_idx != 1 (any strength)
+df_f0 <- df_f0 %>%
+  mutate(group = case_when(
+    !is.na(syll_idx) & syll_idx == 1 & vowel_strength_type == "Weak" ~ "initial_weak",
+    !is.na(syll_idx) & syll_idx == 1 & vowel_strength_type == "Strong" ~ "initial_strong",
+    !is.na(syll_idx) & syll_idx != 1 ~ "non_initial",
+    TRUE ~ NA_character_
+  )) %>%
+  filter(!is.na(group)) %>%
+  mutate(group = factor(group, levels = c("initial_weak","initial_strong","non_initial"),
+                        labels = c("Initial: weak","Initial: strong","Non-initial")))
+
+# Optional: if you prefer to aggregate to one value per syllable (e.g., median f0 per syllable),
+# uncomment the following to compute per-word-syllable medians:
+# df_f0 <- df_f0 %>%
+#   group_by(word, syll_idx, group, speaker) %>%
+#   summarise(med_f0 = median(f0, na.rm = TRUE), .groups = "drop") %>%
+#   rename(f0 = med_f0)
+
+# --- Compute medians & labels --------------------
+medians <- df_f0 %>%
+  group_by(group) %>%
+  summarise(med_f0 = median(f0, na.rm = TRUE),
+            mean_f0 = mean(f0, na.rm = TRUE),
+            n = n(), .groups = "drop") %>%
+  arrange(factor(group, levels = levels(df_f0$group)))
+
+# Format median label text (Hz)
+medians <- medians %>%
+  mutate(med_label = paste0("median = ", sprintf("%.1f Hz", med_f0)))
+
+# --- Plot ----------------------------------------
+p <- ggplot(df_f0, aes(x = group, y = f0, fill = group)) +
+  geom_violin(trim = TRUE, alpha = 0.35, color = "black") +
+  geom_boxplot(width = 0.12, outlier.shape = NA, alpha = 0.85) +
+  stat_summary(fun = median, geom = "point", size = 2, color = "black") +
+  scale_fill_manual(values = c("#66c2a5", "#fc8d62", "#8da0cb")) +
+  theme_minimal(base_size = 14) +
+  labs(x = "", y = "F0 (Hz)") +
+  theme(legend.position = "none")
+
+# Add median labels above each violin
+# compute y position slightly above max f0 for each group to place label
+y_pos_df <- df_f0 %>%
+  group_by(group) %>%
+  summarise(ymax = max(f0, na.rm = TRUE), ymin = min(f0, na.rm = TRUE), .groups = "drop") %>%
+  left_join(medians, by = "group") %>%
+  mutate(label_y = ymax + 0.05 * (ymax - ymin))
+
+p <- p + geom_text(data = y_pos_df, aes(x = group, y = label_y, label = med_label),
+                   inherit.aes = FALSE, size = 3.6)
+
+# Optionally add lines connecting medians (visual connector)
+p <- p + geom_segment(data = medians,
+                      aes(x = 1, xend = 2, y = med_f0[1], yend = med_f0[2]),
+                      inherit.aes = FALSE, color = "black", size = 0.6, linetype = "solid") +
+  geom_segment(data = medians,
+               aes(x = 2, xend = 3, y = med_f0[2], yend = med_f0[3]),
+               inherit.aes = FALSE, color = "black", size = 0.6, linetype = "solid")
+
+# Print plot
+print(p)
+
+# --- Optional: statistical comparisons (LMM recommended) --------------
+# Quick pairwise Wilcoxon (not accounting for clustering) for reference:
+pairwise <- df_f0 %>%
+  group_by(group) %>%
+  summarise(n = n(), .groups = "drop")
+pairwise_tests <- combn(levels(df_f0$group), 2, function(x) {
+  g1 <- x[1]; g2 <- x[2]
+  d1 <- df_f0$f0[df_f0$group == g1]
+  d2 <- df_f0$f0[df_f0$group == g2]
+  res <- wilcox.test(d1, d2)
+  data.frame(g1 = g1, g2 = g2, p = res$p.value, median_diff = median(d2, na.rm = TRUE) - median(d1, na.rm = TRUE))
+}, simplify = FALSE) %>% bind_rows()
+print(pairwise_tests)
+
+# For valid inference with repeated measures, fit LMMs (example)
+# library(lme4); library(lmerTest)
+# m <- lmer(f0 ~ group + (1|speaker) + (1|word), data = df_f0, REML = FALSE)
+# summary(m)
+
+library(dplyr)
+
+# canonicalize column names (adapt if needed)
+df3 <- df %>%
+  mutate(
+    label = as.character(label),
+    vowel_strength = as.character(vowel_strength_type),
+    # prefer sidx if present; else try to use syll_idx or syl_pos mapping
+    syll_idx = if("sidx" %in% names(.)) as.integer(sidx) else if("syll_idx" %in% names(.)) as.integer(syll_idx) else NA_integer_
+  )
+
+# token counts
+token_counts <- df3 %>%
+  filter(label == "y") %>%
+  group_by(syll_idx) %>%
+  summarise(tokens = n(), .groups = "drop") %>%
+  arrange(syll_idx)
+
+token_counts
+
+# WRITTEN CORPUS
+
+zheltov_corpus <- read.csv("~/GitHub/phonology-chuvash/wordlists/chuvash_vowel_data.csv")
+
+strong_vowels <- c("a", "i", "y", "e", "u")
+weak_vowels <- c("ø", "ɵ", "ʉ")
+
+zheltov_corpus <- zheltov_corpus %>%
+  mutate(
+    vowel_strength_type = case_when(
+      label %in% strong_vowels ~ "Strong",
+      label %in% weak_vowels ~ "Weak",
+      TRUE ~ "Other" # Catch any vowels not explicitly classified
+    )
+  ) %>%
+  # Filter out "Other" if you are confident all vowels should be strong/weak
+  filter(vowel_strength_type != "Other") %>%
+  mutate(
+    # FIRST: Convert the numeric 'phon_stress' (0 or 1) into descriptive strings
+    phon_stress_description = case_when(
+      phon_stress == 0 ~ "Unstressed",
+      phon_stress == 1 ~ "Stressed",
+      TRUE ~ NA_character_ # In case of unexpected values, though shouldn't happen
+    ),
+    # SECOND: Convert the new descriptive string column into a factor
+    # Now the 'levels' of this factor are directly "Unstressed" and "Stressed"
+    phon_stress = factor(phon_stress_description, levels = c("Unstressed", "Stressed")),
+    
+    # Also convert other columns to factors as before
+    syl_open_closed = factor(syl_open_closed, levels = c("open", "closed")),
+    vowel_strength_type = factor(vowel_strength_type, levels = c("Strong", "Weak"))
+  )
+
+df <- filtered_df
+
+df <- df %>%
+  mutate(
+    vowel_strength_type = case_when(
+      label %in% strong_vowels ~ "Strong",
+      label %in% weak_vowels ~ "Weak",
+      TRUE ~ "Other" # Catch any vowels not explicitly classified
+    )
+  ) %>%
+  # Filter out "Other" if you are confident all vowels should be strong/weak
+  filter(vowel_strength_type != "Other") %>%
+  mutate(
+    # FIRST: Convert the numeric 'phon_stress' (0 or 1) into descriptive strings
+    phon_stress_description = case_when(
+      phon_stress == 0 ~ "Unstressed",
+      phon_stress == 1 ~ "Stressed",
+      TRUE ~ NA_character_ # In case of unexpected values, though shouldn't happen
+    ),
+    # SECOND: Convert the new descriptive string column into a factor
+    # Now the 'levels' of this factor are directly "Unstressed" and "Stressed"
+    phon_stress = factor(phon_stress_description, levels = c("Unstressed", "Stressed")),
+    
+    # Also convert other columns to factors as before
+    syl_open_closed = factor(syl_open_closed, levels = c("open", "closed")),
+    vowel_strength_type = factor(vowel_strength_type, levels = c("Strong", "Weak"))
+  )
+
+token_counts <- zheltov_corpus %>%
+  #filter(label == "ʉ") %>% #ʉ
+  group_by(phon_stress,syl_open_closed,vowel_strength_type) %>%
+  summarise(tokens = n(), .groups = "drop") %>%
+  arrange(phon_stress)
+
+token_counts
+
+written_results <- zheltov_corpus %>%
+  #filter(sidx == "1") %>%
+  group_by(phon_stress_description, vowel_strength_type, syl_open_closed) %>%
+  summarise(
+    count = n(),
+    .groups = 'drop' # Drop grouping after summarizing
+  ) %>%
+  group_by(phon_stress_description, vowel_strength_type) %>%
+  mutate(
+    percentage = (count / sum(count)) * 100
+  )
+
+spoken_results <- df %>%
+  group_by(phon_stress_description, vowel_strength_type, syl_open_closed) %>%
+  summarise(
+    count = n(),
+    .groups = 'drop' # Drop grouping after summarizing
+  ) %>%
+  group_by(phon_stress_description, vowel_strength_type) %>%
+  mutate(
+    percentage = (count / sum(count)) * 100
+  )
+
+# --- 4. Display the results ---
+print("Percentage of open vs. closed syllables by stress and vowel strength:")
+print(analysis_results)
+
+ggplot(written_results, aes(x = vowel_strength_type, y = percentage, fill = syl_open_closed)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
+  facet_wrap(~ phon_stress_description, labeller = label_value) + 
+  labs(
+    title = "Percentage of Open vs. Closed Syllables by Vowel Strength and Stress",
+    x = "Vowel Strength Type",
+    y = "Percentage",
+    fill = "Syllable Type"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("open" = "#4CAF50", "closed" = "#FFC107")) + # Custom colors
+  geom_text(aes(label = sprintf("%.1f%%", percentage)), 
+            position = position_dodge(width = 0.8), 
+            vjust = -0.5, size = 3) + # Add percentage labels on bars
+  theme(
+    plot.title = element_text(hjust = 0.5), # Center title
+    legend.position = "bottom" # Move legend to bottom
+  )
+
+ggplot(spoken_results, aes(x = vowel_strength_type, y = percentage, fill = syl_open_closed)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
+  facet_wrap(~ phon_stress_description, labeller = label_value) + 
+  labs(
+    title = "Percentage of Open vs. Closed Syllables by Vowel Strength and Stress",
+    x = "Vowel Strength Type",
+    y = "Percentage",
+    fill = "Syllable Type"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("open" = "#4CAF50", "closed" = "#FFC107")) + # Custom colors
+  geom_text(aes(label = sprintf("%.1f%%", percentage)), 
+            position = position_dodge(width = 0.8), 
+            vjust = -0.5, size = 3) + # Add percentage labels on bars
+  theme(
+    plot.title = element_text(hjust = 0.5), # Center title
+    legend.position = "bottom" # Move legend to bottom
+  )
