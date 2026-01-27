@@ -52,7 +52,7 @@ def process_wordlist_from_file_non_interactive(filename="wordlist.txt"):
         sys.exit() # Terminate script execution
 
 # Call the non-interactive function to get the text data
-text_data_from_file = process_wordlist_from_file_non_interactive("wordlist.txt")
+text_data_from_file = process_wordlist_from_file_non_interactive("new-wordlist.txt")
 
 
 # Process each word from the file content

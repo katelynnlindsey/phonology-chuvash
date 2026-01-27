@@ -736,10 +736,47 @@ token_counts
 
 # WRITTEN CORPUS
 
-zheltov_corpus <- read.csv("~/GitHub/phonology-chuvash/wordlists/chuvash_vowel_data.csv")
+zheltov_corpus <- read.csv("~/GitHub/phonology-chuvash/wordlists/zheltov_corpus.csv")
 
-strong_vowels <- c("a", "i", "y", "e", "u")
-weak_vowels <- c("ø", "ɵ", "ʉ")
+strong_vowels_regex <- "[аыуеиӳэяюоё]" # Regex to match any strong vowel
+weak_vowels_regex <- "[ӑӗ]"           # Regex to match any weak vowel
+
+get_vowel_sequence_R <- function(word_str) {
+  if (is.na(word_str) || !is.character(word_str)) {
+    return(NA_character_) # Handle NA or non-string inputs
+  }
+  
+  # 1. Extract all vowels
+  # We use str_extract_all and unlist to get a vector of all individual vowel characters
+  all_vowels <- unlist(str_extract_all(word_str, paste0(strong_vowels_regex, "|", weak_vowels_regex)))
+  
+  if (length(all_vowels) == 0) {
+    return("") # If no vowels found, return an empty string
+  }
+  
+  # 2. Replace strong vowels with 'S' and weak vowels with 'W'
+  vowel_sequence_list <- character(length(all_vowels))
+  for (i in seq_along(all_vowels)) {
+    char <- all_vowels[i]
+    if (str_detect(char, strong_vowels_regex)) {
+      vowel_sequence_list[i] <- 'S'
+    } else if (str_detect(char, weak_vowels_regex)) {
+      vowel_sequence_list[i] <- 'W'
+    }
+  }
+  
+  # 3. Join them into a single string
+  return(paste0(vowel_sequence_list, collapse = ""))
+}
+
+zheltov_corpus <- zheltov_corpus %>%
+  rowwise() %>% # Process row by row for string operations
+  mutate(vowel_sequence = get_vowel_sequence_R(word)) %>%
+  ungroup() # Remove rowwise grouping after mutation
+
+
+strong_vowels <- c("a", "i", "y", "e", "u", "ʉ")
+weak_vowels <- c("ø", "ɵ")
 
 zheltov_corpus <- zheltov_corpus %>%
   mutate(
@@ -804,7 +841,6 @@ token_counts <- zheltov_corpus %>%
 token_counts
 
 written_results <- zheltov_corpus %>%
-  #filter(sidx == "1") %>%
   group_by(phon_stress_description, vowel_strength_type, syl_open_closed) %>%
   summarise(
     count = n(),
@@ -867,3 +903,84 @@ ggplot(spoken_results, aes(x = vowel_strength_type, y = percentage, fill = syl_o
     plot.title = element_text(hjust = 0.5), # Center title
     legend.position = "bottom" # Move legend to bottom
   )
+
+
+coda_by_vowel_sequence <- zheltov_corpus %>%
+  #filter(sN == "3") %>%
+  group_by(syl_open_closed,syl_pos,phon_stress) %>%
+  summarise(
+    count = n(),
+    .groups = 'drop' # Drop grouping after summarizing
+  ) %>%
+  group_by(syl_pos,phon_stress) %>%
+  mutate(
+    percentage = (count / sum(count)) * 100
+  )
+
+ggplot(coda_by_vowel_sequence, aes(x = phon_stress, y = percentage, fill = syl_open_closed)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
+  facet_wrap(~ syl_pos, labeller = label_value) + 
+  labs(
+    title = "Percentage of Open vs. Closed Syllables by Vowel Strength and Stress",
+    x = "Vowel Strength Type",
+    y = "Percentage",
+    fill = "Syllable Type"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("open" = "#4CAF50", "closed" = "#FFC107")) + # Custom colors
+  geom_text(aes(label = sprintf("%.1f%%", percentage)), 
+            position = position_dodge(width = 0.8), 
+            vjust = -0.5, size = 3) + # Add percentage labels on bars
+  theme(
+    plot.title = element_text(hjust = 0.5), # Center title
+    legend.position = "bottom" # Move legend to bottom
+  )
+
+# PLOT stressed vs unstressed vowel means
+
+mean_vowel_acoustics <- filtered_df %>%
+  group_by(label, vowel_strength_type, phon_stress) %>%
+  summarise(
+    mean_F1 = mean(F1, na.rm = TRUE),
+    mean_F2 = mean(F2, na.rm = TRUE),
+    .groups = 'drop'
+  )
+
+# --- 4. Create the Plot ---
+vowel_plot <- ggplot(mean_vowel_acoustics, aes(x = mean_F2, y = mean_F1)) +
+  # Connect stressed to unstressed means for each vowel
+  geom_line(aes(group = vowel_type_label, color = vowel_type_label),
+            arrow = arrow(length = unit(0.2, "cm"), ends = "last", type = "closed"),
+            size = 0.8) +
+  # Plot points for stressed and unstressed means
+  geom_point(aes(shape = stress_status, color = vowel_type_label), size = 4) +
+  # Add vowel labels, positioned relative to the overall mean of each vowel's points
+  geom_text(data = mean_vowel_acoustics %>% group_by(vowel_type_label) %>%
+              summarise(x = mean(mean_F2), y = mean(mean_F1), .groups = 'drop'),
+            aes(x = x, y = y, label = vowel_type_label),
+            nudge_y = -30, size = 4, fontface = "bold", color = "black") + # Adjust nudge_y for better placement
+  
+  # Reverse axes for standard vowel plot orientation
+  scale_y_reverse(name = "F1 (Hz)") +
+  scale_x_reverse(name = "F2 (Hz)") +
+  
+  # Customize colors and shapes
+  scale_color_brewer(palette = "Paired", name = "Vowel Type") +
+  scale_shape_manual(values = c("Stressed" = 19, "Unstressed" = 17), name = "Stress Status") + # Solid circle for stressed, solid triangle for unstressed
+  
+  # Add a title and theme
+  labs(
+    title = "Mean F1 and F2 for Stressed vs. Unstressed Chuvash Vowels",
+    subtitle = "Lines show shift from stressed (circle) to unstressed (triangle) positions"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5),
+    legend.position = "right",
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(colour = "black", fill=NA, size=1) # Add a border around the plot area
+  )
+
+# Print the plot
+print(vowel_plot)
