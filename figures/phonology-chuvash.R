@@ -938,7 +938,29 @@ ggplot(coda_by_vowel_sequence, aes(x = phon_stress, y = percentage, fill = syl_o
 
 # PLOT stressed vs unstressed vowel means
 
-mean_vowel_acoustics <- filtered_df %>%
+palatal_segments <- c("J","SH","ɕ","ɕː","tʃ","ʃː")
+palatal_pattern <- paste(palatal_segments, collapse = "|")
+
+non_palatal_data <- filtered_df %>%
+  mutate(
+    pre_is_palatal = str_detect(pre_seg, palatal_pattern),
+    context_type = case_when(
+      pre_is_palatal ~ "Palatal Context",
+      TRUE ~ "Non-Palatal Context"
+    )
+  ) %>%
+  filter(context_type == "Non-Palatal Context") %>%
+  select(label, F1, F2,pre_seg,word)
+
+mean_vowel_acoustics <- df %>%
+  mutate(
+    pre_is_palatal = str_detect(pre_seg, palatal_pattern),
+    context_type = case_when(
+      pre_is_palatal ~ "Palatal Context",
+      TRUE ~ "Non-Palatal Context"
+    )
+  ) %>%
+  filter(context_type == "Non-Palatal Context") %>%
   group_by(label, vowel_strength_type, phon_stress) %>%
   summarise(
     mean_F1 = mean(F1, na.rm = TRUE),
@@ -949,15 +971,15 @@ mean_vowel_acoustics <- filtered_df %>%
 # --- 4. Create the Plot ---
 vowel_plot <- ggplot(mean_vowel_acoustics, aes(x = mean_F2, y = mean_F1)) +
   # Connect stressed to unstressed means for each vowel
-  geom_line(aes(group = vowel_type_label, color = vowel_type_label),
+  geom_line(aes(group = label, color = label),
             arrow = arrow(length = unit(0.2, "cm"), ends = "last", type = "closed"),
             size = 0.8) +
   # Plot points for stressed and unstressed means
-  geom_point(aes(shape = stress_status, color = vowel_type_label), size = 4) +
+  geom_point(aes(shape = phon_stress, color = vowel_strength_type), size = 4) +
   # Add vowel labels, positioned relative to the overall mean of each vowel's points
-  geom_text(data = mean_vowel_acoustics %>% group_by(vowel_type_label) %>%
+  geom_text(data = mean_vowel_acoustics %>% group_by(vowel_strength_type) %>%
               summarise(x = mean(mean_F2), y = mean(mean_F1), .groups = 'drop'),
-            aes(x = x, y = y, label = vowel_type_label),
+            aes(x = x, y = y, label = vowel_strength_type),
             nudge_y = -30, size = 4, fontface = "bold", color = "black") + # Adjust nudge_y for better placement
   
   # Reverse axes for standard vowel plot orientation
@@ -984,3 +1006,45 @@ vowel_plot <- ggplot(mean_vowel_acoustics, aes(x = mean_F2, y = mean_F1)) +
 
 # Print the plot
 print(vowel_plot)
+
+vowel_plot_revised <- ggplot(mean_vowel_acoustics, aes(x = mean_F2, y = mean_F1)) +
+  # Lines connecting stressed to unstressed means for each vowel, colored by Vowel Strength Type
+  geom_line(aes(group = label, color = label),
+            arrow = arrow(length = unit(0.2, "cm"), ends = "last", type = "closed"),
+            size = 0.8) +
+  # Points for stressed and unstressed means, colored by Vowel Strength Type
+  geom_point(aes(shape = phon_stress, color = vowel_strength_type), size = 4) +
+  
+  # Add individual vowel labels for *each* point (stressed and unstressed)
+  # Nudge positions are adjusted to prevent overlap and make labels readable.
+  geom_text(aes(label = label),
+            nudge_x = ifelse(mean_vowel_acoustics$phon_stress == "Stressed", 50, -50),
+            nudge_y = ifelse(mean_vowel_acoustics$phon_stress == "Stressed", 30, -30),
+            size = 3.5, fontface = "bold", color = "black") + # Adjust size and style as needed
+  
+  # Reverse axes for standard vowel plot orientation
+  scale_y_reverse(name = "F1 (Hz)") +
+  scale_x_reverse(name = "F2 (Hz)") +
+  
+  # Customize colors for Vowel Strength Type (using light/dark blue as in your plot)
+  scale_color_manual(values = c("Strong" = "#A6CEE3", "Weak" = "#1F78B4"), name = "Vowel Strength Type") +
+  # Customize shapes for Stress Status
+  scale_shape_manual(values = c("Stressed" = 19, "Unstressed" = 17), name = "Stress Status") + # Solid circle for stressed, solid triangle for unstressed
+  
+  # Add a title and theme
+  labs(
+    title = "Mean F1 and F2 for Stressed vs. Unstressed Chuvash Vowels",
+    subtitle = "Arrows show shift from stressed (circle) to unstressed (triangle) positions"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5),
+    legend.position = "right",
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(colour = "black", fill=NA, size=1) # Add a border around the plot area
+  )
+
+# Print the revised plot
+print(vowel_plot_revised)
+
