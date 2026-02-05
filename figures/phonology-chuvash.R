@@ -1048,3 +1048,63 @@ vowel_plot_revised <- ggplot(mean_vowel_acoustics, aes(x = mean_F2, y = mean_F1)
 # Print the revised plot
 print(vowel_plot_revised)
 
+
+library(tidyverse)
+
+# 1. Load your data (assuming it's in a csv called 'f0_data.csv')
+df <- read.csv("~/GitHub/phonology-chuvash/contour-clustering/output.csv")
+
+# 2. Split the interval_label into 5 separate columns
+df_clean <- df %>%
+  # Split the label into 5 parts
+  separate(interval_label, 
+           into = c("vowel", "syll_num", "vowel_cat", "word_cat", "token_cat"), 
+           sep = ";", 
+           fill = "right") %>%
+  # FORCE f0 to be numeric (fixes the NA issue)
+  mutate(f0 = as.numeric(as.character(f0))) %>%
+  # Remove rows where f0 is missing or 0 (common in pitch tracking)
+  filter(!is.na(f0), f0 > 0)
+
+# 3. Calculate summary stats
+df_summary <- df_clean %>%
+  dplyr::group_by(token_cat, stepnumber) %>% 
+  dplyr::summarise(
+    mean_f0 = mean(f0, na.rm = TRUE),
+    sd_f0 = sd(f0, na.rm = TRUE),
+    n = n(),
+    .groups = "drop"
+  ) %>%
+  group_by(token_cat) %>%
+  mutate(facet_label = paste0(token_cat, " (n = ", max(n), ")")) %>%
+  ungroup()
+
+# NEW: Calculate the Delta (Difference) for each facet
+df_delta <- df_summary %>%
+  filter(stepnumber %in% c(1, 20)) %>%
+  select(facet_label, stepnumber, mean_f0) %>%
+  pivot_wider(names_from = stepnumber, names_prefix = "step", values_from = mean_f0) %>%
+  mutate(diff_hz = round(step20 - step1, 1),
+         label_text = paste0("Δ: ", diff_hz, " Hz"))
+
+# NEW: Calculate the Grand Totals
+total_n <- sum(df_summary$n) / 20 
+total_dyad <- total_n / 2
+
+# 4. Plotting
+ggplot(df_summary, aes(x = stepnumber, y = mean_f0)) +
+  geom_ribbon(aes(ymin = mean_f0 - sd_f0, ymax = mean_f0 + sd_f0), 
+              fill = "gray80", alpha = 0.5) +
+  geom_line(color = "blue", size = 1) +
+  # ADD THE DELTA LABEL
+  geom_label(data = df_delta, 
+             aes(x = 10, y = Inf, label = label_text), 
+             vjust = 1.5, size = 3.5, label.size = 0.25) +
+  facet_wrap(~facet_label) + 
+  theme_minimal() +
+  labs(
+    title = paste0("Mean F0 Contour (N = ", total_n, " vowels / ", total_dyad, " dyads)"),
+    subtitle = "Delta (Δ) shows mean Hz change from Step 1 to Step 20",
+    x = "Normalized Time (Step Number)",
+    y = "F0 (Hz)"
+  )
