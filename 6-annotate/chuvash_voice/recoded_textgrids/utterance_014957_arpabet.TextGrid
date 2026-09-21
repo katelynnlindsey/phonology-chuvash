@@ -1,0 +1,76 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 0.86169
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 0.86169
+		intervals: size = 3
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.15
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.15
+				xmax = 0.81
+				text = "T.EHL.EHNM.'EYL.EY"
+			intervals [3]:
+				xmin = 0.81
+				xmax = 0.86169
+				text = "SIL"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 0.86169
+		intervals: size = 11
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.15
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.15
+				xmax = 0.21
+				text = "T"
+			intervals [3]:
+				xmin = 0.21
+				xmax = 0.26
+				text = "EH0 [sidx=1/sN=4/pos=initial/oc=open]"
+			intervals [4]:
+				xmin = 0.26
+				xmax = 0.3
+				text = "L"
+			intervals [5]:
+				xmin = 0.3
+				xmax = 0.43
+				text = "EH0 [sidx=2/sN=4/pos=med/oc=closed]"
+			intervals [6]:
+				xmin = 0.43
+				xmax = 0.47
+				text = "N"
+			intervals [7]:
+				xmin = 0.47
+				xmax = 0.5
+				text = "M"
+			intervals [8]:
+				xmin = 0.5
+				xmax = 0.58
+				text = "EY0 [sidx=3/sN=4/pos=med/oc=open]"
+			intervals [9]:
+				xmin = 0.58
+				xmax = 0.73
+				text = "L"
+			intervals [10]:
+				xmin = 0.73
+				xmax = 0.81
+				text = "EY1 [sidx=4/sN=4/pos=final/oc=open]"
+			intervals [11]:
+				xmin = 0.81
+				xmax = 0.86169
+				text = "SIL"

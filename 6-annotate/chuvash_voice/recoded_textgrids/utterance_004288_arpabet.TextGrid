@@ -1,0 +1,120 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 2.1
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 2.1
+		intervals: size = 6
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.38
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.38
+				xmax = 0.55
+				text = "'M.EHN"
+			intervals [3]:
+				xmin = 0.55
+				xmax = 0.97
+				text = "T.UWM.'AAL.AA"
+			intervals [4]:
+				xmin = 0.97
+				xmax = 1.14
+				text = "'HH.AA"
+			intervals [5]:
+				xmin = 1.14
+				xmax = 1.6
+				text = "M.AAL.'AAL.AA"
+			intervals [6]:
+				xmin = 1.6
+				xmax = 2.1
+				text = "SIL"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 2.1
+		intervals: size = 19
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.38
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.38
+				xmax = 0.41
+				text = "M"
+			intervals [3]:
+				xmin = 0.41
+				xmax = 0.47
+				text = "EH1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [4]:
+				xmin = 0.47
+				xmax = 0.55
+				text = "N"
+			intervals [5]:
+				xmin = 0.55
+				xmax = 0.6
+				text = "T"
+			intervals [6]:
+				xmin = 0.6
+				xmax = 0.66
+				text = "UW0 [sidx=1/sN=3/pos=initial/oc=open]"
+			intervals [7]:
+				xmin = 0.66
+				xmax = 0.74
+				text = "M"
+			intervals [8]:
+				xmin = 0.74
+				xmax = 0.83
+				text = "AA0 [sidx=2/sN=3/pos=med/oc=open]"
+			intervals [9]:
+				xmin = 0.83
+				xmax = 0.88
+				text = "L"
+			intervals [10]:
+				xmin = 0.88
+				xmax = 0.97
+				text = "AA1 [sidx=3/sN=3/pos=final/oc=open]"
+			intervals [11]:
+				xmin = 0.97
+				xmax = 1.06
+				text = "HH"
+			intervals [12]:
+				xmin = 1.06
+				xmax = 1.14
+				text = "AA1 [sidx=1/sN=1/pos=initial/oc=open]"
+			intervals [13]:
+				xmin = 1.14
+				xmax = 1.2
+				text = "M"
+			intervals [14]:
+				xmin = 1.2
+				xmax = 1.26
+				text = "AA0 [sidx=1/sN=3/pos=initial/oc=open]"
+			intervals [15]:
+				xmin = 1.26
+				xmax = 1.33
+				text = "L"
+			intervals [16]:
+				xmin = 1.33
+				xmax = 1.41
+				text = "AA0 [sidx=2/sN=3/pos=med/oc=open]"
+			intervals [17]:
+				xmin = 1.41
+				xmax = 1.52
+				text = "L"
+			intervals [18]:
+				xmin = 1.52
+				xmax = 1.6
+				text = "AA1 [sidx=3/sN=3/pos=final/oc=open]"
+			intervals [19]:
+				xmin = 1.6
+				xmax = 2.1
+				text = "SIL"

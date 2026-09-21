@@ -1,0 +1,76 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 1.26
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 1.26
+		intervals: size = 3
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.35
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.35
+				xmax = 0.67
+				text = "'T.EHR.EHS"
+			intervals [3]:
+				xmin = 0.67
+				xmax = 1.26
+				text = "S.'AHM.AAHH"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 1.26
+		intervals: size = 11
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.35
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.35
+				xmax = 0.42
+				text = "T"
+			intervals [3]:
+				xmin = 0.42
+				xmax = 0.51
+				text = "EH1 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [4]:
+				xmin = 0.51
+				xmax = 0.55
+				text = "R"
+			intervals [5]:
+				xmin = 0.55
+				xmax = 0.62
+				text = "EH0 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [6]:
+				xmin = 0.62
+				xmax = 0.67
+				text = "S"
+			intervals [7]:
+				xmin = 0.67
+				xmax = 0.76
+				text = "S"
+			intervals [8]:
+				xmin = 0.76
+				xmax = 0.82
+				text = "AH0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [9]:
+				xmin = 0.82
+				xmax = 0.92
+				text = "M"
+			intervals [10]:
+				xmin = 0.92
+				xmax = 1.02
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [11]:
+				xmin = 1.02
+				xmax = 1.26
+				text = "HH"

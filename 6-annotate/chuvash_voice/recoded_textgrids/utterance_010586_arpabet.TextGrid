@@ -1,0 +1,200 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 2.82
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 2.82
+		intervals: size = 8
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.29
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.29
+				xmax = 0.52
+				text = "'EYP.EH"
+			intervals [3]:
+				xmin = 0.52
+				xmax = 0.9
+				text = "ɕ.'AAVN.AA"
+			intervals [4]:
+				xmin = 0.9
+				xmax = 1.03
+				text = "'UWN"
+			intervals [5]:
+				xmin = 1.03
+				xmax = 1.33
+				text = "tʃ.'UWHHN.EY"
+			intervals [6]:
+				xmin = 1.33
+				xmax = 1.83
+				text = "'L.AAJ.AHχː.AHN"
+			intervals [7]:
+				xmin = 1.83
+				xmax = 2.14
+				text = "T.'AAts.AA"
+			intervals [8]:
+				xmin = 2.14
+				xmax = 2.82
+				text = "P.AAR.'AAJM.AAR.AHM"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 2.82
+		intervals: size = 37
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.29
+				text = "SIL"
+			intervals [2]:
+				xmin = 0.29
+				xmax = 0.41
+				text = "EY1 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [3]:
+				xmin = 0.41
+				xmax = 0.48
+				text = "P"
+			intervals [4]:
+				xmin = 0.48
+				xmax = 0.52
+				text = "EH0 [sidx=2/sN=2/pos=final/oc=open]"
+			intervals [5]:
+				xmin = 0.52
+				xmax = 0.62
+				text = "ɕ"
+			intervals [6]:
+				xmin = 0.62
+				xmax = 0.71
+				text = "AA0 [sidx=1/sN=2/pos=initial/oc=closed]"
+			intervals [7]:
+				xmin = 0.71
+				xmax = 0.76
+				text = "V"
+			intervals [8]:
+				xmin = 0.76
+				xmax = 0.81
+				text = "N"
+			intervals [9]:
+				xmin = 0.81
+				xmax = 0.9
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=open]"
+			intervals [10]:
+				xmin = 0.9
+				xmax = 0.95
+				text = "UW1 [sidx=1/sN=1/pos=initial/oc=closed]"
+			intervals [11]:
+				xmin = 0.95
+				xmax = 1.03
+				text = "N"
+			intervals [12]:
+				xmin = 1.03
+				xmax = 1.07
+				text = "tʃ"
+			intervals [13]:
+				xmin = 1.07
+				xmax = 1.12
+				text = "UW0 [sidx=1/sN=2/pos=initial/oc=closed]"
+			intervals [14]:
+				xmin = 1.12
+				xmax = 1.2
+				text = "HH"
+			intervals [15]:
+				xmin = 1.2
+				xmax = 1.26
+				text = "N"
+			intervals [16]:
+				xmin = 1.26
+				xmax = 1.33
+				text = "EY1 [sidx=2/sN=2/pos=final/oc=open]"
+			intervals [17]:
+				xmin = 1.33
+				xmax = 1.42
+				text = "L"
+			intervals [18]:
+				xmin = 1.42
+				xmax = 1.52
+				text = "AA1 [sidx=1/sN=3/pos=initial/oc=open]"
+			intervals [19]:
+				xmin = 1.52
+				xmax = 1.57
+				text = "J"
+			intervals [20]:
+				xmin = 1.57
+				xmax = 1.64
+				text = "AH0 [sidx=2/sN=3/pos=med/oc=open]"
+			intervals [21]:
+				xmin = 1.64
+				xmax = 1.71
+				text = "χː"
+			intervals [22]:
+				xmin = 1.71
+				xmax = 1.76
+				text = "AH0 [sidx=3/sN=3/pos=final/oc=closed]"
+			intervals [23]:
+				xmin = 1.76
+				xmax = 1.83
+				text = "N"
+			intervals [24]:
+				xmin = 1.83
+				xmax = 1.89
+				text = "T"
+			intervals [25]:
+				xmin = 1.89
+				xmax = 1.97
+				text = "AA0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [26]:
+				xmin = 1.97
+				xmax = 2.08
+				text = "ts"
+			intervals [27]:
+				xmin = 2.08
+				xmax = 2.14
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=open]"
+			intervals [28]:
+				xmin = 2.14
+				xmax = 2.23
+				text = "P"
+			intervals [29]:
+				xmin = 2.23
+				xmax = 2.3
+				text = "AA0 [sidx=1/sN=4/pos=initial/oc=open]"
+			intervals [30]:
+				xmin = 2.3
+				xmax = 2.33
+				text = "R"
+			intervals [31]:
+				xmin = 2.33
+				xmax = 2.38
+				text = "AA0 [sidx=2/sN=4/pos=med/oc=closed]"
+			intervals [32]:
+				xmin = 2.38
+				xmax = 2.43
+				text = "J"
+			intervals [33]:
+				xmin = 2.43
+				xmax = 2.53
+				text = "M"
+			intervals [34]:
+				xmin = 2.53
+				xmax = 2.63
+				text = "AA1 [sidx=3/sN=4/pos=med/oc=open]"
+			intervals [35]:
+				xmin = 2.63
+				xmax = 2.67
+				text = "R"
+			intervals [36]:
+				xmin = 2.67
+				xmax = 2.74
+				text = "AH0 [sidx=4/sN=4/pos=final/oc=closed]"
+			intervals [37]:
+				xmin = 2.74
+				xmax = 2.82
+				text = "M"

@@ -1,0 +1,104 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 1.86
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 1.86
+		intervals: size = 2
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.85
+				text = "'M.EHNSH.EHN"
+			intervals [2]:
+				xmin = 0.85
+				xmax = 1.86
+				text = "T.UWNS.AHHHL.AAT.'AHRHH.AA"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 1.86
+		intervals: size = 19
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.48
+				text = "M"
+			intervals [2]:
+				xmin = 0.48
+				xmax = 0.53
+				text = "EH1 [sidx=1/sN=2/pos=initial/oc=closed]"
+			intervals [3]:
+				xmin = 0.53
+				xmax = 0.61
+				text = "N"
+			intervals [4]:
+				xmin = 0.61
+				xmax = 0.69
+				text = "SH"
+			intervals [5]:
+				xmin = 0.69
+				xmax = 0.77
+				text = "EH0 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [6]:
+				xmin = 0.77
+				xmax = 0.85
+				text = "N"
+			intervals [7]:
+				xmin = 0.85
+				xmax = 0.91
+				text = "T"
+			intervals [8]:
+				xmin = 0.91
+				xmax = 0.95
+				text = "UW0 [sidx=1/sN=5/pos=initial/oc=closed]"
+			intervals [9]:
+				xmin = 0.95
+				xmax = 1.02
+				text = "N"
+			intervals [10]:
+				xmin = 1.02
+				xmax = 1.09
+				text = "S"
+			intervals [11]:
+				xmin = 1.09
+				xmax = 1.15
+				text = "AH0 [sidx=2/sN=5/pos=med/oc=closed]"
+			intervals [12]:
+				xmin = 1.15
+				xmax = 1.24
+				text = "HH"
+			intervals [13]:
+				xmin = 1.24
+				xmax = 1.29
+				text = "L"
+			intervals [14]:
+				xmin = 1.29
+				xmax = 1.37
+				text = "AA0 [sidx=3/sN=5/pos=med/oc=open]"
+			intervals [15]:
+				xmin = 1.37
+				xmax = 1.43
+				text = "T"
+			intervals [16]:
+				xmin = 1.43
+				xmax = 1.46
+				text = "AH0 [sidx=4/sN=5/pos=med/oc=closed]"
+			intervals [17]:
+				xmin = 1.46
+				xmax = 1.52
+				text = "R"
+			intervals [18]:
+				xmin = 1.52
+				xmax = 1.6
+				text = "HH"
+			intervals [19]:
+				xmin = 1.6
+				xmax = 1.86
+				text = "AA1 [sidx=5/sN=5/pos=final/oc=open]"

@@ -1,0 +1,116 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 7.483
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 7.483
+		intervals: size = 5
+			intervals [1]:
+				xmin = 0.0
+				xmax = 1.11
+				text = "spn"
+			intervals [2]:
+				xmin = 1.11
+				xmax = 5.58
+				text = "HH.'AHJ.AAR"
+			intervals [3]:
+				xmin = 5.58
+				xmax = 6.03
+				text = "P.'EYR.EYts"
+			intervals [4]:
+				xmin = 6.03
+				xmax = 6.73
+				text = "SIL"
+			intervals [5]:
+				xmin = 6.73
+				xmax = 7.483
+				text = "P.OWM.'IYD.OWR"
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 7.483
+		intervals: size = 19
+			intervals [1]:
+				xmin = 0.0
+				xmax = 1.11
+				text = "spn"
+			intervals [2]:
+				xmin = 1.11
+				xmax = 3.27
+				text = "HH"
+			intervals [3]:
+				xmin = 3.27
+				xmax = 3.34
+				text = "AH0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [4]:
+				xmin = 3.34
+				xmax = 3.45
+				text = "J"
+			intervals [5]:
+				xmin = 3.45
+				xmax = 3.62
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [6]:
+				xmin = 3.62
+				xmax = 5.58
+				text = "R"
+			intervals [7]:
+				xmin = 5.58
+				xmax = 5.63
+				text = "P"
+			intervals [8]:
+				xmin = 5.63
+				xmax = 5.85
+				text = "EY0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [9]:
+				xmin = 5.85
+				xmax = 5.9
+				text = "R"
+			intervals [10]:
+				xmin = 5.9
+				xmax = 6.0
+				text = "EY1 [sidx=2/sN=2/pos=final/oc=open]"
+			intervals [11]:
+				xmin = 6.0
+				xmax = 6.03
+				text = "ts"
+			intervals [12]:
+				xmin = 6.03
+				xmax = 6.73
+				text = "SIL"
+			intervals [13]:
+				xmin = 6.73
+				xmax = 6.79
+				text = "P"
+			intervals [14]:
+				xmin = 6.79
+				xmax = 6.88
+				text = "OW0 [sidx=1/sN=3/pos=initial/oc=open]"
+			intervals [15]:
+				xmin = 6.88
+				xmax = 6.96
+				text = "M"
+			intervals [16]:
+				xmin = 6.96
+				xmax = 7.02
+				text = "IY0 [sidx=2/sN=3/pos=med/oc=open]"
+			intervals [17]:
+				xmin = 7.02
+				xmax = 7.11
+				text = "D"
+			intervals [18]:
+				xmin = 7.11
+				xmax = 7.3
+				text = "OW1 [sidx=3/sN=3/pos=final/oc=closed]"
+			intervals [19]:
+				xmin = 7.3
+				xmax = 7.483
+				text = "R"

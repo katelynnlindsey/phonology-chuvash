@@ -1,0 +1,108 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 3.86963
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 3.86963
+		intervals: size = 7
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.66
+				text = ""
+			intervals [2]:
+				xmin = 0.66
+				xmax = 0.99
+				text = "HH.'UWS.AAN"
+			intervals [3]:
+				xmin = 0.99
+				xmax = 1.36
+				text = "spn"
+			intervals [4]:
+				xmin = 1.36
+				xmax = 1.85
+				text = "spn"
+			intervals [5]:
+				xmin = 1.85
+				xmax = 2.34
+				text = "spn"
+			intervals [6]:
+				xmin = 2.34
+				xmax = 2.99
+				text = "IYRT.'EYT"
+			intervals [7]:
+				xmin = 2.99
+				xmax = 3.86963
+				text = ""
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 3.86963
+		intervals: size = 15
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.66
+				text = ""
+			intervals [2]:
+				xmin = 0.66
+				xmax = 0.75
+				text = "HH"
+			intervals [3]:
+				xmin = 0.75
+				xmax = 0.81
+				text = "UW0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [4]:
+				xmin = 0.81
+				xmax = 0.89
+				text = "S"
+			intervals [5]:
+				xmin = 0.89
+				xmax = 0.96
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [6]:
+				xmin = 0.96
+				xmax = 0.99
+				text = "N"
+			intervals [7]:
+				xmin = 0.99
+				xmax = 1.36
+				text = "spn"
+			intervals [8]:
+				xmin = 1.36
+				xmax = 1.85
+				text = "spn"
+			intervals [9]:
+				xmin = 1.85
+				xmax = 2.34
+				text = "spn"
+			intervals [10]:
+				xmin = 2.34
+				xmax = 2.63
+				text = "IY0 [sidx=1/sN=2/pos=initial/oc=closed]"
+			intervals [11]:
+				xmin = 2.63
+				xmax = 2.64
+				text = "R"
+			intervals [12]:
+				xmin = 2.64
+				xmax = 2.69
+				text = "T"
+			intervals [13]:
+				xmin = 2.69
+				xmax = 2.76
+				text = "EY1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [14]:
+				xmin = 2.76
+				xmax = 2.99
+				text = "T"
+			intervals [15]:
+				xmin = 2.99
+				xmax = 3.86963
+				text = ""

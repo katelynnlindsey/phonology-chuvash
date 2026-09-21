@@ -1,0 +1,92 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 3.70162
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 3.70162
+		intervals: size = 7
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.7
+				text = ""
+			intervals [2]:
+				xmin = 0.7
+				xmax = 1.34
+				text = "spn"
+			intervals [3]:
+				xmin = 1.34
+				xmax = 1.86
+				text = "spn"
+			intervals [4]:
+				xmin = 1.86
+				xmax = 2.29
+				text = "spn"
+			intervals [5]:
+				xmin = 2.29
+				xmax = 2.63
+				text = "spn"
+			intervals [6]:
+				xmin = 2.63
+				xmax = 3.08
+				text = "N.'UWM.AAJ"
+			intervals [7]:
+				xmin = 3.08
+				xmax = 3.70162
+				text = ""
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 3.70162
+		intervals: size = 11
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.7
+				text = ""
+			intervals [2]:
+				xmin = 0.7
+				xmax = 1.34
+				text = "spn"
+			intervals [3]:
+				xmin = 1.34
+				xmax = 1.86
+				text = "spn"
+			intervals [4]:
+				xmin = 1.86
+				xmax = 2.29
+				text = "spn"
+			intervals [5]:
+				xmin = 2.29
+				xmax = 2.63
+				text = "spn"
+			intervals [6]:
+				xmin = 2.63
+				xmax = 2.69
+				text = "N"
+			intervals [7]:
+				xmin = 2.69
+				xmax = 2.74
+				text = "UW0 [sidx=1/sN=2/pos=initial/oc=open]"
+			intervals [8]:
+				xmin = 2.74
+				xmax = 2.89
+				text = "M"
+			intervals [9]:
+				xmin = 2.89
+				xmax = 3.0
+				text = "AA1 [sidx=2/sN=2/pos=final/oc=closed]"
+			intervals [10]:
+				xmin = 3.0
+				xmax = 3.08
+				text = "J"
+			intervals [11]:
+				xmin = 3.08
+				xmax = 3.70162
+				text = ""
