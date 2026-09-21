@@ -1,0 +1,1 @@
+mfa align /path/to/your/corpus_directory /path/to/your/dictionary.txt /path/to/your/output_aligned_corpus
