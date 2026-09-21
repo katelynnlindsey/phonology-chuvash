@@ -2,7 +2,7 @@ pacman::p_load(
   tidyverse, scales, rcompanion, gmodels, vowels, graphics,
   ggplot2, ggpubr, phonR, hrbrthemes, viridis, forcats,
   patchwork, partykit, lme4, lmerTest, rstatix, cowplot,
-  emmeans, ggh4x, arrow, purrr, stringr
+  emmeans, ggh4x, arrow, purrr, stringr, data.table
 )
 
 # --- 1. GLOBAL SETTINGS & FUNCTIONS ---
@@ -190,6 +190,146 @@ combined_final <- combined %>%
     -optimized,
     -jumpkilleffect
     )
+
+words_long  <- read.csv("~/GitHub/phonology-chuvash/contour-clustering/output-words.csv")
+phrases_long <- read.csv("~/GitHub/phonology-chuvash/contour-clustering/output-phrases.csv")
+
+# ---- Vowel inventories ---------------------------------------------------
+
+full_A    <- c("a", "e", "а", "ÿ", "е", "и", "у", "ӱ", "ӳ", "ы", "ю", "я")
+reduced_A <- c("ă", "ĕ", "ӑ", "ӗ")
+
+full_B    <- c("a", "e", "а", "ÿ", "е", "и", "у", "ӱ", "ӳ", "ю", "я")
+reduced_B <- c("ă", "ĕ", "ӑ", "ӗ", "ы")
+
+full_C    <- c("a", "e", "а", "е", "и", "у", "ю", "я")
+reduced_C <- c("ă", "ĕ", "ӑ", "ӗ", "ы", "ӱ", "ӳ", "ÿ")
+
+loan      <- c("o", "u", "ё", "о")  # same for all three rules
+
+# ---- Helper: classify one character under a given rule -------------------
+
+make_word_cat <- function(label, full, reduced) {
+  chars <- strsplit(label, "")[[1]]
+  cats <- ifelse(chars %in% full, "F",
+                 ifelse(chars %in% reduced, "R",
+                        ifelse(chars %in% loan, "L", NA_character_)))
+  paste(cats[!is.na(cats)], collapse = "")
+}
+
+label_cats <- words_long %>%
+  distinct(interval_label) %>%
+  mutate(
+    word_cat_A = sapply(interval_label, make_word_cat, full = full_A, reduced = reduced_A),
+    word_cat_B = sapply(interval_label, make_word_cat, full = full_B, reduced = reduced_B),
+    word_cat_C = sapply(interval_label, make_word_cat, full = full_C, reduced = reduced_C)
+  )
+
+# Drop any leftover columns from previous attempts
+words_long <- words_long %>%
+  select(-any_of(c("word_cat_A", "word_cat_B", "word_cat_C",
+                   "word_cat_A.x", "word_cat_A.y",
+                   "word_cat_B.x", "word_cat_B.y",
+                   "word_cat_C.x", "word_cat_C.y")))
+
+# Check label_cats looks right before joining
+print(head(label_cats))
+
+# Then rejoin
+words_long <- words_long %>%
+  left_join(label_cats, by = "interval_label")
+
+word_metadata <- combined_final %>%
+  select(file_name, word_label, speaker_id, phrase_position, widx) %>%
+  distinct(file_name, word_label, .keep_all = TRUE) 
+
+# 2. Join this unique mapping to words_long
+words_long <- words_long %>%
+  left_join(
+    word_metadata,
+    by = c("filename" = "file_name", "interval_label" = "word_label")
+  )
+
+words_long %>%
+  filter(
+    nchar(word_cat_A) == 2,          # disyllabic: exactly 2 vowels under Rule A
+    phrase_position == "medial",
+    widx == 2,
+    !grepl("L", word_cat_A)          # no loan vowels
+  ) %>%
+  write_csv("output-words-disyllabic-medial-2.csv")
+
+# ---- Pivot to wide -------------------------------------------------------
+word_pivot_contour <- function(df) {
+  df %>%
+    # Keep only the columns needed to identify a unique segment + step
+    select(filename, interval_label, start, end, duration,
+           jumpkilleffect, interval_index, stepnumber, f0, intensity) %>%
+    pivot_wider(
+      id_cols     = c(filename, interval_label, start, end,
+                      duration, jumpkilleffect, interval_index),
+      names_from  = stepnumber,
+      values_from = c(f0, intensity),
+      names_glue  = "word_{.value}_step{stepnumber}"
+    ) %>%
+    # Sort columns so f0_step1…20 come before intensity_step1…20
+    select(filename, interval_label, start, end, duration,
+           jumpkilleffect, interval_index,
+           matches("^word_f0_step\\d+$"),
+           matches("^word_intensity_step\\d+$"))
+}
+
+phrase_pivot_contour <- function(df) {
+  df %>%
+    # Keep only the columns needed to identify a unique segment + step
+    select(filename, interval_label, start, end, duration,
+           jumpkilleffect, interval_index, stepnumber, f0, intensity) %>%
+    pivot_wider(
+      id_cols     = c(filename, interval_label, start, end,
+                      duration, jumpkilleffect, interval_index),
+      names_from  = stepnumber,
+      values_from = c(f0, intensity),
+      names_glue  = "phrase_{.value}_step{stepnumber}"
+    ) %>%
+    # Sort columns so f0_step1…20 come before intensity_step1…20
+    select(filename, interval_label, start, end, duration,
+           jumpkilleffect, interval_index,
+           matches("^phrase_f0_step\\d+$"),
+           matches("^phrase_intensity_step\\d+$"))
+}
+
+words_wide  <- word_pivot_contour(words_long)
+phrases_wide <- phrase_pivot_contour(phrases_long)
+
+words_wide <- words_wide %>%
+  rename(word_interval_label = interval_label) %>%
+  rename(word_duration = duration) %>%
+  rename(word_start = start) %>%
+  rename(word_end = end) %>%
+  rename(word_jumpkilleffect = jumpkilleffect)
+
+phrases_wide <- phrases_wide %>%
+  rename(phrase_interval_label = interval_label) %>%
+  rename(phrase_duration = duration) %>%
+  rename(phrase_start = start) %>%
+  rename(phrase_end = end) %>%
+  rename(phrase_jumpkilleffect = jumpkilleffect)
+
+combined_final <- setDT(combined_final) # change the data frame to a data table
+
+words_wide <- setDT(words_wide) # change the data frame to a data table
+
+combined_with_words <- combined_final[ # take table b
+  words_wide, # join table a
+  on = list(file_name = filename, start>=word_start, start<=word_end) # joining on these columns
+] |> 
+  setDF() # change it back to a data frame for comparison
+
+combined_with_phrases <- combined_with_words %>%
+   left_join(phrases_wide, by = c("file_name" = "filename"))
+
+combined_final <- combined_with_phrases %>%
+  filter(!is.na(label))
 
 intensity_cols <- paste0("intensity_step", 1:20)
 
@@ -1609,3 +1749,962 @@ with(quality_means, plotVowels(F1, F2, label, plot.tokens = FALSE, pch.tokens = 
                                ellipse.line=TRUE, xlim = c(3200, 600), ylim = c(1000, 200), xlab="F2 (Hz.)", ylab="F1 (Hz.)"))
 
 
+library(tidyverse)
+
+# ============================================================
+# VOWEL INVENTORIES
+# (using Rule A as canonical for written corpus classification)
+# ============================================================
+
+full_vowels    <- c("а", "е","a", "e", "i","u","y")
+reduced_vowels <- c("ø", "ɵ")
+test_vowels <- c("ʉ")
+loan_vowels    <- c("о", "ё", "o", "u")
+all_vowels     <- c(full_vowels, reduced_vowels, test_vowels, loan_vowels)
+
+classify_vowel <- function(v) {
+  case_when(
+    v %in% full_vowels    ~ "F",
+    v %in% reduced_vowels ~ "R",
+    v %in% test_vowels ~ "T",
+    v %in% loan_vowels    ~ "L",
+    TRUE                  ~ NA_character_
+  )
+}
+
+# Helper: extract first vowel character from a syllable string
+extract_vowel <- function(syl) {
+  chars <- strsplit(syl, "")[[1]]
+  vowel_chars <- chars[chars %in% all_vowels]
+  if (length(vowel_chars) == 0) NA_character_ else vowel_chars[1]
+}
+extract_vowel <- Vectorize(extract_vowel)
+
+
+# ============================================================
+# ZHELTOV CORPUS ANALYSES
+# ============================================================
+
+# The Zheltov corpus has one row per syllable with columns:
+#   label (vowel IPA), word, syllable, phon_stress, sidx, sN,
+#   syl_pos, syl_open_closed, corpus
+
+# --- Simplify syl_pos to initial / medial / final ----------
+zheltov <- zheltov_corpus %>%
+  mutate(
+    vowel_cat = classify_vowel(label),
+    position3 = case_when(
+      syl_pos == "initial_final" ~ "initial",   # monosyllables: treat as initial
+      str_detect(syl_pos, "initial") ~ "initial",
+      str_detect(syl_pos, "final")   ~ "final",
+      TRUE                           ~ "medial"
+    )
+  ) %>%
+  filter(!is.na(vowel_cat), vowel_cat != "L")   # exclude loan vowels from main analyses
+
+
+# ============================================================
+# ANALYSIS 1: Positional distribution of vowel types
+# ============================================================
+
+# Observed counts
+pos_counts <- zheltov %>%
+  count(vowel_cat, position3) %>%
+  group_by(vowel_cat) %>%
+  mutate(
+    total     = sum(n),
+    observed  = n / total
+  ) %>%
+  ungroup()
+
+# Expected counts: if vowel type and position were independent
+pos_marginals <- zheltov %>%
+  count(position3) %>%
+  mutate(expected_prop = n / sum(n))
+
+pos_distribution <- pos_counts %>%
+  left_join(pos_marginals %>% select(position3, expected_prop), by = "position3") %>%
+  mutate(
+    observed_expected_ratio = observed / expected_prop,
+    # Chi-square contribution per cell
+    expected_n = total * expected_prop,
+    chi_sq_contrib = (n - expected_n)^2 / expected_n
+  )
+
+cat("\n=== ANALYSIS 1: Positional distribution of vowel types ===\n")
+print(pos_distribution %>%
+        select(vowel_cat, position3, n, observed, expected_prop,
+               observed_expected_ratio, chi_sq_contrib) %>%
+        arrange(vowel_cat, position3))
+
+# Chi-square test: are F and R vowels distributed differently across positions?
+pos_matrix <- zheltov %>%
+  filter(vowel_cat %in% c("F", "R")) %>%
+  count(vowel_cat, position3) %>%
+  pivot_wider(names_from = position3, values_from = n, values_fill = 0) %>%
+  column_to_rownames("vowel_cat") %>%
+  as.matrix()
+
+cat("\nChi-square test (F vs R across positions):\n")
+print(chisq.test(pos_matrix))
+
+
+# ============================================================
+# ANALYSIS 2: Vowel co-occurrence patterns — observed vs. expected
+# ============================================================
+
+# Get word_category (concatenation of F/R for each vowel in order)
+# Use one row per word, reconstructing from syllable-level data
+
+word_cats <- zheltov %>%
+  filter(sN > 1) %>%                            # exclude monosyllables for now
+  arrange(word, sidx) %>%
+  group_by(word) %>%
+  summarise(
+    word_cat = paste(vowel_cat, collapse = ""),
+    sN       = first(sN),
+    .groups  = "drop"
+  ) %>%
+  filter(!str_detect(word_cat, "L"),            # exclude loan-containing words
+         !str_detect(word_cat, "NA"))
+
+# For disyllabic words: FR, RF, FF, RR
+disyl <- word_cats %>%
+  filter(sN == 2, nchar(word_cat) == 2)
+
+# Observed frequencies
+obs_disyl <- disyl %>%
+  count(word_cat) %>%
+  mutate(observed_prop = n / sum(n))
+
+# Expected frequencies under independence:
+# P(V1=F) * P(V2=F) etc., estimated from marginal vowel frequencies
+v1_freq <- zheltov %>%
+  filter(sN > 1) %>%
+  group_by(word) %>%
+  filter(sidx == min(sidx)) %>%
+  ungroup() %>%
+  count(vowel_cat) %>%
+  filter(vowel_cat %in% c("F","R","T")) %>%
+  mutate(prop = n / sum(n))
+
+v2_freq <- zheltov %>%
+  filter(sN > 1) %>%
+  group_by(word) %>%
+  filter(sidx == max(sidx)) %>%
+  ungroup() %>%
+  count(vowel_cat) %>%
+  filter(vowel_cat %in% c("F","R","T")) %>%
+  mutate(prop = n / sum(n))
+
+expected_disyl <- crossing(
+  v1 = c("F","R","T"),
+  v2 = c("F","R","T")
+) %>%
+  mutate(
+    word_cat      = paste0(v1, v2),
+    p_v1          = v1_freq$prop[match(v1, v1_freq$vowel_cat)],
+    p_v2          = v2_freq$prop[match(v2, v2_freq$vowel_cat)],
+    expected_prop = p_v1 * p_v2
+  )
+
+cooccurrence <- obs_disyl %>%
+  left_join(expected_disyl %>% select(word_cat, expected_prop), by = "word_cat") %>%
+  mutate(
+    observed_expected_ratio = observed_prop / expected_prop,
+    expected_n              = sum(n) * expected_prop,
+    chi_sq_contrib          = (n - expected_n)^2 / expected_n
+  )
+
+cat("\n=== ANALYSIS 2: Vowel co-occurrence in disyllabic words ===\n")
+print(cooccurrence)
+
+# Chi-square goodness of fit
+chi_cooc <- sum(cooccurrence$chi_sq_contrib)
+cat(sprintf("\nChi-square = %.2f, df = 3, p = %.4f\n",
+            chi_cooc, pchisq(chi_cooc, df = 3, lower.tail = FALSE)))
+
+# Also do for trisyllabic words (FFF, FFR, FRF, FRR, RFF, RFR, RRF, RRR)
+trisyl <- word_cats %>%
+  filter(sN == 3, nchar(word_cat) == 3)
+
+obs_trisyl <- trisyl %>%
+  count(word_cat) %>%
+  mutate(observed_prop = n / sum(n)) %>%
+  arrange(desc(n))
+
+cat("\nTrisyllabic word category frequencies:\n")
+print(obs_trisyl)
+
+# Trisyllabic expected frequencies under independence
+v1_freq_tri <- zheltov %>%
+  filter(sN == 3) %>%
+  group_by(word) %>%
+  filter(sidx == 1) %>%
+  ungroup() %>%
+  count(vowel_cat) %>%
+  filter(vowel_cat %in% c("F","R","T")) %>%
+  mutate(prop = n / sum(n))
+
+v2_freq_tri <- zheltov %>%
+  filter(sN == 3) %>%
+  group_by(word) %>%
+  filter(sidx == 2) %>%
+  ungroup() %>%
+  count(vowel_cat) %>%
+  filter(vowel_cat %in% c("F","R","T")) %>%
+  mutate(prop = n / sum(n))
+
+v3_freq_tri <- zheltov %>%
+  filter(sN == 3) %>%
+  group_by(word) %>%
+  filter(sidx == 3) %>%
+  ungroup() %>%
+  count(vowel_cat) %>%
+  filter(vowel_cat %in% c("F","R","T")) %>%
+  mutate(prop = n / sum(n))
+
+expected_trisyl <- crossing(
+  v1 = c("F","R","T"),
+  v2 = c("F","R","T"),
+  v3 = c("F","R","T")
+) %>%
+  mutate(
+    word_cat      = paste0(v1, v2, v3),
+    p_v1          = v1_freq_tri$prop[match(v1, v1_freq_tri$vowel_cat)],
+    p_v2          = v2_freq_tri$prop[match(v2, v2_freq_tri$vowel_cat)],
+    p_v3          = v3_freq_tri$prop[match(v3, v3_freq_tri$vowel_cat)],
+    expected_prop = p_v1 * p_v2 * p_v3
+  )
+
+trisyl_cooc <- obs_trisyl %>%
+  left_join(expected_trisyl %>% select(word_cat, expected_prop), by = "word_cat") %>%
+  mutate(
+    observed_expected_ratio = observed_prop / expected_prop,
+    expected_n              = sum(n) * expected_prop,
+    chi_sq_contrib          = (n - expected_n)^2 / expected_n
+  ) %>%
+  arrange(desc(abs(observed_expected_ratio - 1)))
+
+print(trisyl_cooc)
+
+zheltov %>%
+  filter(vowel_cat == "T") %>%
+  mutate(
+    position_label = case_when(
+      sidx == 1  ~ "initial",
+      sidx == sN ~ "final",
+      TRUE       ~ paste0("medial-", sidx - 1)
+    ),
+    position_label = factor(position_label, 
+                            levels = c("initial", "medial-1", "medial-2", 
+                                       "medial-3", "medial-4", "final"))
+  ) %>%
+  count(position_label, .drop = FALSE) %>%
+  ggplot(aes(x = position_label, y = n)) +
+  geom_col() +
+  labs(title = "Distribution of ʉ by absolute syllable position",
+       x = "Position", y = "Count")
+
+zheltov %>%
+  filter(vowel_cat == "T", sN <= 5) %>%
+  mutate(sN_label = paste0(sN, "-syllable words")) %>%
+  count(sN_label, sidx) %>%
+  ggplot(aes(x = factor(sidx), y = n)) +
+  geom_col() +
+  facet_wrap(~sN_label, scales = "free_x") +
+  labs(title = "Distribution of ʉ by syllable position and word length",
+       x = "Syllable index", y = "Count")
+
+# What are the actual words with non-initial ʉ?
+noninitial_T <- zheltov %>%
+  filter(vowel_cat == "T", sidx > 1) %>%
+  select(word, sidx, sN, label) %>%
+  arrange(sN, sidx)
+
+View(noninitial_T)
+
+# ============================================================
+# ANALYSIS 3: Minimal word shapes by vowel type
+# ============================================================
+
+monosyl <- zheltov_corpus %>%
+  filter(sN == 1) %>%
+  mutate(vowel_cat = classify_vowel(label)) %>%
+  distinct(word, .keep_all = TRUE)   # one row per word
+
+minimal_words <- monosyl %>%
+  filter(!is.na(vowel_cat)) %>%
+  count(vowel_cat, syl_open_closed) %>%
+  group_by(vowel_cat) %>%
+  mutate(
+    total = sum(n),
+    prop  = n / total
+  ) %>%
+  ungroup() %>%
+  arrange(vowel_cat, syl_open_closed)
+
+cat("\n=== ANALYSIS 3: Monosyllabic word shapes by vowel type ===\n")
+print(minimal_words)
+
+# Pivot for a clean table
+minimal_wide <- minimal_words %>%
+  select(vowel_cat, syl_open_closed, prop) %>%
+  pivot_wider(names_from = syl_open_closed, values_from = prop, values_fill = 0) %>%
+  left_join(
+    monosyl %>% filter(!is.na(vowel_cat)) %>% count(vowel_cat, name = "total_words"),
+    by = "vowel_cat"
+  )
+
+cat("\nPivoted summary:\n")
+print(minimal_wide)
+
+# Fisher's exact test: do R vowels require closed syllables more than F vowels?
+if (all(c("open","closed") %in% colnames(minimal_words %>% pivot_wider(names_from=syl_open_closed, values_from=n, values_fill=0)))) {
+  min_matrix <- monosyl %>%
+    filter(!is.na(vowel_cat), vowel_cat %in% c("F","R")) %>%
+    count(vowel_cat, syl_open_closed) %>%
+    pivot_wider(names_from = syl_open_closed, values_from = n, values_fill = 0) %>%
+    column_to_rownames("vowel_cat") %>%
+    as.matrix()
+  cat("\nFisher's exact test (F vs R: open vs closed monosyllables):\n")
+  print(fisher.test(min_matrix))
+}
+
+# Analysis 1: positional distribution by individual vowel
+zheltov %>%
+  filter(!is.na(vowel_cat)) %>%
+  count(label, position3) %>%
+  group_by(label) %>%
+  mutate(total = sum(n), prop = n / total) %>%
+  ungroup() %>%
+  left_join(pos_marginals %>% select(position3, expected_prop), by = "position3") %>%
+  mutate(observed_expected_ratio = prop / expected_prop) %>%
+  select(label, position3, n, prop, expected_prop, observed_expected_ratio) %>%
+  arrange(label, position3) %>%
+  pivot_wider(
+    id_cols = label,
+    names_from = position3,
+    values_from = c(prop, observed_expected_ratio),
+    names_glue = "{position3}_{.value}"
+  ) %>%
+  print()
+
+# Analysis 2: co-occurrence — just get raw counts of each vowel bigram
+zheltov %>%
+  filter(sN == 2, !is.na(vowel_cat)) %>%
+  filter(!str_detect(word, "-")) %>%    # exclude hyphenated compounds
+  arrange(word, sidx) %>%
+  group_by(word) %>%
+  filter(n() == 2) %>%                  # safety check: exactly 2 rows per word
+  summarise(bigram = paste(label, collapse = "-"), .groups = "drop") %>%
+  count(bigram, sort = TRUE) %>%
+  print(n = 40)
+
+zheltov %>%
+  filter(sN == 2, !is.na(vowel_cat)) %>%
+  filter(!str_detect(word, "-")) %>%
+  arrange(word, sidx) %>%
+  group_by(word) %>%
+  filter(n() == 2) %>%
+  summarise(bigram = paste(label, collapse = "-"), .groups = "drop") %>%
+  separate(bigram, into = c("v1", "v2"), sep = "-") %>%
+  filter(v1 == "ʉ" | v2 == "ʉ") %>%
+  mutate(ʉ_position = case_when(
+    v1 == "ʉ" & v2 != "ʉ" ~ "initial",
+    v2 == "ʉ" & v1 != "ʉ" ~ "final",
+    v1 == "ʉ" & v2 == "ʉ" ~ "both"
+  )) %>%
+  count(ʉ_position)
+
+zheltov %>%
+  filter(sN == 2, !is.na(vowel_cat)) %>%
+  filter(!str_detect(word, "-")) %>%
+  arrange(word, sidx) %>%
+  group_by(word) %>%
+  filter(n() == 2) %>%
+  summarise(bigram = paste(label, collapse = "-"), .groups = "drop") %>%
+  separate(bigram, into = c("v1", "v2"), sep = "-") %>%
+  filter(v2 == "ʉ", v1 != "ʉ") %>%
+  count(v1, sort = TRUE)
+
+# Analysis 3: minimal word shapes by individual vowel
+zheltov_corpus %>%
+  filter(sN == 1) %>%
+  mutate(vowel_cat = classify_vowel(label)) %>%
+  filter(!is.na(vowel_cat), vowel_cat != "L") %>%
+  distinct(word, .keep_all = TRUE) %>%
+  count(label, syl_open_closed) %>%
+  group_by(label) %>%
+  mutate(total = sum(n), prop = n / total) %>%
+  ungroup() %>%
+  pivot_wider(
+    id_cols = c(label),
+    names_from = syl_open_closed,
+    values_from = prop,
+    values_fill = 0
+  ) %>%
+  left_join(
+    zheltov_corpus %>%
+      filter(sN == 1) %>%
+      mutate(vowel_cat = classify_vowel(label)) %>%
+      filter(!is.na(vowel_cat), vowel_cat != "L") %>%
+      distinct(word, .keep_all = TRUE) %>%
+      count(label, name = "total_words"),
+    by = "label"
+  ) %>%
+  arrange(desc(open)) %>%
+  print()
+
+# Get overall open/closed ratio across all monosyllables
+overall_open_rate <- zheltov_corpus %>%
+  filter(sN == 1) %>%
+  mutate(vowel_cat = classify_vowel(label)) %>%
+  filter(!is.na(vowel_cat), vowel_cat != "L") %>%
+  distinct(word, .keep_all = TRUE) %>%
+  summarise(open_rate = mean(syl_open_closed == "open")) %>%
+  pull(open_rate)
+
+# Now compute observed vs expected per vowel
+zheltov_corpus %>%
+  filter(sN == 1) %>%
+  mutate(vowel_cat = classify_vowel(label)) %>%
+  filter(!is.na(vowel_cat), vowel_cat != "L") %>%
+  distinct(word, .keep_all = TRUE) %>%
+  count(label, syl_open_closed) %>%
+  group_by(label) %>%
+  mutate(total = sum(n), observed_open = n / total) %>%
+  ungroup() %>%
+  filter(syl_open_closed == "open") %>%
+  mutate(
+    expected_open = overall_open_rate,
+    oe_ratio = observed_open / expected_open
+  ) %>%
+  arrange(desc(oe_ratio)) %>%
+  select(label, total, observed_open, expected_open, oe_ratio)
+
+# ============================================================
+# CHUVASH MONOLINGUAL CORPUS ANALYSES
+# ============================================================
+# chuvash_mono has one column: `chv` with raw sentences
+
+# --- Tokenize into words and extract vowel sequences --------
+
+# Define vowel pattern for extraction
+vowel_pattern <- paste(
+  c(full_vowels, reduced_vowels, loan_vowels),
+  collapse = "|"
+)
+
+mono_words <- chuvash_mono %>%
+  # Tokenize: split on whitespace and punctuation, lowercase
+  mutate(chv = str_to_lower(chv)) %>%
+  mutate(word = str_extract_all(chv, "[а-яёӑӗӱӳÿа-яa-z]+")) %>%
+  unnest(word) %>%
+  filter(nchar(word) > 0) %>%
+  # Exclude words with loan characters (о, ё or Latin except a,e)
+  filter(!str_detect(word, "[оёo]")) %>%
+  distinct(word) %>%
+  # Extract vowels in sequence
+  mutate(
+    vowels = map(word, function(w) {
+      chars <- strsplit(w, "")[[1]]
+      chars[chars %in% all_vowels]
+    }),
+    n_vowels = map_int(vowels, length),
+    vowel_seq = map_chr(vowels, ~ paste(classify_vowel(.x), collapse = "")),
+    vowel_seq = na_if(vowel_seq, ""),
+  ) %>%
+  filter(
+    n_vowels > 0,
+    !str_detect(vowel_seq, "NA"),
+    !str_detect(vowel_seq, "L")
+  )
+
+cat("\n=== MONOLINGUAL CORPUS: word count after filtering ===\n")
+cat(nrow(mono_words), "unique words\n")
+
+
+# ============================================================
+# ANALYSIS 1 (mono): Positional distribution
+# ============================================================
+
+mono_pos <- mono_words %>%
+  filter(n_vowels >= 2) %>%   # need at least 2 syllables for position to vary
+  mutate(
+    first_vowel_cat = str_sub(vowel_seq, 1, 1),
+    last_vowel_cat  = str_sub(vowel_seq, -1, -1),
+    # All vowels in medial position (between first and last)
+    medial_cats     = if_else(n_vowels > 2,
+                              str_sub(vowel_seq, 2, n_vowels - 1),
+                              NA_character_)
+  )
+
+# Count by position
+first_counts  <- mono_pos %>% count(vowel_cat = first_vowel_cat, position3 = "initial")
+last_counts   <- mono_pos %>% count(vowel_cat = last_vowel_cat,  position3 = "final")
+medial_counts <- mono_pos %>%
+  filter(!is.na(medial_cats)) %>%
+  mutate(chars = strsplit(medial_cats, "")) %>%
+  unnest(chars) %>%
+  count(vowel_cat = chars, position3 = "medial")
+
+mono_pos_dist <- bind_rows(first_counts, last_counts, medial_counts) %>%
+  filter(vowel_cat %in% c("F","R")) %>%
+  group_by(vowel_cat) %>%
+  mutate(total = sum(n), prop = n / total) %>%
+  ungroup()
+
+# Expected marginals
+mono_pos_marginals <- bind_rows(first_counts, last_counts, medial_counts) %>%
+  filter(vowel_cat %in% c("F","R","T")) %>%
+  group_by(position3) %>%
+  summarise(n = sum(n)) %>%
+  mutate(expected_prop = n / sum(n))
+
+mono_pos_full <- mono_pos_dist %>%
+  left_join(mono_pos_marginals %>% select(position3, expected_prop), by = "position3") %>%
+  mutate(observed_expected_ratio = prop / expected_prop)
+
+cat("\n=== ANALYSIS 1 (mono): Positional distribution ===\n")
+print(mono_pos_full %>% arrange(vowel_cat, position3))
+
+
+# ============================================================
+# ANALYSIS 2 (mono): Vowel co-occurrence patterns
+# ============================================================
+
+mono_disyl <- mono_words %>%
+  filter(n_vowels == 2, nchar(vowel_seq) == 2)
+
+obs_mono_disyl <- mono_disyl %>%
+  count(word_cat = vowel_seq) %>%
+  mutate(observed_prop = n / sum(n))
+
+cat("\n=== ANALYSIS 2 (mono): Disyllabic co-occurrence ===\n")
+print(obs_mono_disyl %>% arrange(word_cat))
+
+# Expected under independence
+mono_v1 <- mono_words %>%
+  filter(n_vowels >= 2) %>%
+  mutate(v1 = str_sub(vowel_seq, 1, 1)) %>%
+  count(v1) %>%
+  filter(v1 %in% c("F","R")) %>%
+  mutate(prop = n / sum(n))
+
+mono_v2 <- mono_words %>%
+  filter(n_vowels >= 2) %>%
+  mutate(v2 = str_sub(vowel_seq, -1, -1)) %>%
+  count(v2) %>%
+  filter(v2 %in% c("F","R")) %>%
+  mutate(prop = n / sum(n))
+
+expected_mono_disyl <- crossing(v1 = c("F","R"), v2 = c("F","R")) %>%
+  mutate(
+    word_cat      = paste0(v1, v2),
+    p_v1          = mono_v1$prop[match(v1, mono_v1$v1)],
+    p_v2          = mono_v2$prop[match(v2, mono_v2$v2)],
+    expected_prop = p_v1 * p_v2
+  )
+
+mono_cooc <- obs_mono_disyl %>%
+  left_join(expected_mono_disyl %>% select(word_cat, expected_prop), by = "word_cat") %>%
+  mutate(
+    observed_expected_ratio = observed_prop / expected_prop,
+    expected_n              = sum(n) * expected_prop,
+    chi_sq_contrib          = (n - expected_n)^2 / expected_n
+  )
+
+cat("\nObserved vs. expected disyllabic word categories (mono corpus):\n")
+print(mono_cooc)
+
+chi_mono <- sum(mono_cooc$chi_sq_contrib)
+cat(sprintf("\nChi-square = %.2f, df = 3, p = %.4f\n",
+            chi_mono, pchisq(chi_mono, df = 3, lower.tail = FALSE)))
+
+### plot vowels in mono syllables
+library(tidyverse)
+
+# Build position labels same way as before
+vowel_pos <- zheltov %>%
+  filter(!is.na(vowel_cat), vowel_cat != "L") %>%
+  filter(!str_detect(word, "-")) %>%
+  mutate(
+    position_label = case_when(
+      sidx == 1  ~ "initial",
+      sidx == sN ~ "final",
+      TRUE       ~ paste0("medial-", sidx - 1)
+    ),
+    position_label = factor(position_label,
+                            levels = c("initial", "medial-1", "medial-2",
+                                       "medial-3", "medial-4", "final"))
+  )
+
+# Compute O/E ratio per vowel x position
+vowel_marginals <- vowel_pos %>%
+  count(position_label) %>%
+  mutate(expected_prop = n / sum(n))
+
+heatmap_data <- vowel_pos %>%
+  count(label, position_label, .drop = FALSE) %>%
+  group_by(label) %>%
+  mutate(total = sum(n), observed_prop = n / total) %>%
+  ungroup() %>%
+  left_join(vowel_marginals %>% select(position_label, expected_prop),
+            by = "position_label") %>%
+  mutate(
+    oe_ratio = observed_prop / expected_prop,
+    log_oe   = log2(oe_ratio + 0.001)   # log scale; +0.001 avoids log(0)
+  ) %>%
+  # Order vowels by sonority (low to high)
+  mutate(label = factor(label, levels = c("a", "e", "ø", "ɵ", "i", "u", "y", "ʉ")))
+
+# Plot
+ggplot(heatmap_data, aes(x = position_label, y = label, fill = log_oe)) +
+  geom_tile(color = "white", linewidth = 0.5) +
+  geom_text(aes(label = sprintf("%.2f", oe_ratio)),
+            size = 3, color = "white") +
+  scale_fill_gradient2(
+    low      = "#2166ac",   # blue = under-represented
+    mid      = "grey85",
+    high     = "#d6604d",   # red = over-represented
+    midpoint = 0,           # log2(1) = 0, i.e. O/E = 1
+    name     = "log₂(O/E)"
+  ) +
+  labs(
+    title    = "Vowel distribution by word position (O/E ratios)",
+    subtitle = "Red = over-represented, Blue = under-represented relative to chance",
+    x        = "Position in word",
+    y        = "Vowel"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    axis.text.x  = element_text(angle = 30, hjust = 1),
+    panel.grid   = element_blank()
+  )
+
+library(tidyverse)
+library(patchwork)
+
+# ============================================================
+# ZHELTOV: open/closed monosyllables by vowel
+# ============================================================
+
+zheltov_mono_plot <- zheltov_corpus %>%
+  filter(sN == 1) %>%
+  mutate(vowel_cat = classify_vowel(label)) %>%
+  filter(!is.na(vowel_cat), vowel_cat != "L") %>%
+  filter(!str_detect(word, "-")) %>%
+  distinct(word, .keep_all = TRUE) %>%
+  # O/E ratio for open syllables per vowel
+  mutate(overall_open = mean(syl_open_closed == "open")) %>%
+  group_by(label) %>%
+  summarise(
+    n_open   = sum(syl_open_closed == "open"),
+    n_closed = sum(syl_open_closed == "closed"),
+    total    = n(),
+    prop_open = n_open / total,
+    .groups = "drop"
+  ) %>%
+  mutate(
+    overall_open_rate = sum(n_open) / sum(total),
+    oe_ratio = prop_open / overall_open_rate,
+    label = factor(label, levels = c("a", "e", "ø", "ɵ", "i", "u", "y", "ʉ"))
+  )
+
+# Stacked bar: raw counts, colored by open/closed
+p1 <- zheltov_corpus %>%
+  filter(sN == 1) %>%
+  mutate(vowel_cat = classify_vowel(label)) %>%
+  filter(!is.na(vowel_cat), vowel_cat != "L") %>%
+  filter(!str_detect(word, "-")) %>%
+  distinct(word, .keep_all = TRUE) %>%
+  mutate(label = factor(label, levels = c("a", "e", "ø", "ɵ", "i", "u", "y", "ʉ"))) %>%
+  count(label, syl_open_closed) %>%
+  group_by(label) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup() %>%
+  ggplot(aes(x = label, y = prop, fill = syl_open_closed)) +
+  geom_col(width = 0.7) +
+  geom_hline(yintercept = zheltov_mono_plot$overall_open_rate[1],
+             linetype = "dashed", color = "black", linewidth = 0.5) +
+  scale_fill_manual(
+    values = c("open" = "#d6604d", "closed" = "#2166ac"),
+    name   = "Syllable type"
+  ) +
+  scale_y_continuous(labels = scales::percent) +
+  annotate("text", x = 0.6, y = zheltov_mono_plot$overall_open_rate[1] + 0.02,
+           label = "expected", size = 3, hjust = 0) +
+  labs(title = "Zheltov wordlist",
+       x = "Vowel", y = "Proportion") +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom", panel.grid.minor = element_blank())
+
+# ============================================================
+# CHUVASH MONO: open/closed monosyllables by vowel
+# Monosyllabic tokens = words with exactly 1 vowel
+# ============================================================
+
+full_cyr <- c("и", "ӱ", "ӳ", "у", "е", "э", "ю", "я", "а")  # added э
+reduced_cyr <- c("ӗ", "ӑ")
+test_cyr    <- c("ы")
+loan_cyr    <- c("о", "ё")
+all_cyr     <- c(full_cyr, reduced_cyr, test_cyr, loan_cyr)
+
+classify_cyr <- function(v) {
+  case_when(
+    v %in% full_cyr    ~ "F",
+    v %in% reduced_cyr ~ "R",
+    v %in% test_cyr    ~ "T",
+    v %in% loan_cyr    ~ "L",
+    TRUE               ~ NA_character_
+  )
+}
+
+# Get valid Chuvash word forms from Zheltov
+zheltov_words <- zheltov_corpus %>%
+  distinct(word) %>%
+  mutate(word = str_remove_all(word, "[.''`'\\s]"),  # strip dots, apostrophes, spaces
+         word = str_to_lower(word)) %>%
+  filter(nchar(word) > 0) %>%
+  pull(word)
+
+# Also pre-clean the corpus to remove hyphenated line breaks
+mono_monosyl <- chuvash_mono %>%
+  # Remove hyphenated line breaks (word- \n continuation)
+  mutate(chv = str_remove_all(chv, "-\\s+")) %>%
+  mutate(token = str_extract_all(chv, "[а-яёӑӗӱӳыҫӑӗА-ЯЁҪӐӖ]+")) %>%
+  unnest(token) %>%
+  mutate(token = str_to_lower(token)) %>%
+  filter(nchar(token) > 0) %>%
+  # Keep only tokens that appear in the Zheltov wordlist
+  filter(token %in% zheltov_words) %>%
+  mutate(
+    chars         = str_split(token, ""),
+    vowels        = map(chars, ~ .x[.x %in% all_cyr]),
+    n_vowels      = map_int(vowels, length)
+  ) %>%
+  filter(n_vowels == 1) %>%
+  mutate(
+    vowel         = map_chr(vowels, 1),
+    vowel_cat     = classify_cyr(vowel),
+    last_char     = str_sub(token, -1, -1),
+    syl_structure = if_else(last_char %in% all_cyr, "open", "closed")
+  ) %>%
+  filter(!is.na(vowel_cat), vowel_cat != "L")
+
+overall_open_mono <- mean(mono_monosyl$syl_structure == "open")
+
+p2 <- mono_monosyl %>%
+  mutate(label = factor(vowel, levels = c("а", "е", "ø", "ӑ", "и", "у", "ӱ", "ы", "э", "ю", "я")),
+         # Map Cyrillic to IPA labels for consistency with Zheltov plot
+         label_ipa = case_when(
+           vowel == "а" ~ "a",
+           vowel == "е" ~ "e",
+           vowel == "ӗ" ~ "ø",
+           vowel == "ӑ" ~ "ɵ",
+           vowel == "и" ~ "i",
+           vowel == "у" ~ "u",
+           vowel == "ӱ" ~ "y",
+           vowel == "ы" ~ "ʉ",
+           vowel == "ю" ~ "u",
+           vowel == "ӳ" ~ "y",
+           vowel == "я" ~ "a",
+           vowel == "э" ~ "e",
+           TRUE ~ vowel
+         ),
+         label_ipa = factor(label_ipa,
+                            levels = c("a", "e", "ø", "ɵ", "i", "u", "y", "ʉ"))) %>%
+  count(label_ipa, syl_structure) %>%
+  group_by(label_ipa) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup() %>%
+  ggplot(aes(x = label_ipa, y = prop, fill = syl_structure)) +
+  geom_col(width = 0.7) +
+  geom_hline(yintercept = overall_open_mono,
+             linetype = "dashed", color = "black", linewidth = 0.5) +
+  scale_fill_manual(
+    values = c("open" = "#d6604d", "closed" = "#2166ac"),
+    name   = "Syllable type"
+  ) +
+  scale_y_continuous(labels = scales::percent) +
+  annotate("text", x = 0.6, y = overall_open_mono + 0.02,
+           label = "expected", size = 3, hjust = 0) +
+  labs(title = "Chuvash monolingual corpus",
+       x = "Vowel", y = "Proportion") +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom", panel.grid.minor = element_blank())
+
+# ============================================================
+# COMBINE WITH PATCHWORK
+# ============================================================
+
+p1 + p2 +
+  plot_layout(guides = "collect") &
+  plot_annotation(
+    title    = "Proportion of open vs. closed monosyllables by vowel",
+    subtitle = "Dashed line = overall expected open rate"
+  ) &
+  theme(legend.position = "bottom")
+
+# Compute order from Zheltov data (use as canonical ordering for both plots)
+vowel_order <- zheltov_corpus %>%
+  filter(sN == 1) %>%
+  mutate(vowel_cat = classify_vowel(label)) %>%
+  filter(!is.na(vowel_cat), vowel_cat != "L") %>%
+  filter(!str_detect(word, "-")) %>%
+  distinct(word, .keep_all = TRUE) %>%
+  group_by(label) %>%
+  summarise(prop_open = mean(syl_open_closed == "open"), .groups = "drop") %>%
+  arrange(desc(prop_open)) %>%
+  pull(label)
+
+
+
+# y u i e a ɵ ø ʉ — ordered high-to-low open rate
+
+# Helper to add percentage labels to bars
+add_pct_labels <- function(df) {
+  df %>%
+    group_by(label_ipa) %>%
+    mutate(
+      pct_label = if_else(
+        syl_structure == "open" & prop >= 0.01,   # only label if ≥1%
+        scales::percent(prop, accuracy = 1),
+        ""
+      ),
+      # Position label in middle of open segment
+      label_y = if_else(syl_structure == "open", prop / 2, NA_real_)
+    ) %>%
+    ungroup()
+}
+
+# ---- Zheltov plot ----
+zheltov_bar_data <- zheltov_corpus %>%
+  filter(sN == 1) %>%
+  mutate(vowel_cat = classify_vowel(label)) %>%
+  filter(!is.na(vowel_cat), vowel_cat != "L") %>%
+  filter(!str_detect(word, "-")) %>%
+  distinct(word, .keep_all = TRUE) %>%
+  mutate(label_ipa = factor(label, levels = vowel_order)) %>%
+  count(label_ipa, syl_open_closed) %>%
+  rename(syl_structure = syl_open_closed) %>%
+  group_by(label_ipa) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup() %>%
+  add_pct_labels()
+
+overall_open_zheltov <- zheltov_bar_data %>%
+  filter(syl_structure == "open") %>%
+  summarise(r = sum(n) / sum(zheltov_bar_data$n)) %>%
+  pull(r)
+
+p1 <- zheltov_bar_data %>%
+  ggplot(aes(x = label_ipa, y = prop, fill = syl_structure)) +
+  geom_col(width = 0.7) +
+  geom_text(aes(y = label_y, label = pct_label),
+            color = "white", size = 3, fontface = "bold") +
+  geom_hline(yintercept = overall_open_zheltov,
+             linetype = "dashed", color = "black", linewidth = 0.5) +
+  annotate("text", x = 0.6, y = overall_open_zheltov + 0.015,
+           label = "expected", size = 3, hjust = 0) +
+  scale_fill_manual(values = c("open" = "#d6604d", "closed" = "#2166ac"),
+                    name = "Syllable type") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Zheltov wordlist", x = "Vowel", y = "Proportion") +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom", panel.grid.minor = element_blank())
+
+# ---- Monolingual corpus plot ----
+# IPA mapping for mono corpus
+ipa_map <- c(
+  "а" = "a",
+  "е" = "e",
+  "э" = "e",  
+  "ӗ" = "ø",
+  "ӑ" = "ɵ",
+  "и" = "i",
+  "у" = "u",
+  "ӱ" = "y",
+  "ӳ" = "y",
+  "ю" = "u",
+  "я" = "a",
+  "ы" = "ʉ"
+)
+
+mono_bar_data <- mono_monosyl %>%
+  mutate(
+    label_ipa = factor(ipa_map[vowel], levels = vowel_order)
+  ) %>%
+  filter(!is.na(label_ipa)) %>%
+  count(label_ipa, syl_structure) %>%
+  group_by(label_ipa) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup() %>%
+  add_pct_labels()
+
+overall_open_mono <- mono_bar_data %>%
+  filter(syl_structure == "open") %>%
+  summarise(r = sum(n) / sum(mono_bar_data$n)) %>%
+  pull(r)
+
+p2 <- mono_bar_data %>%
+  ggplot(aes(x = label_ipa, y = prop, fill = syl_structure)) +
+  geom_col(width = 0.7) +
+  geom_text(aes(y = label_y, label = pct_label),
+            color = "white", size = 3, fontface = "bold") +
+  geom_hline(yintercept = overall_open_mono,
+             linetype = "dashed", color = "black", linewidth = 0.5) +
+  annotate("text", x = 0.6, y = overall_open_mono + 0.015,
+           label = "expected", size = 3, hjust = 0) +
+  scale_fill_manual(values = c("open" = "#d6604d", "closed" = "#2166ac"),
+                    name = "Syllable type") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Chuvash monolingual corpus", x = "Vowel", y = "Proportion") +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom", panel.grid.minor = element_blank())
+
+# ---- Combine ----
+p1 + p2 +
+  plot_layout(guides = "collect") &
+  plot_annotation(
+    title    = "Proportion of open vs. closed monosyllables by vowel",
+    subtitle = "Dashed line = overall expected open rate"
+  ) &
+  theme(legend.position = "bottom")
+
+# Zheltov counts and proportions by vowel
+zheltov_table <- zheltov_corpus %>%
+  filter(sN == 1) %>%
+  mutate(vowel_cat = classify_vowel(label)) %>%
+  filter(!is.na(vowel_cat), vowel_cat != "L") %>%
+  filter(!str_detect(word, "-")) %>%
+  distinct(word, .keep_all = TRUE) %>%
+  group_by(label) %>%
+  summarise(
+    n_open   = sum(syl_open_closed == "open"),
+    n_closed = sum(syl_open_closed == "closed"),
+    n_total  = n(),
+    pct_open = round(n_open / n_total * 100, 1),
+    .groups  = "drop"
+  ) %>%
+  mutate(label = factor(label, levels = vowel_order)) %>%
+  arrange(label)
+
+# Monolingual corpus counts and proportions by vowel
+mono_table <- mono_monosyl %>%
+  mutate(label_ipa = ipa_map[vowel]) %>%
+  filter(!is.na(label_ipa)) %>%
+  group_by(label_ipa) %>%
+  summarise(
+    n_open   = sum(syl_structure == "open"),
+    n_closed = sum(syl_structure == "closed"),
+    n_total  = n(),
+    pct_open = round(n_open / n_total * 100, 1),
+    .groups  = "drop"
+  ) %>%
+  mutate(label_ipa = factor(label_ipa, levels = vowel_order)) %>%
+  arrange(label_ipa)
+
+print(zheltov_table)
+print(mono_table)
