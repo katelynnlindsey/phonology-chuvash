@@ -15,16 +15,8 @@
 #   n_counts_raw.csv          — initial N at every join step
 # ================================================================
 
-.script_dir <- tryCatch(
-  dirname(normalizePath(sys.frame(1)$ofile)),   # Rscript / source()
-  error = function(e)
-    dirname(normalizePath(                       # RStudio interactive
-      rstudioapi::getActiveDocumentContext()$path))
-)
-.analyze_dir <- normalizePath(file.path(.script_dir, ".."))  # 9-analyze/
-
-source(file.path(.analyze_dir, "config", "phonology_params.R"))
-source(file.path(.analyze_dir, "config", "paths.R"))
+source(here::here("9-analyze", "config", "phonology_params.R"))
+source(here::here("9-analyze", "config", "paths.R"))
 
 suppressPackageStartupMessages({
   library(tidyverse)

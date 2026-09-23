@@ -14,8 +14,8 @@
 # and re-run this script only. No other file needs to change.
 # ================================================================
 
-source("config/phonology_params.R")
-source("config/paths.R")
+source(here::here("9-analyze", "config", "phonology_params.R"))
+source(here::here("9-analyze", "config", "paths.R"))
 
 suppressPackageStartupMessages({
   library(tidyverse)

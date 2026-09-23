@@ -10,8 +10,8 @@
 #   4. Phrase    — one row per utterance/file
 # ================================================================
 
-source("config/phonology_params.R")
-source("config/paths.R")
+source(here::here("9-analyze", "config", "phonology_params.R"))
+source(here::here("9-analyze", "config", "paths.R"))
 library(tidyverse)
 
 vowels <- readRDS(file.path(PATHS$cleaned_dir, "vowels_spoken_clean.rds"))
