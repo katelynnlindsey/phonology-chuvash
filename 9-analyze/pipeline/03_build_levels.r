@@ -29,7 +29,7 @@ syllables <- vowels %>%
     ) %>% factor(levels = c("only", "initial", "medial", "final"))
   )
 
-saveRDS(syllables, file.path(PATHS$cleaned_dir, "syllables_spoken.rds"))
+saveRDS(syllables, file.path(PATHS$leveled_dir, "syllables_spoken.rds"))
 cat(sprintf("Level 2 syllables: %d rows saved\n", nrow(syllables)))
 
 # ── Level 3: Word ────────────────────────────────────────────────
@@ -70,7 +70,7 @@ words <- vowels %>%
     .groups = "drop"
   )
 
-saveRDS(words, file.path(PATHS$cleaned_dir, "words_spoken.rds"))
+saveRDS(words, file.path(PATHS$leveled_dir, "words_spoken.rds"))
 cat(sprintf("Level 3 words:     %d rows saved\n", nrow(words)))
 
 # ── Level 4: Phrase / Utterance ──────────────────────────────────
@@ -99,5 +99,5 @@ phrases <- vowels %>%
     speech_rate_vps = n_vowels / duration_seconds   # vowels per second
   )
 
-saveRDS(phrases, file.path(PATHS$cleaned_dir, "phrases_spoken.rds"))
+saveRDS(phrases, file.path(PATHS$leveled_dir, "phrases_spoken.rds"))
 cat(sprintf("Level 4 phrases:   %d rows saved\n", nrow(phrases)))

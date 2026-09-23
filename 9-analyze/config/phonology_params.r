@@ -25,6 +25,60 @@ IPA_TO_ARPABET        <- setNames(names(ARPABET_TO_IPA), ARPABET_TO_IPA)
 TARGET_VOWELS_ARPABET <- names(ARPABET_TO_IPA)
 TARGET_VOWELS_IPA     <- unname(ARPABET_TO_IPA)
 
+CONSONANT_TO_IPA <- c(
+  "п" = "p", "т" = "t", "ч" = "tɕ", "к" = "k",
+  "с" = "s", "ш" = "ʃ", "ҫ" = "ɕ", "ç" = "ɕ",
+  "х" = "x", "м" = "m", "н" = "n", "в" = "ʋ",
+  "л" = "l", "й" = "j", "р" = "r", "c" = "s"
+)
+
+VOWEL_TO_IPA <- c(
+  "а" = "a", "и" = "i", "ӳ" = "y", "ĕ" = "ø",
+  "ы" = "ʉ", "у" = "u", "ă" = "ɵ", "ӱ" = "y",
+  "ӑ" = "ɵ", "ӗ" = "ø", "ӱ" = "y"
+)
+
+all_vowel_chars <- c(
+  "а","ӑ","е","ӗ","и","ы","у","ӱ","ӳ","э","ю","я",
+  "a","e","i","u","y","ӑ"
+)
+
+SOFT_SIGNS <- "[ьь]"
+
+transliterate_word <- function(word) {
+  w <- word
+  
+  # 1. word-initial "е" -> "je" (must happen BEFORE general е mapping)
+  w <- str_replace(w, "^е", "je")
+  
+  # 2. palatalized consonants: any consonant + ь -> consonant_ipa + ʲ
+  #    (do this before plain consonant substitution so ь isn't stranded)
+  for (cons in names(CONSONANT_TO_IPA)) {
+    pattern <- paste0(cons, SOFT_SIGNS)
+    replacement <- paste0(CONSONANT_TO_IPA[[cons]], "ʲ")
+    w <- str_replace_all(w, pattern, replacement)
+  }
+  
+  # 3. hard sign has no sound - delete
+  w <- str_remove_all(w, "ъ")
+  
+  # 4. iotated vowels (single symbol, two-segment output)
+  w <- str_replace_all(w, "я", "ja")
+  w <- str_replace_all(w, "ю", "ju")
+  w <- str_replace_all(w, "э", "e")
+  
+  # 5. remaining (non-initial) "е" -> "e"
+  w <- str_replace_all(w, "е", "e")
+  
+  # 6. plain consonants and vowels - simple 1:1 lookup
+  simple_map <- c(CONSONANT_TO_IPA, VOWEL_TO_IPA)
+  for (sym in names(simple_map)) {
+    w <- str_replace_all(w, sym, simple_map[[sym]])
+  }
+  
+  w
+}
+
 # ── 2. VOWEL FEATURE DIMENSIONS (theory-neutral) ────────────────
 
 VOWEL_HEIGHT <- list(
@@ -189,11 +243,13 @@ CLEANING <- list(
 # ── 7. RUSSIAN LOANWORD FILTER ──────────────────────────────────
 
 RUSSIAN_SEQS    <- c("ZH","ts","B","G","D","F","Z","O",
-                     "Б","Г","Д","О","Ж","Ц","Ф","З","Ë","ё","Ё")
-RUSSIAN_PATTERN <- paste(sapply(RUSSIAN_SEQS, stringr::fixed), collapse = "|")
+                     "Б","Г","Д","О","Ж","Ц","Ф","З","Ë","ё","Ё","Щ")
+ENGLISH_SEQS <- c("B","D","F","G","H","I","K","L","M","N","P","Q","R","S","T","U","V","W","X","Z")
+LOAN_SEQS <- c(RUSSIAN_SEQS,ENGLISH_SEQS)
+LOAN_PATTERN <- paste(sapply(LOAN_SEQS, stringr::fixed), collapse = "|")
 
-is_russian_loan <- function(word_vec) {
-  stringr::str_detect(stringr::str_to_upper(word_vec), RUSSIAN_PATTERN)
+is_loan <- function(word_vec) {
+  stringr::str_detect(stringr::str_to_upper(word_vec), LOAN_PATTERN)
 }
 
 # ── 8. CORPORA REGISTRY ─────────────────────────────────────────
