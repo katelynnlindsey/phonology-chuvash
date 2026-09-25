@@ -413,24 +413,130 @@ tokenize_ipa_all <- function(words, digraphs = IPA_DIGRAPHS) {
   1L
 }
 
-#' Syllabify a single IPA word string; returns a period-delimited string.
+# ══════════════════════════════════════════════════════════════════════
+# SYLLABIFICATION BLOCK
+# Append to the bottom of config/phonology_params.R
+# Used exclusively by pipeline/03_build_levels.R
+# ══════════════════════════════════════════════════════════════════════
+
+# ── Multi-character IPA segments (digraphs / affricates) ───────────────
+# tokenize_ipa() matches the longest form first, so order within the
+# vector does not matter functionally, but longer entries are listed
+# first for readability.
+# !! Keep in sync with what transliterate_word() actually outputs !!
+IPA_DIGRAPHS <- c(
+  "t͡ʃ", "d͡ʒ", "t͡s",        # tie-bar affricates  (U+0361 combiner)
+  "tʃ",  "dʒ",  "ts",        # plain-text affricates
+  "lʲ",  "nʲ",  "rʲ",        # palatalized sonorants
+  "sʲ",  "zʲ",  "tʲ",  "dʲ" # palatalized obstruents
+)
+
+# ── Vowel nuclei ────────────────────────────────────────────────────────
+# Must contain every nucleus symbol that transliterate_word() can produce.
+# After a first run, verify completeness with:
+#   unique(unlist(tokenize_ipa_all(mono_syl$word_label_IPA))) |>
+#     setdiff(c(IPA_VOWELS, names(IPA_SONORITY))) |> sort()
+IPA_VOWELS <- c(
+  "a", "ɑ", "æ",
+  "e", "ɛ",
+  "ə", "ɘ", "ɵ",
+  "i", "ɪ", "ɨ",
+  "o", "ɔ",
+  "u", "ʊ",
+  "ʌ", "ɐ"
+)
+
+# ── Sonority scale ──────────────────────────────────────────────────────
+# Higher value = more sonorous.
+# Segments absent from this table get NA → onset-maximisation falls back
+# to the single rightmost consonant rule for that cluster.
+IPA_SONORITY <- c(
+  # Stops
+  "p"  = 1L, "b"  = 1L, "t"  = 1L, "d"  = 1L,
+  "k"  = 1L, "ɡ"  = 1L, "g"  = 1L, "q"  = 1L,
+  # Affricates — both encodings
+  "t͡s" = 2L, "t͡ʃ" = 2L, "d͡ʒ" = 2L,
+  "ts" = 2L, "tʃ" = 2L, "dʒ" = 2L,
+  # Fricatives
+  "f"  = 3L, "v"  = 3L, "h"  = 3L, "ɦ"  = 3L,
+  "s"  = 3L, "z"  = 3L, "ʃ"  = 3L, "ʒ"  = 3L,
+  "ɕ"  = 3L, "ʑ"  = 3L,
+  "x"  = 3L, "ɣ"  = 3L, "χ"  = 3L, "ʁ"  = 3L,
+  "sʲ" = 3L, "zʲ" = 3L,
+  # Nasals
+  "m"  = 4L, "n"  = 4L, "ŋ"  = 4L, "nʲ" = 4L,
+  # Laterals
+  "l"  = 5L, "lʲ" = 5L,
+  # Rhotics
+  "r"  = 6L, "rʲ" = 6L,
+  # Glides
+  "j"  = 7L, "w"  = 7L
+)
+
+
+# ══════════════════════════════════════════════════════════════════════
+# FUNCTIONS
+# ══════════════════════════════════════════════════════════════════════
+
+#' Tokenize one IPA string into a character vector of segments.
+#' Digraphs in `digraphs` are matched greedily (longest first).
+tokenize_ipa <- function(s, digraphs = IPA_DIGRAPHS) {
+  if (is.na(s) || nchar(s) == 0L) return(character(0L))
+  # Sort by descending length so longer patterns win ties
+  dgs  <- digraphs[order(-nchar(digraphs))]
+  segs <- character(0L)
+  while (nchar(s) > 0L) {
+    matched <- FALSE
+    for (dg in dgs) {
+      if (startsWith(s, dg)) {
+        segs    <- c(segs, dg)
+        s       <- substr(s, nchar(dg) + 1L, nchar(s))
+        matched <- TRUE
+        break
+      }
+    }
+    if (!matched) {
+      segs <- c(segs, substr(s, 1L, 1L))
+      s    <- substr(s, 2L, nchar(s))
+    }
+  }
+  segs
+}
+
+#' Vectorised wrapper — returns a list of segment vectors.
+#' Useful for inventory checks:  unique(unlist(tokenize_ipa_all(words)))
+tokenize_ipa_all <- function(words, digraphs = IPA_DIGRAPHS) {
+  lapply(words, tokenize_ipa, digraphs = digraphs)
+}
+
+#' How many segments from the RIGHT of `cluster` form a valid onset?
+#' Valid = single consonant, OR strictly rising sonority with no unknowns.
+.max_onset_size <- function(cluster, sonority = IPA_SONORITY) {
+  n <- length(cluster)
+  if (n == 0L) return(0L)
+  for (k in seq(n, 1L)) {
+    cand <- cluster[(n - k + 1L):n]
+    s    <- sonority[cand]
+    if (k == 1L || (all(!is.na(s)) && all(diff(s) > 0L))) return(k)
+  }
+  1L
+}
+
+#' Syllabify a single IPA word; returns a period-delimited string.
 #'
 #' Algorithm
 #' ---------
-#'  1. Each vowel heads exactly one syllable (nucleus principle).
-#'  2. Onset maximisation: inter-vocalic consonant clusters are split so
-#'     the largest SUFFIX with strictly rising sonority goes to the onset
-#'     of the following syllable.
-#'  3. The remaining prefix of each cluster goes to the coda of the
-#'     preceding syllable.
+#'  1. Each vowel heads exactly one syllable.
+#'  2. Onset maximisation: the longest strictly-rising-sonority suffix
+#'     of each inter-vocalic cluster goes to the following onset.
+#'  3. The prefix of that cluster goes to the preceding coda.
 #'  4. Word-initial consonants → onset of syllable 1.
 #'  5. Word-final consonants   → coda of the last syllable.
 #'
-#' Examples:
-#'   "kastrul"  →  "kas.trul"
-#'   "antrop"   →  "an.trop"
-#'   "pɑrni"    →  "pɑr.ni"
-#'   "ka"       →  "ka"
+#' "kastrul"  →  "kas.trul"
+#' "antrop"   →  "an.trop"
+#' "pɑrni"    →  "pɑr.ni"
+#' "ka"       →  "ka"
 syllabify_ipa <- function(word,
                           digraphs = IPA_DIGRAPHS,
                           vowels   = IPA_VOWELS,
@@ -443,10 +549,10 @@ syllabify_ipa <- function(word,
   vpos <- which(is_v)
   n_v  <- length(vpos)
   
-  # Monosyllable or vowel-free: return unsegmented
+  # Monosyllable or vowel-free
   if (n_v <= 1L) return(paste(segs, collapse = ""))
   
-  syll <- integer(n)                         # syllable index per segment
+  syll <- integer(n)
   for (i in seq_along(vpos)) syll[vpos[i]] <- i
   
   # Word-initial consonants → onset of syllable 1
@@ -459,9 +565,9 @@ syllabify_ipa <- function(word,
   
   # Intervocalic clusters
   for (i in seq_len(n_v - 1L)) {
-    cs <- vpos[i] + 1L                       # cluster start index
-    ce <- vpos[i + 1L] - 1L                  # cluster end index
-    if (cs > ce) next                        # adjacent vowels; no cluster
+    cs      <- vpos[i] + 1L
+    ce      <- vpos[i + 1L] - 1L
+    if (cs > ce) next                      # adjacent vowels
     
     cluster <- segs[cs:ce]
     n_c     <- length(cluster)
@@ -469,25 +575,68 @@ syllabify_ipa <- function(word,
     coda_sz <- n_c - on_sz
     
     if (coda_sz > 0L)
-      syll[seq(cs,              cs + coda_sz - 1L)] <- i        # coda
+      syll[seq(cs,              cs + coda_sz - 1L)] <- i
     if (on_sz  > 0L)
-      syll[seq(ce - on_sz + 1L, ce              )] <- i + 1L    # onset
+      syll[seq(ce - on_sz + 1L, ce              )] <- i + 1L
   }
   
-  # Assemble syllable strings and join with "."
   parts <- split(segs, syll)
   parts <- parts[order(as.integer(names(parts)))]
   paste(vapply(parts, paste, character(1L), collapse = ""), collapse = ".")
 }
 
 #' Extract the vowel nucleus from a single IPA syllable string.
-#' Returns NA_character_ if no vowel is found (signals a bad syllable).
+#' Returns NA_character_ if no vowel found.
 extract_syllable_vowel <- function(syllable,
                                    vowels   = IPA_VOWELS,
                                    digraphs = IPA_DIGRAPHS) {
   if (is.na(syllable)) return(NA_character_)
   segs <- tokenize_ipa(syllable, digraphs)
   v    <- segs[segs %in% vowels]
-  if (length(v) == 0L) return(NA_character_)
-  v[[1L]]
+  if (length(v) == 0L) NA_character_ else v[[1L]]
+}
+
+#' Expand a word-level data frame to one row per syllable.
+#'
+#' Requires column `word_label_IPA_syllabified` (period-delimited).
+#' Adds / overwrites:
+#'   sN             — total syllable count in the word
+#'   sidx           — 1-based syllable position (integer)
+#'   syllable_label — IPA string for onset + nucleus + coda
+#'   vowel_label    — nucleus extracted from syllable_label
+#'
+#' Note: if the input already has sN or sidx those columns are
+#' replaced to stay consistent with the syllabified word.
+expand_to_syllables <- function(df) {
+  df_out <- df %>%
+    select(-any_of(c("sN", "sidx"))) %>%      # avoid carry-over conflicts
+    mutate(
+      syllable_parts = str_split(word_label_IPA_syllabified, fixed(".")),
+      sN             = map_int(syllable_parts, length)
+    ) %>%
+    tidyr::unnest_longer(syllable_parts, indices_to = "sidx") %>%
+    rename(syllable_label = syllable_parts) %>%
+    mutate(vowel_label = map_chr(syllable_label, extract_syllable_vowel))
+  
+  n_na <- sum(is.na(df_out$vowel_label))
+  if (n_na > 0L)
+    message("  ⚠  expand_to_syllables: ", n_na,
+            " syllable row(s) have no vowel nucleus — ",
+            "check IPA_VOWELS or transliterate_word() output")
+  df_out
+}
+
+#' Add a syl_position factor column (works for both spoken and written).
+#' Requires `sidx` and `sN`.
+add_syl_position <- function(df) {
+  df %>%
+    mutate(
+      syl_position = case_when(
+        sN == 1    ~ "only",
+        sidx == 1  ~ "initial",
+        sidx == sN ~ "final",
+        TRUE       ~ "medial"
+      ) %>%
+        factor(levels = c("only", "initial", "medial", "final"))
+    )
 }

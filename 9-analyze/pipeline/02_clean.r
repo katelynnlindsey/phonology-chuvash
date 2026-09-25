@@ -167,6 +167,8 @@ save_exclusion_report <- function(csv_path, txt_path) {
 cat("── Spoken corpus ──\n")
 
 d <- readRDS(file.path(PATHS$loaded_dir, "vowels_spoken_raw.rds"))
+d <- d %>%
+  mutate(word_id=paste(file_name,word_start,sep="_"))
 snapshot("00", "raw data loaded", d,
          "all rows from 01_load_raw.R")
 
@@ -183,7 +185,7 @@ snapshot("01", "target vowels only", d,
 # ── Step 02: Russian loanwords ───────────────────────────────────
 # Loanwords have different phonotactics; excluded from native-stress
 # analyses. Flagged by character pattern in orthographic word form.
-d <- d %>% filter(!is_russian_loan(word))
+d <- d %>% filter(!is_loan(word_label))
 
 snapshot("02", "Russian loanwords removed", d,
          "word matched RUSSIAN_PATTERN filter (see phonology_params.R)")
@@ -217,7 +219,7 @@ snapshot("04", "absolute formant bounds", d,
                  CLEANING$min_F2_hz, CLEANING$max_F2_hz))
 
 # ── Step 05: IQR outlier removal ─────────────────────────────────
-# Tukey 1.5×IQR fences applied within vowel × phon_stress × corpus.
+# Tukey 1.5×IQR fences applied within vowel × corpus.
 # Cells with fewer than min_cell_n tokens are dropped entirely.
 
 remove_iqr <- function(df, col) {
@@ -225,7 +227,7 @@ remove_iqr <- function(df, col) {
     message("  '", col, "' not found — skipping"); return(df)
   }
   df %>%
-    group_by(label, phon_stress, corpus) %>%
+    group_by(label, corpus) %>%
     filter(n() >= CLEANING$min_cell_n) %>%
     mutate(
       .q1    = quantile(.data[[col]], 0.25, na.rm = TRUE),
@@ -250,7 +252,7 @@ for (col in CLEANING$iqr_cols) {
 }
 
 snapshot("05", "IQR outliers removed", d,
-         sprintf("Tukey %.1f×IQR within vowel×stress×corpus for: %s",
+         sprintf("Tukey %.1f×IQR within vowel×corpus for: %s",
                  CLEANING$iqr_multiplier,
                  paste(CLEANING$iqr_cols, collapse = ", ")))
 
@@ -269,20 +271,6 @@ d <- d %>% filter(sN == 1 | word_id %in% complete_ids)
 
 snapshot("06", "complete polysyllabic words", d,
          "polysyllabic words with ≥1 missing syllable removed")
-
-# ── Step 07: Consistent word_category per word_id ────────────────
-# Removes join artefacts where the same word_id matched multiple
-# word_category values in 8-combine.
-consistent_ids <- d %>%
-  group_by(word_id) %>%
-  filter(n_distinct(word_category) == 1) %>%
-  pull(word_id) %>%
-  unique()
-
-d <- d %>% filter(word_id %in% consistent_ids)
-
-snapshot("07", "consistent word_category", d,
-         "word_id with >1 distinct word_category removed")
 
 # ── Save ──────────────────────────────────────────────────────────
 saveRDS(d, file.path(PATHS$cleaned_dir, "vowels_spoken_clean.rds"))
