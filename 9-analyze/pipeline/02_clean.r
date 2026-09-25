@@ -182,13 +182,13 @@ snapshot("01", "target vowels only", d,
          paste("kept ARPAbet labels:",
                paste(TARGET_VOWELS_ARPABET, collapse = " ")))
 
-# ── Step 02: Russian loanwords ───────────────────────────────────
+# ── Step 02: Loanwords ───────────────────────────────────
 # Loanwords have different phonotactics; excluded from native-stress
 # analyses. Flagged by character pattern in orthographic word form.
 d <- d %>% filter(!is_loan(word_label))
 
-snapshot("02", "Russian loanwords removed", d,
-         "word matched RUSSIAN_PATTERN filter (see phonology_params.R)")
+snapshot("02", "Loanwords removed", d,
+         "word matched LOANWORD_PATTERN filter (see phonology_params.R)")
 
 # ── Step 03: Duration bounds ─────────────────────────────────────
 # < 20 ms : below psychoacoustic distinctiveness threshold;

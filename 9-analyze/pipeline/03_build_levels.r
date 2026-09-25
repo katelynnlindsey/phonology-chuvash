@@ -141,6 +141,9 @@ zheltov <- zheltov %>%
   mutate(word_label_IPA_syllabified = map_chr(word_label_IPA, syllabify_ipa))
 
 zheltov_syl <- zheltov %>%
+  # Remove vowel-free entries (abbreviations: кпсс, ссср, вв …)
+  filter(str_detect(word_label_IPA,
+                    paste(IPA_VOWELS, collapse = "|"))) %>%
   expand_to_syllables() %>%
   add_syl_position()
 
@@ -171,6 +174,8 @@ mono <- mono %>%
   mutate(word_label_IPA_syllabified = map_chr(word_label_IPA, syllabify_ipa))
 
 mono_syl <- mono %>%
+  filter(str_detect(word_label_IPA,
+                    paste(IPA_VOWELS, collapse = "|"))) %>%
   expand_to_syllables() %>%
   add_syl_position()
 
@@ -200,15 +205,12 @@ saveRDS(syllables, file.path(PATHS$leveled_dir, "syllables_spoken.rds"))
 cat(sprintf("Level 2  syllables : %d rows saved\n", nrow(syllables)))
 
 
-# ════════════════════════════════════════════════════════════════
-# LEVEL 3 — WORD (spoken)
-# One row per word token; per-syllable properties summarised.
-# ════════════════════════════════════════════════════════════════
+# ── Level 3: Word ────────────────────────────────────────────────
 words <- spoken %>%
   arrange(word_id, sidx) %>%
   group_by(word_id) %>%
   summarise(
-    # ── Identifiers ────────────────────────────────────────────
+    # Identifiers
     file_name                  = first(file_name),
     corpus                     = first(corpus),
     speaker_id                 = first(speaker_id),
@@ -218,32 +220,37 @@ words <- spoken %>%
     sN                         = first(sN),
     word_category              = first(word_category),
     
-    # ── Position in utterance ──────────────────────────────────
-    widx                       = first(widx),
-    wN                         = first(wN),
-    phrase_position            = first(phrase_position),
-    
-    # ── Duration ───────────────────────────────────────────────
-    total_duration             = sum(duration, na.rm = TRUE),
-    dur_per_syl                = list(setNames(duration, paste0("v", sidx))),
-    dur_ratio_v1               = first(duration[sidx == 1L]) /
+    # Duration
+    total_duration  = sum(duration, na.rm = TRUE),
+    dur_per_syl     = list(setNames(duration, paste0("v", sidx))),
+    dur_ratio_v1    = first(duration[sidx == 1L]) /
       sum(duration, na.rm = TRUE),
     
-    # ── Sequences (vowel_label replaces old `label`) ───────────
-    vowel_sequence             = paste(vowel_label,    collapse = "-"),
-    syllable_sequence          = paste(syllable_label, collapse = "-"),
+    # Sequences
+    vowel_sequence    = paste(vowel_label,    collapse = "-"),
+    syllable_sequence = paste(syllable_label, collapse = "-"),
     
-    # ── Prosodic pattern ───────────────────────────────────────
-    slope_pattern              = paste(slope_type,     collapse = "-"),
+    # Prosodic
+    slope_pattern   = paste(slope_type, collapse = "-"),
     
-    # ── Amplitude ──────────────────────────────────────────────
-    total_intensity            = list(setNames(total_intensity,
-                                               paste0("v", sidx))),
+    # Amplitude
+    total_intensity = list(setNames(total_intensity, paste0("v", sidx))),
+    
     .groups = "drop"
   )
 
-saveRDS(words, file.path(PATHS$leveled_dir, "words_spoken.rds"))
-cat(sprintf("Level 3  words     : %d rows saved\n", nrow(words)))
+# ── Optional positional columns (may not exist in all corpora) ───
+optional_pos_cols <- c("widx", "wN", "phrase_position")
+present_pos_cols  <- intersect(optional_pos_cols, names(spoken))
+
+if (length(present_pos_cols) > 0L) {
+  word_pos <- spoken %>%
+    group_by(word_id) %>%
+    summarise(across(all_of(present_pos_cols), first), .groups = "drop")
+  words <- left_join(words, word_pos, by = "word_id")
+} else {
+  message("  ⚠  None of widx / wN / phrase_position found in spoken — skipped")
+}
 
 
 # ════════════════════════════════════════════════════════════════

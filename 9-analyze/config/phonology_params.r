@@ -317,10 +317,18 @@ RULE_LABELS <- setNames(
 # longer forms first is good documentation practice.
 # !! Adjust to match what your transliterate_word() actually outputs !!
 IPA_DIGRAPHS <- c(
-  "t͡ʃ", "d͡ʒ", "t͡s",          # tie-bar affricates  (U+0361)
-  "tʃ",  "dʒ",  "ts",          # plain-text affricates
-  "lʲ",  "nʲ",  "rʲ",          # palatalized sonorants
-  "sʲ",  "zʲ",  "tʲ",  "dʲ"   # palatalized obstruents
+  # Tie-bar affricates (U+0361)
+  "t͡ʃ", "d͡ʒ", "t͡s",
+  # Plain-text affricates
+  "tʃ",  "dʒ",  "ts",
+  # Palatalized consonants — list ALL that transliterate_word() can produce
+  # so that 'ʲ' is never left as a standalone token
+  "lʲ",  "nʲ",  "rʲ",
+  "sʲ",  "zʲ",  "tʲ",  "dʲ",
+  "kʲ",  "ɡʲ",  "gʲ",          # velars
+  "mʲ",  "pʲ",  "bʲ",          # labials
+  "fʲ",  "vʲ",  "ʋʲ",          # labiodentals
+  "xʲ",  "ɣʲ",  "ɕʲ"           # velars / post-alveolars
 )
 
 # ── IPA vowel nuclei ────────────────────────────────────────────────────
@@ -345,7 +353,9 @@ IPA_SONORITY <- c(
   # Stops
   "p"   = 1L, "b"   = 1L, "t"   = 1L, "d"   = 1L,
   "k"   = 1L, "ɡ"   = 1L, "g"   = 1L, "q"   = 1L,
-  # Affricates (both tie-bar and plain encodings)
+  "kʲ"  = 1L, "ɡʲ"  = 1L, "gʲ"  = 1L,   # ← NEW
+  "pʲ"  = 1L, "bʲ"  = 1L, "tʲ"  = 1L, "dʲ" = 1L,  # ← NEW (tʲ was missing)
+  # Affricates
   "t͡s" = 2L, "t͡ʃ" = 2L, "d͡ʒ" = 2L,
   "ts"  = 2L, "tʃ"  = 2L, "dʒ"  = 2L,
   # Fricatives
@@ -353,14 +363,17 @@ IPA_SONORITY <- c(
   "s"   = 3L, "z"   = 3L, "ʃ"   = 3L, "ʒ"   = 3L,
   "ɕ"   = 3L, "ʑ"   = 3L,
   "x"   = 3L, "ɣ"   = 3L, "χ"   = 3L, "ʁ"   = 3L,
-  "sʲ"  = 3L, "zʲ"  = 3L,
+  "sʲ"  = 3L, "zʲ"  = 3L, "fʲ"  = 3L, "vʲ"  = 3L,  # ← NEW
+  "ʋʲ"  = 3L, "xʲ"  = 3L, "ɣʲ"  = 3L, "ɕʲ"  = 3L,  # ← NEW
   # Nasals
   "m"   = 4L, "n"   = 4L, "ŋ"   = 4L, "nʲ"  = 4L,
+  "mʲ"  = 4L,                                         # ← NEW
   # Laterals
   "l"   = 5L, "lʲ"  = 5L,
   # Rhotics
   "r"   = 6L, "rʲ"  = 6L,
-  # Glides / approximants
+  # Approximants
+  "ʋ"   = 6L,
   "j"   = 7L, "w"   = 7L
 )
 
@@ -403,14 +416,7 @@ tokenize_ipa_all <- function(words, digraphs = IPA_DIGRAPHS) {
 #' Falls back to 1 (single rightmost consonant) if all multi-segment
 #' candidates contain unknown sonority values.
 .max_onset_size <- function(cluster, sonority = IPA_SONORITY) {
-  n <- length(cluster)
-  if (n == 0L) return(0L)
-  for (k in seq(n, 1L)) {
-    cand <- cluster[(n - k + 1L):n]
-    s    <- sonority[cand]
-    if (k == 1L || (all(!is.na(s)) && all(diff(s) > 0L))) return(k)
-  }
-  1L
+  if (length(cluster) == 0L) 0L else 1L
 }
 
 # ══════════════════════════════════════════════════════════════════════
@@ -439,10 +445,11 @@ IPA_DIGRAPHS <- c(
 IPA_VOWELS <- c(
   "a", "ɑ", "æ",
   "e", "ɛ",
+  "ø", "œ",                 # ← NEW: Chuvash ӗ → ø; add œ for safety
   "ə", "ɘ", "ɵ",
   "i", "ɪ", "ɨ",
   "o", "ɔ",
-  "u", "ʊ",
+  "u", "ʊ", "y", "ʉ",      # ← NEW: Chuvash ӳ/ӱ → y
   "ʌ", "ɐ"
 )
 
@@ -452,25 +459,26 @@ IPA_VOWELS <- c(
 # to the single rightmost consonant rule for that cluster.
 IPA_SONORITY <- c(
   # Stops
-  "p"  = 1L, "b"  = 1L, "t"  = 1L, "d"  = 1L,
-  "k"  = 1L, "ɡ"  = 1L, "g"  = 1L, "q"  = 1L,
+  "p"   = 1L, "b"   = 1L, "t"   = 1L, "d"   = 1L,
+  "k"   = 1L, "ɡ"   = 1L, "g"   = 1L, "q"   = 1L,
   # Affricates — both encodings
   "t͡s" = 2L, "t͡ʃ" = 2L, "d͡ʒ" = 2L,
-  "ts" = 2L, "tʃ" = 2L, "dʒ" = 2L,
+  "ts"  = 2L, "tʃ"  = 2L, "dʒ"  = 2L,
   # Fricatives
-  "f"  = 3L, "v"  = 3L, "h"  = 3L, "ɦ"  = 3L,
-  "s"  = 3L, "z"  = 3L, "ʃ"  = 3L, "ʒ"  = 3L,
-  "ɕ"  = 3L, "ʑ"  = 3L,
-  "x"  = 3L, "ɣ"  = 3L, "χ"  = 3L, "ʁ"  = 3L,
-  "sʲ" = 3L, "zʲ" = 3L,
+  "f"   = 3L, "v"   = 3L, "h"   = 3L, "ɦ"   = 3L,
+  "s"   = 3L, "z"   = 3L, "ʃ"   = 3L, "ʒ"   = 3L,
+  "ɕ"   = 3L, "ʑ"   = 3L,
+  "x"   = 3L, "ɣ"   = 3L, "χ"   = 3L, "ʁ"   = 3L,
+  "sʲ"  = 3L, "zʲ"  = 3L,
   # Nasals
-  "m"  = 4L, "n"  = 4L, "ŋ"  = 4L, "nʲ" = 4L,
+  "m"   = 4L, "n"   = 4L, "ŋ"   = 4L, "nʲ"  = 4L,
   # Laterals
-  "l"  = 5L, "lʲ" = 5L,
+  "l"   = 5L, "lʲ"  = 5L,
   # Rhotics
-  "r"  = 6L, "rʲ" = 6L,
-  # Glides
-  "j"  = 7L, "w"  = 7L
+  "r"   = 6L, "rʲ"  = 6L,
+  # Approximants / glides         ← NEW: ʋ (Chuvash в in some positions)
+  "ʋ"   = 6L,
+  "j"   = 7L, "w"   = 7L
 )
 
 
