@@ -114,12 +114,13 @@ mutate(
     vowel_label %in% rule_full()    ~ "full",
     vowel_label %in% rule_reduced() ~ "reduced",
     TRUE                            ~ NA_character_
-  ) %>% factor(levels = c("reduced", "full")),
-  
-  stress_cat = factor(
-    .data[[paste0("stress_rule_", ACTIVE_RULE)]],
-    levels = c("Unstressed", "Stressed")
-  )
+  ) %>% factor(levels = c("reduced", "full"))
+
+  # stress_cat was here: factor(stress_rule_<ACTIVE_RULE>). It was 100%
+  # identical to stress_rule_A6 and so was a second name for the same
+  # column, which made it easy to write an analysis that compared a rule
+  # against itself. Removed — use the stress_rule_* column for the rule
+  # you actually mean, by name.
 ) %>%
   
   # ── A4. F0 slope type ────────────────────────────────────────
@@ -225,15 +226,20 @@ word_categories <- vowels_ann %>%
     .groups    = "drop"
   )
 
+# duration_matches_stress and intensity_matches_stress were computed
+# here as (longest_sidx == stressed_sidx_A6) and
+# (loudest_sidx == stressed_sidx_A6). Removed, for two reasons:
+#   1. They hardcoded rule A6 regardless of ACTIVE_RULE, so setting
+#      ACTIVE_RULE to anything else left them silently wrong.
+#   2. They bake one rule into a column that then looks like neutral
+#      evidence about that rule. An analysis that regresses acoustics on
+#      stress and also uses these is comparing a rule with itself.
+# Any analysis needing this comparison should build it explicitly from
+# longest_sidx / loudest_sidx and the named stress_rule_* column, where
+# the circularity is visible at the point of use.
 words_ann <- words %>%
   left_join(word_stress,     by = "word_id") %>%
   left_join(word_categories, by = "word_id") %>%
-  mutate(
-    duration_matches_stress  = (longest_sidx  == stressed_sidx_A6),
-    intensity_matches_stress = if ("loudest_sidx" %in% names(.))
-      (loudest_sidx == stressed_sidx_A6)
-    else NA
-  ) %>%
   join_word_freq(word_col = "word_label")
 
 coverage_check(words_ann, "words_ann")
@@ -411,18 +417,20 @@ vowels_ann <- vowels_ann %>%
              "vowel_class")),
     # PHONOLOGICAL CONTEXT
     any_of(c("pre_seg", "fol_seg", "abs_pre_seg", "abs_fol_seg")),
-    # STRESS — observed (phon_stress from forced alignment) +
-    #          predicted under each rule
-    any_of(c("phon_stress",
-             "stress_rule_A6", "stress_rule_A5", "stress_rule_A4",
-             "stress_rule_B6", "stress_rule_B5", "stress_rule_B4",
-             "stress_cat")),
+    # STRESS — predicted under each of the six rules. There is no
+    # "observed stress" column: phon_stress came from the aligner
+    # dictionary and was ~98% identical to stress_rule_A6, and
+    # stress_cat was that column renamed. Neither was independent
+    # evidence, so both were removed.
+    any_of(c("stress_rule_A6", "stress_rule_A5", "stress_rule_A4",
+             "stress_rule_B6", "stress_rule_B5", "stress_rule_B4")),
     # TIMING
     any_of(c("start", "end", "duration", "log_duration", "time")),
     # FORMANTS
     any_of(c("F1", "F2", "F3")),
     # INTENSITY — summary columns first, then 20-step series
-    any_of(c("intensity", "total_intensity", "peak_intensity")),
+    any_of(c("intensity", "int_midpoint", "n_valid_int_steps",
+             "total_intensity", "peak_intensity")),
     starts_with("intensity_step"),
     # F0 — summary first, then 20-step series
     any_of(c("f0_mean", "f0_slope", "slope_type")),
@@ -464,7 +472,6 @@ words_ann <- words_ann %>%
              "stressed_sidx_B6", "stressed_sidx_B5", "stressed_sidx_B4",
              "stressed_position", "stressed_slope")),
     # DOES THE ACOUSTIC WINNER MATCH PREDICTED STRESS?
-    any_of(c("duration_matches_stress", "intensity_matches_stress")),
     # DURATION
     any_of(c("total_duration", "dur_ratio_v1",
              "longest_sidx", "log_duration_mean", "dur_per_syl")),

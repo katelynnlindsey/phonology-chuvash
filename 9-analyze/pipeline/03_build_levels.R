@@ -98,23 +98,76 @@ cat(sprintf("  syllable_label : %d present  |  %d NA\n\n",
 cat("── Spoken: deriving structural columns ──\n")
 
 # ── 1. Intensity aggregates ───────────────────────────────────────
+#
+# READ THIS BEFORE USING ANY INTENSITY COLUMN.
+#
+# intensity_step1..20 are NOT 20 measurements. The stage-7 extraction
+# writes Praat's "undefined" as a literal 0.0, and 71% of the cells are
+# 0. The pattern is symmetric about the vowel midpoint (steps 1, 2, 19,
+# 20 are 0 for every vowel; steps 10 and 11 never are) because Praat's
+# intensity is undefined within half an analysis-window of each edge of
+# the interval. 42% of vowels have only TWO valid readings. The count of
+# valid steps therefore correlates with duration at r = 0.93.
+#
+# Consequences, measured in analyses/intensity_measure_comparison.R:
+#
+#   int_midpoint     USE THIS. Mean of steps 10 and 11 -- always exactly
+#                    two samples at the same relative position, defined
+#                    for 100% of rows, so no duration confound by
+#                    construction (r = -0.063 with duration).
+#
+#   total_intensity  DO NOT USE as an amplitude measure. Sum of all 20
+#                    steps including the zeros, so it is dominated by how
+#                    many steps were defined: r = 0.985 with the valid-
+#                    step count and r = 0.909 with duration. It is a
+#                    duration measure wearing a dB label, and it is the
+#                    source of the "162 dB" figure in earlier drafts.
+#                    Retained only so old results can be reproduced.
+#
+#   peak_intensity   DO NOT USE. A maximum over a VARIABLE number of
+#                    samples, so it is biased upward for long vowels
+#                    (the peak-minus-midpoint gap grows from 0 to 5.02 dB
+#                    as valid steps go 2 -> 16). Since stressed vowels are
+#                    longer, it manufactures part of any stress effect.
+#
+# The `intensity` column (from new-FAVE) is a separate single-point
+# measurement and does not come from this series -- but FAVE takes it at
+# ~13.8% of vowel duration, i.e. on the onset ramp, not the steady state.
+
 int_cols <- intersect(paste0("intensity_step", 1:20), names(spoken))
 
-if (length(int_cols) > 0L && !"total_intensity" %in% names(spoken)) {
-  int_mtx        <- as.matrix(spoken[, int_cols])
-  peak           <- apply(int_mtx, 1L, max, na.rm = TRUE)
+if (length(int_cols) > 0L && !"int_midpoint" %in% names(spoken)) {
+  int_mtx <- as.matrix(spoken[, int_cols])
+
+  # Undefined-coded-as-zero must become NA before any aggregate, or the
+  # zeros are averaged in as if they were 0 dB readings.
+  int_mtx[int_mtx == 0] <- NA_real_
+
+  peak <- suppressWarnings(apply(int_mtx, 1L, max, na.rm = TRUE))
   peak[is.infinite(peak)] <- NA_real_          # all-NA rows → NA, not -Inf
-  
+
+  mid_cols <- intersect(c("intensity_step10", "intensity_step11"), int_cols)
+  stopifnot("intensity_step10/11 missing — int_midpoint cannot be built" =
+              length(mid_cols) == 2L)
+  mid_mtx <- int_mtx[, mid_cols, drop = FALSE]
+
   spoken <- spoken %>%
     mutate(
-      total_intensity = rowSums(across(all_of(int_cols)), na.rm = TRUE),
-      peak_intensity  = peak
+      n_valid_int_steps = rowSums(!is.na(int_mtx)),
+      int_midpoint      = rowMeans(mid_mtx, na.rm = TRUE),
+      # kept for reproducing older results only — see the note above
+      total_intensity   = rowSums(across(all_of(int_cols)), na.rm = TRUE),
+      peak_intensity    = peak
     )
-  cat(sprintf("  total_intensity + peak_intensity  (%d step cols)\n",
+  cat(sprintf("  int_midpoint (+ deprecated total/peak_intensity), %d step cols\n",
               length(int_cols)))
+  cat(sprintf("  valid steps per vowel: median %d, range %d-%d; %.1f%% of vowels have only 2\n",
+              median(spoken$n_valid_int_steps),
+              min(spoken$n_valid_int_steps), max(spoken$n_valid_int_steps),
+              100 * mean(spoken$n_valid_int_steps == 2)))
 } else {
-  cat(sprintf("  total_intensity: %s\n",
-              if ("total_intensity" %in% names(spoken))
+  cat(sprintf("  intensity aggregates: %s\n",
+              if ("int_midpoint" %in% names(spoken))
                 "already present — skipped"
               else "⚠  no intensity_step* columns found"))
 }
@@ -421,19 +474,27 @@ if (has("slope_type")) {
 }
 
 # ── Optional: amplitude ───────────────────────────────────────────
-if (has("total_intensity")) {
+#
+# loudest_sidx is the "which syllable is loudest" vote used by the
+# bottom-up detected-stress measure in analyses/. It was previously
+# computed from total_intensity -- which correlates with duration at
+# r = 0.909 -- so it was very nearly a second copy of longest_sidx, and
+# the three-way duration/intensity/f0 agreement rate it fed was
+# correspondingly inflated. It now uses int_midpoint, which is the
+# actual amplitude at a fixed point in the vowel.
+if (has("int_midpoint")) {
   amp_tbl <- spoken %>%
     arrange(word_id, sidx) %>%
     group_by(word_id) %>%
     summarise(
-      intensity_per_syl = list(setNames(total_intensity, paste0("v", sidx))),
-      loudest_sidx      = sidx[which.max(total_intensity)][1L],
+      intensity_per_syl = list(setNames(int_midpoint, paste0("v", sidx))),
+      loudest_sidx      = sidx[which.max(int_midpoint)][1L],
       .groups = "drop"
     )
   words <- left_join(words, amp_tbl, by = "word_id")
-  cat("  Added: intensity_per_syl (list), loudest_sidx\n")
+  cat("  Added: intensity_per_syl (list), loudest_sidx  [from int_midpoint]\n")
 } else {
-  message("  ⚠  total_intensity not found — loudest_sidx omitted")
+  message("  ⚠  int_midpoint not found — loudest_sidx omitted")
 }
 
 # ── Optional: speech rate ─────────────────────────────────────────
