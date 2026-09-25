@@ -183,33 +183,98 @@ raw_vowels <- raw_vowels %>%
   ) %>%
   select(-any_of("corpus"))
 
+# sidx/sN are kept under CONTOUR-specific names. They used to be renamed to
+# sidx/sN and used as join keys, which silently assumed the two extractions
+# agreed about a vowel's index within its word. With the interval join they
+# are no longer keys, so both sides survive and the assumption becomes
+# testable — see the agreement check after A6.
 contours_wide <- contours_wide %>%
   rename(
     file_name     = filename,
-    sidx          = vowel_index,
-    sN            = vowel_total,
+    sidx_contour  = vowel_index,
+    sN_contour    = vowel_total,
     label_contour = interval_label
   ) %>%
   select(-duration) %>%      # ← not vowel duration; raw_vowels$dur is authoritative
   mutate(
-    sidx = as.integer(sidx),
-    sN   = as.integer(sN)
+    sidx_contour = as.integer(sidx_contour),
+    sN_contour   = as.integer(sN_contour)
   )
 
-# Many-to-many join: disambiguate by time overlap
-vowels_joined <- raw_vowels %>%
-  left_join(
-    contours_wide,
-    by           = c("file_name", "sidx", "sN"),
-    relationship = "many-to-many"
-  ) %>%
-  group_by(file_name, sidx, sN, label, time) %>%
-  mutate(within = time >= start & time <= end) %>%
-  arrange(desc(within), abs(time - start)) %>%
-  slice(1) %>%
-  ungroup() %>%
-  select(-within) %>%
-  note_n("A6: vowels joined with contours")
+# ── INTERVAL JOIN, not a key join ────────────────────────────────
+#
+# This used to join on (file_name, sidx, sN) with relationship =
+# "many-to-many" and then de-duplicate with group_by/slice(1). That key is
+# not unique on EITHER side: sidx/sN are the vowel's index and count WITHIN
+# ITS WORD, so in a file containing several disyllabic words, every word's
+# vowel 1 carries (sidx=1, sN=2) and matches every other word's vowel 1.
+# Measured on the source files: the key identifies only 335,500 of 703,582
+# point rows and 345,982 of 791,137 contour intervals. The slice(1) cleanup
+# grouped by `time`, which does not separate two point rows belonging to the
+# same word, so 3,998 (word_id, sidx) slots survived with 4,083 spurious extra
+# rows — 66% of them disagreeing about which vowel it was.
+#
+# The correct relation is containment, not equality: each FAVE point has a
+# measurement `time`, each contour row has a vowel interval, and the point
+# belongs to the interval that contains its time. Verified on the source data:
+#   (file_name, time)         is unique in the points file  (703,582/703,582)
+#   (filename, start, end)    is unique in the contours     (791,137/791,137)
+#   no two intervals within a file overlap                  (0 of 791,137)
+# so the containment join is exactly 1:1 and needs no de-duplication.
+#
+# 87,948 point rows (12.50%) fall in no interval and are dropped here. They
+# are not boundary-rounding cases — the median gap to the nearest preceding
+# interval is 69 ms and only one row is within 5 ms of an edge. They are
+# concentrated in Chuvash Voice (15.50% unmatched, vs 1.23% for Common
+# Voice), which suggests the FAVE run and the contour run for that corpus
+# used different TextGrids. Until that is resolved these vowels cannot be
+# paired with a contour at all, so they are excluded and counted.
+# Matched: 615,634 vowels.
+
+.interval_join <- function(pts, iv, time_col = "time") {
+  pt <- data.table::as.data.table(pts)
+  iv <- data.table::as.data.table(iv)
+  pt[, `:=`(.t1 = get(time_col), .t2 = get(time_col))]
+  data.table::setkey(iv, file_name, start, end)
+  out <- data.table::foverlaps(
+    pt, iv,
+    by.x   = c("file_name", ".t1", ".t2"),
+    type   = "within",
+    nomatch = NA
+  )
+  out[, c(".t1", ".t2") := NULL]
+  dplyr::as_tibble(out)
+}
+
+.n_before <- nrow(raw_vowels)
+vowels_joined <- .interval_join(raw_vowels, contours_wide) %>%
+  note_n("A6: vowels joined with contours (interval join)")
+
+.n_unmatched <- sum(is.na(vowels_joined$start))
+cat(sprintf("  interval join: %d of %d point rows matched a contour interval (%.2f%% unmatched)\n",
+            .n_before - .n_unmatched, .n_before, 100 * .n_unmatched / .n_before))
+vowels_joined <- vowels_joined %>% filter(!is.na(start))
+
+stopifnot(
+  "interval join did not produce one row per point" =
+    nrow(vowels_joined) == .n_before - .n_unmatched,
+  "(file_name, time) is not unique after the interval join" =
+    nrow(dplyr::distinct(vowels_joined, file_name, time)) == nrow(vowels_joined)
+)
+note_n(vowels_joined, "A6a: unmatched points dropped")
+
+# Do the two extractions agree about where this vowel sits in its word?
+# The old key join assumed they always did. Report rather than assert: a
+# mismatch is informative about TextGrid provenance, not a reason to stop.
+.agree <- vowels_joined %>%
+  filter(!is.na(sidx), !is.na(sidx_contour)) %>%
+  summarise(
+    n         = dplyr::n(),
+    sidx_same = mean(sidx == sidx_contour),
+    sN_same   = mean(sN   == sN_contour)
+  )
+cat(sprintf("  FAVE vs contour vowel index agreement: sidx %.2f%%, sN %.2f%% (n=%d)\n",
+            100 * .agree$sidx_same, 100 * .agree$sN_same, .agree$n))
 
 # ── A6b. Join word-level contours ────────────────────────────────
 # Join on (file_name, word_label) — both are already in vowels_joined
@@ -219,50 +284,47 @@ vowels_joined <- raw_vowels %>%
 # interval whose midpoint is closest to the vowel measurement time,
 # with preference for an exact time-overlap).
 
+# Same containment logic as A6. Word intervals are also unique on
+# (filename, start, end) (476,212/476,212) and non-overlapping within a file,
+# so the join is 1:1. Joining on (file_name, word_label) was wrong for the
+# same reason as A6: a word type can occur several times in one utterance.
 vowels_joined <- vowels_joined %>%
-  left_join(
-    words_wide,
-    by           = c("file_name", "word_label"),
-    relationship = "many-to-many"
+  rename(vowel_start = start, vowel_end = end) %>%
+  .interval_join(
+    words_wide %>% rename(start = word_start, end = word_end)
   ) %>%
-  group_by(file_name, sidx, sN, label, time) %>%
-  mutate(
-    in_word = !is.na(word_start) &
-      time >= word_start & time <= word_end
-  ) %>%
-  arrange(
-    desc(in_word),
-    abs(time - coalesce((word_start + word_end) / 2, time))
-  ) %>%
-  slice(1) %>%
-  ungroup() %>%
-  select(-in_word) %>%
-  note_n("A6b: word contours joined")
+  rename(word_start = start, word_end = end,
+         start = vowel_start, end = vowel_end) %>%
+  note_n("A6b: word contours joined (interval join)")
+
+stopifnot(
+  "word interval join changed the row count" =
+    nrow(dplyr::distinct(vowels_joined, file_name, time)) == nrow(vowels_joined)
+)
 
 # ── A6c. Join phrase-level contours ──────────────────────────────
 # Phrases are joined on file_name alone (many utterances have a
 # single phrase, but if yours have several the time-overlap logic
 # below selects the containing phrase just as in A6 and A6b).
 
+# Containment again. Phrase intervals are unique on (filename, start, end)
+# (47,056/47,056) and there is a median and maximum of 1 per file, so joining
+# on file_name alone happened to be nearly safe here — but the interval join
+# is correct rather than nearly safe, and stays correct if multi-phrase
+# utterances are added later.
 vowels_joined <- vowels_joined %>%
-  left_join(
-    phrases_wide,
-    by           = "file_name",
-    relationship = "many-to-many"
+  rename(vowel_start = start, vowel_end = end) %>%
+  .interval_join(
+    phrases_wide %>% rename(start = phrase_start, end = phrase_end)
   ) %>%
-  group_by(file_name, sidx, sN, label, time) %>%
-  mutate(
-    in_phrase = !is.na(phrase_start) &
-      time >= phrase_start & time <= phrase_end
-  ) %>%
-  arrange(
-    desc(in_phrase),
-    abs(time - coalesce((phrase_start + phrase_end) / 2, time))
-  ) %>%
-  slice(1) %>%
-  ungroup() %>%
-  select(-in_phrase) %>%
-  note_n("A6c: phrase contours joined")
+  rename(phrase_start = start, phrase_end = end,
+         start = vowel_start, end = vowel_end) %>%
+  note_n("A6c: phrase contours joined (interval join)")
+
+stopifnot(
+  "phrase interval join changed the row count" =
+    nrow(dplyr::distinct(vowels_joined, file_name, time)) == nrow(vowels_joined)
+)
 
 # ── A7. Join speaker metadata ────────────────────────────────────
 vowels_joined <- vowels_joined %>%

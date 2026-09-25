@@ -303,16 +303,44 @@ if (all(c("sentence", "word_label", "word_start", "word_end") %in%
 }
 
 # ── 7. word_id ────────────────────────────────────────────────────
-# Keyed on widx so each occurrence of a word in a sentence is
-# distinct (a word appearing twice in one sentence gets two IDs).
-if ("widx" %in% names(spoken)) {
-  spoken <- spoken %>%
-    mutate(word_id = paste(file_name, widx, sN, sep = "_"))
-} else {
-  spoken <- spoken %>%
-    mutate(word_id = paste(file_name, word_start, sN, sep = "_"))
-}
-cat("  word_id\n")
+# word_id must be an IDENTITY, so it is built from the word's position in
+# TIME, which is a fact about the recording, not from widx.
+#
+# It used to be paste(file_name, widx, sN). widx is not an identifier: it is
+# INFERRED, by string-matching the aligner's word label against the tokens of
+# the orthographic sentence (see the pmap_int block above, with its exact /
+# hyphen-boundary / strip-leading-n fallbacks and a tie-break by temporal
+# proximity). When the aligner's segmentation does not line up with the
+# sentence tokenisation, two different aligned words get the same widx —
+# measured: 1,758 word tokens (1.25%) collide. Those collisions merged
+# distinct words under one word_id, which is how 1,176 (word_id, sidx) slots
+# ended up holding two different vowels from two different words, e.g.
+# common_voice_cv_17339465_3 covering both /laru/ and /tɵrɵʋa/.
+#
+# word_start IS unique within a file (141,097 of 141,097 word tokens) because
+# word intervals do not overlap, so ranking on it gives a stable 1..n index in
+# temporal order that is both a true key and readable.
+#
+# widx is KEPT, because phrase_position and rel_phrase_position are about
+# position in the orthographic sentence, which is a different question. But it
+# should not be used to identify a word token, and its 1.25% collision rate is
+# a known limitation of those two columns.
+stopifnot(
+  "word_start missing — cannot build a reliable word_id" =
+    "word_start" %in% names(spoken)
+)
+spoken <- spoken %>%
+  group_by(file_name) %>%
+  mutate(word_token_idx = dense_rank(word_start)) %>%
+  ungroup() %>%
+  mutate(word_id = paste(file_name, word_token_idx, sep = "_"))
+
+.n_wid <- spoken %>% distinct(file_name, word_start) %>% nrow()
+stopifnot(
+  "word_id is not unique per word token" =
+    n_distinct(spoken$word_id) == .n_wid
+)
+cat(sprintf("  word_id  (%d word tokens, unique)\n", .n_wid))
 
 # ── 8. Speech rate ────────────────────────────────────────────────
 dur_ok <- !is.null(PATHS$durations_mfa) && file.exists(PATHS$durations_mfa) &&

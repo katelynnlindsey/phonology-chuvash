@@ -408,9 +408,12 @@ vowels_ann <- vowels_ann %>%
              "word_category",
              "word_cat_6", "word_cat_5", "word_cat_4")),
     # WORD POSITION IN SENTENCE
-    any_of(c("widx", "wN", "phrase_position")),
+    any_of(c("widx", "wN", "phrase_position", "word_token_idx")),
     # SYLLABLE
-    any_of(c("sidx", "sN", "syllable_label", "syllable_coda")),
+    any_of(c("sidx", "sN", "syllable_label", "syllable_coda",
+             # the two extractions' own vowel indices, kept so their
+             # agreement stays inspectable (sidx 98.21%, sN 97.23%)
+             "sidx_contour", "sN_contour")),
     # VOWEL — label, position, features, strength
     any_of(c("vowel_label", "context", "vowel_position",
              "vowel_height", "vowel_backness", "vowel_rounding",
@@ -464,7 +467,7 @@ words_ann <- words_ann %>%
              "sN", "word_category",
              "word_cat_6", "word_cat_5", "word_cat_4")),
     # WORD POSITION
-    any_of(c("widx", "wN", "phrase_position")),
+    any_of(c("widx", "wN", "phrase_position", "word_token_idx")),
     # VOWEL/SYLLABLE SEQUENCES (what vowels / syllables make up the word)
     any_of(c("vowel_sequence", "syllable_sequence")),
     # PREDICTED STRESS under each rule

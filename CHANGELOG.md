@@ -119,6 +119,75 @@ Removed at source in `04_annotate.R` (all four were circular):
 splits 217,798 full / 69,620 reduced. Rules A6 and B6 differ on 13,573 vowel
 tokens.
 
+### Vowel and word identity fixed **[affects results]**
+
+Two independent identity bugs were merging distinct observations. Full
+pipeline re-run (45.8 min for stages 1–4; run logs `run_20260925_160044.txt`
+and `run_20260925_165738.txt`).
+
+**1. The contour joins used a non-unique key.** `01_load_raw.R` joined vowels
+to contours on `(file_name, sidx, sN)` with `relationship = "many-to-many"`,
+then de-duplicated with `group_by(...) %>% slice(1)`. But `sidx`/`sN` are the
+vowel's index and count *within its word*, so in a file containing several
+disyllabic words, every word's vowel 1 carries `(sidx=1, sN=2)` and matched
+every other word's vowel 1. The key identified only 335,500 of 703,582 point
+rows and 345,982 of 791,137 contour intervals.
+
+Replaced with an interval (containment) join: each FAVE point belongs to the
+contour interval containing its measurement `time`. Verified on the source
+files before changing anything — `(file_name, time)` is unique in the points
+CSV (703,582/703,582), `(filename, start, end)` is unique in the contours
+(791,137/791,137), and no two intervals within a file overlap (0/791,137) —
+so the join is exactly 1:1. The same fix was applied to the word-level and
+phrase-level joins, which had the same defect.
+
+This reproduces the **615,634** vowels reported in the draft, so an earlier
+version of the pipeline did join this way and the key join was a regression.
+
+87,948 point rows (12.50%) fall in no contour interval and are now dropped and
+counted. They are not boundary-rounding cases (median gap to the nearest
+interval 69 ms; one row within 5 ms of an edge) and they are lopsided by
+corpus — **15.50% unmatched in Chuvash Voice vs 1.23% in Common Voice** —
+which suggests the FAVE run and the contour run for Chuvash Voice used
+different TextGrids. Unresolved; flagged for investigation.
+
+Because `sidx`/`sN` are no longer join keys, the contour copies are retained as
+`sidx_contour`/`sN_contour` and their agreement with the FAVE values is printed
+each run: 98.21% / 97.23% at the join, and 100% / 100% in the final cleaned
+data, because stage 2's incomplete-word filter already removed the
+disagreements.
+
+**2. `word_id` collided across different words.** `03_build_levels.R` built it
+as `paste(file_name, widx, sN)`. `widx` is not an identifier — it is inferred
+by string-matching the aligner's word label against the tokens of the
+orthographic sentence, with several fallbacks and a tie-break on temporal
+proximity. It collides on 1,758 word tokens (1.25%), which merged distinct
+words under one `word_id`: e.g. `common_voice_cv_17339465_3` covered both
+/laru/ and /tɵrɵʋa/. That left 1,176 `(word_id, sidx)` slots holding two
+different vowels from two different words.
+
+`word_id` is now built from the word's position in time —
+`dense_rank(word_start)` within each file — which is unique (141,097/141,097)
+because word intervals do not overlap. `widx` is kept, because
+`phrase_position` and `rel_phrase_position` genuinely concern position in the
+orthographic sentence, but its 1.25% collision rate is a known limitation of
+those two columns and it must not be used to identify a word token.
+`word_token_idx` is retained in the output.
+
+**Result.** All identity checks now pass: `(file_name, time)` unique,
+`(word_id, sidx)` unique, one `word_label` per `word_id`, and `duration`
+equals `(end − start)` for 100.000% of rows (was 98.70%).
+
+| | before | after |
+|---|---|---|
+| vowel tokens | 287,418 | **280,955** |
+| word tokens | 141,402 | **141,097** |
+| duplicated `(word_id, sidx)` slots | 3,998 | **0** |
+| `duration` == `(end − start)` | 98.70% | **100.000%** |
+
+Final: 280,955 vowel tokens, 141,097 word tokens, 15,690 word types,
+41,337 recordings; 186 vowel columns, 39 word columns.
+
 ### Known non-obvious hazards
 
 - This project's R sessions may run under a non-UTF-8 native encoding, in which
