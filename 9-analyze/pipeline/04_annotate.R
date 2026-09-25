@@ -25,7 +25,7 @@ suppressPackageStartupMessages({
 cat("══════════════════════════════════════════\n")
 cat("  04_annotate.R\n")
 cat(sprintf("  Active stress rule : %s — %s\n",
-            ACTIVE_RULE, VOWEL_RULES[[ACTIVE_RULE]]$label))
+            ACTIVE_RULE, VOWEL_RULES[[ACTIVE_RULE]]$vowel_label))
 cat("══════════════════════════════════════════\n\n")
 
 
@@ -88,28 +88,28 @@ coverage_check <- function(df, label) {
 # ════════════════════════════════════════════════════════════════
 cat("\n── A. Annotating vowel level ──\n")
 
-vowels <- readRDS(file.path(PATHS$leveled_dir, "vowels_level.rds"))
+vowels <- readRDS(file.path(PATHS$leveled_dir, "vowels_spoken.rds"))
 
 vowels_ann <- vowels %>%
   
   # ── A1. Vowel phonetic features ───────────────────────────────
 mutate(
   vowel_height = case_when(
-    label %in% VOWEL_HEIGHT$high ~ "high",
-    label %in% VOWEL_HEIGHT$mid  ~ "mid",
-    label %in% VOWEL_HEIGHT$low  ~ "low",
+    vowel_label %in% VOWEL_HEIGHT$high ~ "high",
+    vowel_label %in% VOWEL_HEIGHT$mid  ~ "mid",
+    vowel_label %in% VOWEL_HEIGHT$low  ~ "low",
     TRUE                         ~ NA_character_
   ) %>% factor(levels = c("high", "mid", "low")),
   
   vowel_backness = case_when(
-    label %in% VOWEL_BACKNESS$front   ~ "front",
-    label %in% VOWEL_BACKNESS$central ~ "central",
-    label %in% VOWEL_BACKNESS$back    ~ "back",
+    vowel_label %in% VOWEL_BACKNESS$front   ~ "front",
+    vowel_label %in% VOWEL_BACKNESS$central ~ "central",
+    vowel_label %in% VOWEL_BACKNESS$back    ~ "back",
     TRUE                              ~ NA_character_
   ) %>% factor(levels = c("front", "central", "back")),
   
   vowel_rounding = if_else(
-    label %in% VOWEL_ROUND, "rounded", "unrounded"
+    vowel_label %in% VOWEL_ROUND, "rounded", "unrounded"
   ) %>% factor(levels = c("unrounded", "rounded"))
 ) %>%
   
@@ -119,8 +119,8 @@ apply_all_stress_rules() %>%
   # ── A3. Strength and stress under active rule ─────────────────
 mutate(
   vowel_strength = case_when(
-    label %in% active_strong() ~ "strong",
-    label %in% active_weak()   ~ "weak",
+    vowel_label %in% active_strong() ~ "strong",
+    vowel_label %in% active_weak()   ~ "weak",
     TRUE                       ~ NA_character_
   ) %>% factor(levels = c("weak", "strong")),
   
@@ -187,7 +187,7 @@ cat("✓ vowels_spoken_annotated.rds saved\n")
 # ════════════════════════════════════════════════════════════════
 cat("\n── B. Annotating word level ──\n")
 
-words <- readRDS(file.path(PATHS$leveled_dir, "words_level.rds"))
+words  <- readRDS(file.path(PATHS$leveled_dir, "words_spoken.rds"))
 
 # Pull per-vowel stress annotations from the annotated vowel table
 word_stress <- vowels_ann %>%
@@ -222,9 +222,9 @@ word_categories <- vowels_ann %>%
   arrange(word_id, sidx) %>%
   group_by(word_id) %>%
   summarise(
-    word_cat_A = word_category_string(label, "A"),
-    word_cat_B = word_category_string(label, "B"),
-    word_cat_C = word_category_string(label, "C"),
+    word_cat_A = word_category_string(vowel_label, "A"),
+    word_cat_B = word_category_string(vowel_label, "B"),
+    word_cat_C = word_category_string(vowel_label, "C"),
     .groups    = "drop"
   )
 
@@ -236,8 +236,6 @@ words_ann <- words %>%
   mutate(
     duration_matches_stress  = (longest_sidx == stressed_sidx_A),
     intensity_matches_stress = (loudest_sidx == stressed_sidx_A),
-    
-    disyl_slope_cat = if_else(sN == 2, f0_slope_pattern, NA_character_)
   ) %>%
   
   # ── Word frequency from monolingual corpus ────────────────────

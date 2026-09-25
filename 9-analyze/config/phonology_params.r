@@ -152,7 +152,7 @@ apply_stress_rule <- function(df, rule = ACTIVE_RULE) {
   df %>%
     dplyr::group_by(word_id) %>%
     dplyr::mutate(
-      .target = assign_stress(label[order(sidx)], rule),
+      .target = assign_stress(vowel_label[order(sidx)], rule),
       !!col   := dplyr::if_else(sidx == .target, "Stressed", "Unstressed")
     ) %>%
     dplyr::ungroup() %>%
