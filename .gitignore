@@ -27,6 +27,21 @@ corpora/textgrids_commonvoice/*.lab
 1-raw_data/monolingual_chuvash/*.parquet
 1-raw_data/chuvash_voice/audio_transcripts/*.parquet
 
+# ── Stage 7/8 extraction outputs: large and regenerable ──────────
+# 3.2 GB total. Regenerate with the stage-7 scripts; the pipeline reads
+# them into 9-analyze/data/loaded/*.rds, which IS version-controlled
+# (via git-lfs), so the analysis is reproducible without them.
+#   contours_output.csv (Common Voice) alone is 1.4 GB
+7-extract/contours/vowels/*/contours_output.csv
+7-extract/contours/words_phrases/output-words.csv
+7-extract/contours/words_phrases/output-phrases.csv
+8-combine/all_chuvash_vowel_points.csv
+
+# ── Duplicate of 1-raw_data/chuvash_voice/audio_transcripts/ ─────
+# Verified byte-identical with cmp (1.3 GB). Kept out of git; safe to
+# delete from disk once confirmed unneeded.
+/data/
+
 # ── Scratch ──────────────────────────────────────────────────────
 old/
 9-analyze/config/new.txt
