@@ -446,8 +446,20 @@ RULE_COLORS <- c(
 # !! Adjust to match what your transliterate_word() actually outputs !!
 IPA_DIGRAPHS <- c(
   # Tie-bar affricates (U+0361)
-  "t͡ʃ", "d͡ʒ", "t͡s",
+  "t͡ɕ", "t͡ʃ", "d͡ʒ", "t͡s",
   # Plain-text affricates
+  #
+  # "tɕ" is the one that actually occurs in this data: CONSONANT_TO_IPA maps
+  # Chuvash ч -> "tɕ". It was missing from this list, so tokenize_ipa() split
+  # the affricate into "t" + "ɕ" and syllabify_ipa() then put the /t/ in one
+  # syllable's coda and the /ɕ/ in the next syllable's onset -- splitting a
+  # single phoneme across a syllable boundary. 12-18% of word types per corpus
+  # contain the sequence, and it left 8,529 vowel rows (2.97% of the spoken
+  # data) marked syllable_coda = "closed" with a "coda" that was half an
+  # affricate. syllable_coda is a fixed effect in every acoustic model, the
+  # basis of the `weight` candidate rule, and the evidence for the minimal-word
+  # generalisation, so this was not cosmetic.
+  "tɕ",
   "tʃ",  "dʒ",  "ts",
   # Palatalized consonants — list ALL that transliterate_word() can produce
   # so that 'ʲ' is never left as a standalone token
@@ -486,7 +498,8 @@ IPA_SONORITY <- c(
   "kʲ"  = 1L, "ɡʲ"  = 1L, "gʲ"  = 1L,   # ← NEW
   "pʲ"  = 1L, "bʲ"  = 1L, "tʲ"  = 1L, "dʲ" = 1L,  # ← NEW (tʲ was missing)
   # Affricates
-  "t͡s" = 2L, "t͡ʃ" = 2L, "d͡ʒ" = 2L,
+  "t͡ɕ" = 2L, "t͡s" = 2L, "t͡ʃ" = 2L, "d͡ʒ" = 2L,
+  "tɕ"  = 2L,                      # Chuvash ч — was missing
   "ts"  = 2L, "tʃ"  = 2L, "dʒ"  = 2L,
   # Fricatives
   "f"   = 3L, "v"   = 3L, "h"   = 3L, "ɦ"   = 3L,
