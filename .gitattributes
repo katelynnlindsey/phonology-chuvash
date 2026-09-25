@@ -1,1 +1,5 @@
 *.rds filter=lfs diff=lfs merge=lfs -text
+7-extract/reextract/phones_chuvash_voice.csv filter=lfs diff=lfs merge=lfs -text
+9-analyze/output/align_confidence.csv filter=lfs diff=lfs merge=lfs -text
+9-analyze/output/vowels_for_confidence.csv filter=lfs diff=lfs merge=lfs -text
+9-analyze/output/vowels_normalised.csv filter=lfs diff=lfs merge=lfs -text

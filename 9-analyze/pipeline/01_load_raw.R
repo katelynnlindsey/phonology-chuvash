@@ -140,11 +140,23 @@ phrases_wide <- phrases_raw %>%
 # ── A4. Speaker metadata ─────────────────────────────────────────
 
 # Common Voice metadata (from TSV — has path → filename mapping)
+# The TSV carries speaker identity and it was being dropped. It has both
+# client_id and speaker_id (109 distinct each, 0 missing), and every one of the
+# 14,617 Common Voice recordings in the analysed data matches a TSV row — so
+# Common Voice speaker identity is fully recoverable. Without these columns
+# speaker_id was 100% NA for that corpus, because the only other source
+# (meta_cv_hf, below) keys on file names of the form "utterance_NNNNNN", which
+# only the Chuvash Voice corpus uses. That is why a speaker random effect
+# appeared unsupportable and why the draft's "Num. groups: speaker_id = 108"
+# could not be reproduced: 104 Common Voice speakers + 1 Chuvash Voice
+# speaker = 105.
 meta_cv_tsv <- read_delim(PATHS$cv_tsv, delim = "\t",
                           show_col_types = FALSE) %>%
   mutate(file_name = str_remove(path, "\\.mp3$|\\.wav$")) %>%
   select(file_name, sentence = sentence, age, gender_tsv = gender,
-         accents, variant)
+         accents, variant,
+         speaker_id_tsv = speaker_id, client_id_tsv = client_id) %>%
+  mutate(across(c(speaker_id_tsv, client_id_tsv), as.character))
 
 note_n(meta_cv_tsv,"A4a: CV TSV metadata loaded")
 
@@ -338,22 +350,32 @@ vowels_joined <- vowels_joined %>%
   left_join(
     meta_cv_hf %>%
       rename(
-        sentence_hf  = sentence,            
-        gender_hf    = gender,              
-        speaker_id   = speaker_id           
+        sentence_hf    = sentence,
+        gender_hf      = gender,
+        speaker_id_hf  = speaker_id
       ),
     by = "file_name"
   ) %>%
   
+  # Each corpus supplies speaker identity from a different file, keyed on a
+  # different file-name convention, so they never collide: the TSV covers
+  # Common Voice (common_voice_cv_*) and the HuggingFace parquet covers
+  # Chuvash Voice (utterance_*).
   mutate(
     sentence   = coalesce(sentence_tsv, sentence_hf),
-    speaker_id = as.character(speaker_id),  # only from meta_cv_hf, no conflict
+    speaker_id = coalesce(as.character(speaker_id_tsv),
+                          as.character(speaker_id_hf)),
     gender     = coalesce(gender_tsv, gender_hf)
   ) %>%
   
-  select(-sentence_tsv, -sentence_hf, -gender_hf) %>%  # drop the renamed helpers
+  select(-sentence_tsv, -sentence_hf, -gender_hf,
+         -speaker_id_tsv, -speaker_id_hf) %>%
   
   note_n("A7: speaker metadata joined")
+
+cat(sprintf("  speaker_id: %d distinct, %.2f%% missing\n",
+            dplyr::n_distinct(vowels_joined$speaker_id, na.rm = TRUE),
+            100 * mean(is.na(vowels_joined$speaker_id))))
 
 # ── A8. Join utterance durations ─────────────────────────────────
 vowels_joined <- vowels_joined %>%
