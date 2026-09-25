@@ -253,30 +253,36 @@ is_loan <- function(word_vec) {
 }
 
 # ── 8. CORPORA REGISTRY ─────────────────────────────────────────
-
 CORPORA <- list(
-  mfa = list(
-    type      = "spoken",
-    source    = "Chuvash Voice — HuggingFace: alexantonov/chuvash_voice",
-    aligner   = "MFA 3.4, Vox Communis chuvash_mfa acoustic model",
-    dict      = "Vox Communis chuvash_cv_mfa pronunciation dictionary"
+  chuvash_voice = list(            # ← was "mfa"
+    type   = "spoken",
+    source = "Chuvash Voice — HuggingFace: alexantonov/chuvash_voice",
+    aligner = "MFA 3.4, Vox Communis chuvash_mfa acoustic model",
+    dict    = "Vox Communis chuvash_cv_mfa pronunciation dictionary"
   ),
-  vox = list(
-    type      = "spoken",
-    source    = "Mozilla Common Voice (Chuvash subset)",
-    aligner   = "MFA 3.4, Vox Communis chuvash_mfa acoustic model",
-    dict      = "Vox Communis chuvash_cv_mfa pronunciation dictionary"
+  common_voice_chuvash = list(     # ← was "vox"
+    type   = "spoken",
+    source = "Mozilla Common Voice (Chuvash subset)",
+    aligner = "MFA 3.4, Vox Communis chuvash_mfa acoustic model",
+    dict    = "Vox Communis chuvash_cv_mfa pronunciation dictionary"
   ),
   zheltov = list(
-    type      = "written",
-    source    = "Zheltov (1875) wordlist",
-    aligner   = "none — lexical data only"
+    type   = "written",
+    source = "Zheltov (1875) wordlist",
+    aligner = "none — lexical data only"
   ),
   mono = list(
-    type      = "written",
-    source    = "Chuvash monolingual text corpus (HuggingFace)",
-    aligner   = "none — lexical data only"
+    type   = "written",
+    source = "Chuvash monolingual text corpus (HuggingFace)",
+    aligner = "none — lexical data only"
   )
+)
+
+CORPUS_COLORS <- c(
+  "chuvash_voice"        = "#1B9E77",   # ← was "mfa"
+  "common_voice_chuvash" = "#D95F02",   # ← was "vox"
+  "zheltov"              = "#7570B3",
+  "mono"                 = "#E7298A"
 )
 
 SPOKEN_CORPORA  <- names(Filter(function(c) c$type == "spoken",  CORPORA))
@@ -291,13 +297,6 @@ VOWEL_COLORS <- c(
 )
 
 STRESS_COLORS <- c("Stressed" = "#2166AC", "Unstressed" = "#D6604D")
-
-CORPUS_COLORS <- c(
-  "mfa"     = "#1B9E77",
-  "vox"     = "#D95F02",
-  "zheltov" = "#7570B3",
-  "mono"    = "#E7298A"
-)
 
 RULE_LABELS <- setNames(
   vapply(VOWEL_RULES, `[[`, character(1), "label"),

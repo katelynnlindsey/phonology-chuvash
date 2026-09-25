@@ -337,8 +337,187 @@ filter(str_detect(word_cat_A, "[FR]"))
 cat(sprintf("  Annotated: %d syllable rows | %d word types\n",
             nrow(mono_ann), n_distinct(mono_ann$word_label)))
 
-saveRDS(mono_ann, file.path(PATHS$leveled_dir, "mono_annotated.rds"))
-cat("✓ mono_annotated.rds saved\n")
+# ════════════════════════════════════════════════════════════════
+# E.  FINALISE — drop redundant columns, standardise column order
+#
+# All four annotated objects are re-saved here, overwriting the
+# intermediate saves in sections A–D.
+# any_of() silently skips columns that don't exist, so this block
+# is safe to run even if upstream optional steps were skipped.
+# ════════════════════════════════════════════════════════════════
+cat("\n── E. Finalising column layout ──\n")
+
+# ── Columns to drop from the spoken dataset ───────────────────────
+# Each entry is justified in the comment.
+SPOKEN_DROP <- c(
+  # fave extraction parameters / internal IDs — not linguistic data
+  "B1", "B2", "B3",        # formant bandwidths
+  "max_formant",            # fave setting, not a measurement
+  "smooth_error",           # fave tracking quality flag
+  "id",                     # internal fave row counter
+  "group",                  # unclear provenance
+  "speaker_num",            # redundant with speaker_id
+  "point_heuristic",        # fave setting
+  "optimized",              # fave flag
+  # contour clustering artefact
+  "jumpkilleffect",
+  # superseded by vowel_label (pre-recode form of the same label)
+  "label_contour",
+  "vowel_category",
+  # superseded by syllable_coda (added in 04_annotate §A1 / §C / §D)
+  "syl_open_closed",
+  # superseded by context + vowel_position
+  "syl_pos_raw",
+  # superseded by word_label
+  "word",
+  # superseded by gender (consolidated from both metadata sources)
+  "gender_tsv",
+  # Common Voice crowdsourcing metadata — not relevant to phonology
+  "accents", "variant",
+  # redundant timing columns (time is kept)
+  "rel_time", "prop_time"
+)
+
+# ── E1.  vowels_ann ───────────────────────────────────────────────
+vowels_ann <- vowels_ann %>%
+  select(-any_of(SPOKEN_DROP)) %>%
+  select(
+    # IDENTIFIERS
+    any_of(c("file_name", "corpus", "speaker_id", "word_id")),
+    # UTTERANCE METADATA
+    any_of(c("sentence", "gender", "age",
+             "duration_seconds", "speech_rate", "log_speech_rate")),
+    # WORD — orthographic, IPA, category
+    any_of(c("word_label", "word_label_IPA", "word_label_IPA_syllabified",
+             "word_category",
+             "word_cat_A", "word_cat_B", "word_cat_C")),
+    # WORD POSITION IN SENTENCE
+    any_of(c("widx", "wN", "phrase_position")),
+    # SYLLABLE
+    any_of(c("sidx", "sN", "syllable_label", "syllable_coda")),
+    # VOWEL — label, position, features, strength
+    any_of(c("vowel_label", "context", "vowel_position",
+             "vowel_height", "vowel_backness", "vowel_rounding",
+             "vowel_strength")),
+    # PHONOLOGICAL CONTEXT
+    any_of(c("pre_seg", "fol_seg", "abs_pre_seg", "abs_fol_seg")),
+    # STRESS — observed (phon_stress from forced alignment) +
+    #          predicted under each rule
+    any_of(c("phon_stress",
+             "stress_rule_A", "stress_rule_B", "stress_rule_C",
+             "stress_cat")),
+    # TIMING
+    any_of(c("start", "end", "duration", "log_duration", "time")),
+    # FORMANTS
+    any_of(c("F1", "F2", "F3")),
+    # INTENSITY — summary columns first, then 20-step series
+    any_of(c("intensity", "total_intensity", "peak_intensity")),
+    starts_with("intensity_step"),
+    # F0 — summary first, then 20-step series
+    any_of(c("f0_mean", "f0_slope", "slope_type")),
+    starts_with("f0_step"),
+    # WORD-LEVEL CONTOURS
+    any_of(c("word_start", "word_end")),
+    starts_with("word_f0_step"),
+    starts_with("word_intensity_step"),
+    # PHRASE-LEVEL CONTOURS
+    any_of(c("phrase_label", "phrase_start", "phrase_end")),
+    starts_with("phrase_f0_step"),
+    starts_with("phrase_intensity_step"),
+    # CORPUS FREQUENCY
+    any_of(c("corpus_freq", "log_corpus_freq",
+             "log_corpus_freq_smoothed", "in_mono_corpus"))
+  )
+
+saveRDS(vowels_ann,
+        file.path(PATHS$leveled_dir, "vowels_spoken_annotated.rds"))
+cat(sprintf("  vowels_ann     : %d rows × %d cols\n",
+            nrow(vowels_ann), ncol(vowels_ann)))
+
+
+# ── E2.  words_ann ────────────────────────────────────────────────
+words_ann <- words_ann %>%
+  select(
+    # IDENTIFIERS
+    any_of(c("word_id", "file_name", "corpus", "speaker_id")),
+    # WORD
+    any_of(c("word_label", "word_label_IPA", "word_label_IPA_syllabified",
+             "sN", "word_category",
+             "word_cat_A", "word_cat_B", "word_cat_C")),
+    # WORD POSITION
+    any_of(c("widx", "wN", "phrase_position")),
+    # VOWEL/SYLLABLE SEQUENCES (what vowels / syllables make up the word)
+    any_of(c("vowel_sequence", "syllable_sequence")),
+    # PREDICTED STRESS under each rule
+    any_of(c("stressed_sidx_A", "stressed_sidx_B", "stressed_sidx_C",
+             "stressed_position", "stressed_slope")),
+    # DOES THE ACOUSTIC WINNER MATCH PREDICTED STRESS?
+    any_of(c("duration_matches_stress", "intensity_matches_stress")),
+    # DURATION
+    any_of(c("total_duration", "dur_ratio_v1",
+             "longest_sidx", "log_duration_mean", "dur_per_syl")),
+    # F0 SLOPE PATTERN
+    any_of(c("slope_pattern", "f0_slope_mean")),
+    # AMPLITUDE
+    any_of(c("loudest_sidx", "intensity_per_syl")),
+    # SPEECH RATE
+    any_of("log_speech_rate"),
+    # CORPUS FREQUENCY
+    any_of(c("corpus_freq", "log_corpus_freq",
+             "log_corpus_freq_smoothed", "in_mono_corpus"))
+  )
+
+saveRDS(words_ann,
+        file.path(PATHS$leveled_dir, "words_spoken_annotated.rds"))
+cat(sprintf("  words_ann      : %d rows × %d cols\n",
+            nrow(words_ann), ncol(words_ann)))
+
+
+# ── E3.  zheltov_ann ──────────────────────────────────────────────
+zheltov_ann <- zheltov_ann %>%
+  select(
+    # WORD
+    any_of(c("word_label", "word_label_IPA", "word_label_IPA_syllabified")),
+    any_of(c("word_cat_A", "word_cat_B", "word_cat_C")),
+    # SYLLABLE
+    any_of(c("sidx", "sN", "syllable_label", "syllable_coda",
+             "syl_position", "position3")),
+    # VOWEL
+    any_of(c("vowel_label",
+             "vowel_cat", "vowel_cat_A", "vowel_cat_B", "vowel_cat_C")),
+    # CORPUS FREQUENCY
+    any_of(c("corpus_freq", "log_corpus_freq",
+             "log_corpus_freq_smoothed", "in_mono_corpus"))
+  )
+
+saveRDS(zheltov_ann,
+        file.path(PATHS$leveled_dir, "zheltov_annotated.rds"))
+cat(sprintf("  zheltov_ann    : %d rows × %d cols\n",
+            nrow(zheltov_ann), ncol(zheltov_ann)))
+
+
+# ── E4.  mono_ann ─────────────────────────────────────────────────
+# mono IS the reference corpus, so in_mono_corpus / _smoothed are
+# uninformative and not added.
+mono_ann <- mono_ann %>%
+  select(
+    # WORD
+    any_of(c("word_label", "word_label_IPA", "word_label_IPA_syllabified")),
+    # FREQUENCY (the primary property of this corpus)
+    any_of(c("corpus", "corpus_freq", "log_corpus_freq")),
+    any_of(c("word_cat_A", "word_cat_B", "word_cat_C")),
+    # SYLLABLE
+    any_of(c("sidx", "sN", "syllable_label", "syllable_coda",
+             "syl_position")),
+    # VOWEL
+    any_of(c("vowel_label",
+             "vowel_cat", "vowel_cat_A", "vowel_cat_B", "vowel_cat_C"))
+  )
+
+saveRDS(mono_ann,
+        file.path(PATHS$leveled_dir, "mono_annotated.rds"))
+cat(sprintf("  mono_ann       : %d rows × %d cols\n",
+            nrow(mono_ann), ncol(mono_ann)))
 
 
 cat(sprintf("\n✓ 04_annotate.R complete\n"))

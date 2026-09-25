@@ -299,31 +299,24 @@ vowels_joined <- vowels_joined %>%
   note_n("A8: utterance durations joined")
 
 # ── A9. Rename for pipeline consistency ──────────────────────────
-# Standardise column names so all downstream scripts use the same names.
-
 vowels_spoken_raw <- vowels_joined %>%
   rename_with(~ case_when(
-    .x == "dur"          ~ "duration",     # ms (converted in A6)
-    .x == "f0"           ~ "f0_mean",      # mean f0 from fave
-    .x == "F1"           ~ "F1",
-    .x == "F2"           ~ "F2",
-    .x == "F3"           ~ "F3",
-    .x == "word"         ~ "word",
-    .x == "phon_stress"  ~ "phon_stress",  # stress digit from recode step
-    .x == "syl_pos"      ~ "syl_pos_raw",  # raw string from recode
+    .x == "dur"             ~ "duration",
+    .x == "f0"              ~ "f0_mean",
+    .x == "phon_stress"     ~ "phon_stress",
+    .x == "syl_pos"         ~ "syl_pos_raw",
     .x == "syl_open_closed" ~ "syl_open_closed",
-    TRUE                 ~ .x
+    TRUE                    ~ .x
   )) %>%
-  # Derive corpus tag from file name prefix if not already present
+  # Derive corpus name from filename prefix — always override any
+  # upstream corpus column because the old mfa/vox tags were misleading.
   mutate(
-    corpus = case_when(
-      !is.na(corpus)                      ~ corpus,
-      str_detect(file_name, "utterance_") ~ "vox",
-      TRUE                                ~ "mfa"
+    corpus = if_else(
+      str_starts(file_name, "utterance_"),
+      "chuvash_voice",
+      "common_voice_chuvash"
     )
   )
-
-note_n(vowels_spoken_raw, "A9: final spoken raw table")
 
 
 # ════════════════════════════════════════════════════════════════
