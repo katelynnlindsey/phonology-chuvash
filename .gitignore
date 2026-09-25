@@ -1,6 +1,32 @@
-corpora\textgrids_commonvoice\*.mp3
-corpora\textgrids_commonvoice\*.wav
-corpora\textgrids_commonvoice\*.lab
-old
-1-raw_data\monolingual_chuvash\train-00000-of-00001.parquet
-.Rproj.user
+# NOTE: git only recognises "/" as a path separator. The earlier version of
+# this file used Windows backslashes, so none of the audio-exclusion rules
+# below were actually in effect.
+
+# ── R session state ──────────────────────────────────────────────
+# .RData auto-loads into the global environment on project open, which
+# silently resurrects objects from a previous session and makes results
+# depend on session history. Never commit it.
+.RData
+.Rhistory
+.Rapp.history
+.Rproj.user/
+*.Rproj.user
+
+# ── OS cruft ─────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Large media: regenerable from the source corpora ─────────────
+corpora/textgrids_commonvoice/*.mp3
+corpora/textgrids_commonvoice/*.wav
+corpora/textgrids_commonvoice/*.lab
+*.mp3
+*.wav
+
+# ── Large source data: re-downloadable from HuggingFace ──────────
+1-raw_data/monolingual_chuvash/*.parquet
+1-raw_data/chuvash_voice/audio_transcripts/*.parquet
+
+# ── Scratch ──────────────────────────────────────────────────────
+old/
+9-analyze/config/new.txt

@@ -2,7 +2,12 @@
 # ================================================================
 # SOURCE THIS AT THE START OF EVERY ANALYSIS SCRIPT
 #
-#   source("analyses/00_session_setup.R")
+#   source(here::here("9-analyze", "analyses", "00_session_setup.R"))
+#
+# (here::here() rather than a relative path, so the script works whatever
+#  the working directory is. File extensions are case-sensitive on Linux,
+#  which is where the Binder build runs: every script in this project is
+#  .R, never .r.)
 #
 # After sourcing you have:
 #
@@ -13,8 +18,10 @@
 #   phrases   — utterance-level
 #
 #   WRITTEN DATA (lexical only, no acoustics)
-#   zheltov   — Zheltov (1875) wordlist
-#   mono      — monolingual text corpus
+#   zheltov     — Zheltov wordlist, word level (from cleaned/)
+#   mono        — monolingual text corpus, word level (from cleaned/)
+#   zheltov_ann — Zheltov, syllable level + annotations (from leveled/)
+#   mono_ann    — monolingual, syllable level + annotations (from leveled/)
 #
 #   CONFIGURATION
 #   All VOWEL_RULES, CLEANING thresholds, label maps from
@@ -26,8 +33,8 @@
 #   exclusion_log      — full N-tracking table from cleaning pipeline
 # ================================================================
 
-source("config/phonology_params.R")
-source("config/paths.R")
+source(here::here("9-analyze", "config", "phonology_params.R"))
+source(here::here("9-analyze", "config", "paths.R"))
 
 suppressPackageStartupMessages({
   library(tidyverse)
@@ -38,8 +45,12 @@ suppressPackageStartupMessages({
 
 # ── Load cleaned annotated data ──────────────────────────────────
 
-.load <- function(name) {
-  path <- file.path(PATHS$cleaned_dir, paste0(name, ".rds"))
+# `dir` must be given explicitly: 02_clean.R writes to cleaned/, while
+# 03_build_levels.R and 04_annotate.R write to leveled/. Defaulting it
+# was how the four leveled/ files came to be looked up in cleaned/.
+.load <- function(name, dir) {
+  stopifnot(dir %in% c("loaded", "cleaned", "leveled"))
+  path <- file.path(PATHS[[paste0(dir, "_dir")]], paste0(name, ".rds"))
   if (!file.exists(path)) {
     stop("File not found: ", path,
          "\nRun pipeline/run_pipeline.R first.")
@@ -47,12 +58,22 @@ suppressPackageStartupMessages({
   readRDS(path)
 }
 
-vowels    <- .load("vowels_spoken_annotated")
-syllables <- .load("syllables_spoken")
-words     <- .load("words_spoken_annotated")
-phrases   <- .load("phrases_spoken")
-zheltov   <- .load("zheltov_clean")
-mono      <- .load("mono_clean")
+# Spoken data — annotated levels, from 04_annotate.R / 03_build_levels.R
+vowels    <- .load("vowels_spoken_annotated", "leveled")
+syllables <- .load("syllables_spoken",        "leveled")
+words     <- .load("words_spoken_annotated",  "leveled")
+phrases   <- .load("phrases_spoken",          "leveled")
+
+# Written data — word-level clean forms, from 02_clean.R
+zheltov   <- .load("zheltov_clean", "cleaned")
+mono      <- .load("mono_clean",    "cleaned")
+
+# Written data — syllable-level annotated forms, from 04_annotate.R.
+# These carry sidx / sN / vowel_label / syllable_coda / vowel_cat_* and are
+# what the rule-comparison analyses need; zheltov/mono above are word-level
+# only and have no syllable structure.
+zheltov_ann <- .load("zheltov_annotated", "leveled")
+mono_ann    <- .load("mono_annotated",    "leveled")
 
 # ── Report data dimensions ───────────────────────────────────────
 

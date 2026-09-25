@@ -63,6 +63,12 @@
 #     the numeric position of a word within its phrase comes from widx/wN.
 # =============================================================================
 
+# This script previously relied on PATHS already existing in the global
+# environment, so it only ran if config/paths.R had been sourced by hand
+# first. Sourcing it here makes the script runnable on its own.
+source(here::here("9-analyze", "config", "phonology_params.R"))
+source(here::here("9-analyze", "config", "paths.R"))
+
 library(tidyverse)
 library(lme4)
 library(lmerTest)
