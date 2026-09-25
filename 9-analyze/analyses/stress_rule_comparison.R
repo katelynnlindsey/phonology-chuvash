@@ -28,9 +28,9 @@
 # built from the written corpora, joined onto the spoken vowel-level data by
 # vowel_label, gives the spoken corpus the same three schemes -- confirmed
 # by reapplying Rule A through that lookup and getting ~99.8% agreement with
-# the pre-existing stressed_sidx_A/B/C columns (which are exactly A6/A5/A4,
+# the pre-existing stressed_sidx_A6/B/C columns (which are exactly A6/A5/A4,
 # just under their old letter names). That 99.8%-not-100% gap is presumably
-# some edge case (diphthongs, ties) in however stressed_sidx_A/B/C were
+# some edge case (diphthongs, ties) in however stressed_sidx_A6/B/C were
 # originally computed; the pre-existing columns are treated as authoritative
 # for A6/A5/A4 below rather than overwritten by the reimplementation, and
 # B6/B5/B4 (not previously computed for the spoken corpus) are added via the
@@ -51,9 +51,9 @@
 #
 # OTHER CORRECTIONS FROM THE PREVIOUS DRAFT, per your notes:
 #   - phon_stress was assigned from whichever vowel-categorization rule was
-#     active at the time plus stress_rule_A (confirmed empirically: it's
-#     ~98% identical to stress_rule_A, and stress_cat is 100% identical to
-#     stress_rule_A). Both are dropped rather than used as evidence.
+#     active at the time plus stress_rule_A6 (confirmed empirically: it's
+#     ~98% identical to stress_rule_A6, and stress_cat is 100% identical to
+#     stress_rule_A6). Both are dropped rather than used as evidence.
 #   - duration_matches_stress / intensity_matches_stress are themselves
 #     rule-dependent, so they're dropped rather than used.
 #   - Random effect uses file_name, not speaker_id, since speaker_id is
@@ -84,20 +84,16 @@ vowels  <- readRDS(file.path(PATHS$leveled_dir, "vowels_spoken_annotated.rds"))
 
 # ---- 1. Clean up naming and drop non-informative / circular columns --------
 
-rename_cat_cols <- function(df) {
-  df %>% rename(
-    vowel_cat_6 = vowel_cat_A, vowel_cat_5 = vowel_cat_B, vowel_cat_4 = vowel_cat_C,
-    word_cat_6  = word_cat_A,  word_cat_5  = word_cat_B,  word_cat_4  = word_cat_C
-  )
-}
-zheltov <- rename_cat_cols(zheltov)
-mono    <- rename_cat_cols(mono)
-
+# vowel_cat_6/5/4 and word_cat_6/5/4 now arrive under these names from
+# 04_annotate.R, and stressed_sidx_A6/A5/A4 plus B6/B5/B4 are all
+# computed there, so the renaming and reconstruction that used to
+# happen here is gone. The circular columns this script used to drop
+# (duration_matches_stress, intensity_matches_stress, phon_stress,
+# stress_cat) are removed at source in 04_annotate.R.
 words <- words %>%
-  select(-duration_matches_stress, -intensity_matches_stress) %>%
-  rename(given_A6 = stressed_sidx_A, given_A5 = stressed_sidx_B, given_A4 = stressed_sidx_C)
-
-vowels <- vowels %>% select(-phon_stress, -stress_cat)
+  rename(given_A6 = stressed_sidx_A6,
+         given_A5 = stressed_sidx_A5,
+         given_A4 = stressed_sidx_A4)
 
 RULES <- c("A6", "A5", "A4", "B6", "B5", "B4", "final", "initial", "weight")
 

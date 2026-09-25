@@ -24,7 +24,7 @@
 #   mono_ann    — monolingual, syllable level + annotations (from leveled/)
 #
 #   CONFIGURATION
-#   All VOWEL_RULES, CLEANING thresholds, label maps from
+#   All STRESS_RULES, CLEANING thresholds, label maps from
 #   config/phonology_params.R are available directly.
 #
 #   CONVENIENCE OBJECTS (derived from ACTIVE_RULE)
@@ -81,11 +81,11 @@ cat("\n════════════════════════�
 cat("  CHUVASH PHONOLOGY — ANALYSIS SESSION\n")
 cat("══════════════════════════════════════════════════\n")
 cat(sprintf("  Active stress rule : %s — %s\n",
-            ACTIVE_RULE, VOWEL_RULES[[ACTIVE_RULE]]$label))
-cat(sprintf("  Strong vowels      : %s\n",
-            paste(active_strong(), collapse = " ")))
-cat(sprintf("  Weak vowels        : %s\n",
-            paste(active_weak(),   collapse = " ")))
+            ACTIVE_RULE, RULE_LABELS[[ACTIVE_RULE]]))
+cat(sprintf("  Full vowels        : %s\n",
+            paste(rule_full(),    collapse = " ")))
+cat(sprintf("  Reduced vowels     : %s\n",
+            paste(rule_reduced(), collapse = " ")))
 cat("──────────────────────────────────────────────────\n")
 cat("  SPOKEN DATA\n")
 vowels %>%

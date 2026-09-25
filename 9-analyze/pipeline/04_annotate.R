@@ -12,7 +12,7 @@ cat("═════════════════════════
 cat("  04_annotate.R\n")
 cat(sprintf("  Active stress rule : %s — %s\n",
             ACTIVE_RULE,
-            VOWEL_RULES[[ACTIVE_RULE]]$label))   # was $vowel_label — typo fixed
+            RULE_LABELS[[ACTIVE_RULE]]))   # was $vowel_label — typo fixed
 cat("══════════════════════════════════════════\n\n")
 
 
@@ -108,13 +108,13 @@ mutate(
   # ── A2. All stress rules ─────────────────────────────────────
 apply_all_stress_rules() %>%
   
-  # ── A3. Strength and stress under active rule ─────────────────
+  # ── A3. Vowel class and stress under the active rule ──────────
 mutate(
-  vowel_strength = case_when(
-    vowel_label %in% active_strong() ~ "strong",
-    vowel_label %in% active_weak()   ~ "weak",
-    TRUE                             ~ NA_character_
-  ) %>% factor(levels = c("weak", "strong")),
+  vowel_class = case_when(
+    vowel_label %in% rule_full()    ~ "full",
+    vowel_label %in% rule_reduced() ~ "reduced",
+    TRUE                            ~ NA_character_
+  ) %>% factor(levels = c("reduced", "full")),
   
   stress_cat = factor(
     .data[[paste0("stress_rule_", ACTIVE_RULE)]],
@@ -178,12 +178,22 @@ words <- readRDS(file.path(PATHS$leveled_dir, "words_spoken.rds"))
 # Pull per-vowel stress + slope from annotated vowel table.
 # stressed_position must go in a SEPARATE mutate() because it
 # references stressed_sidx_* columns created in the same summarise.
+# All six rules get a stressed_sidx column. For the B rules, a word
+# with no full vowel has no stressed syllable at all, so every
+# stress_rule_B* value is "Unstressed" and sidx[...][1L] correctly
+# yields NA — that NA means "this rule assigns this word no stress",
+# not "missing data". Analyses must read it that way: see
+# analyses/stress_rule_comparison.R, which converts it to FALSE per
+# syllable rather than dropping the rows.
 word_stress <- vowels_ann %>%
   group_by(word_id) %>%
   summarise(
-    stressed_sidx_A = sidx[stress_rule_A == "Stressed"][1L],
-    stressed_sidx_B = sidx[stress_rule_B == "Stressed"][1L],
-    stressed_sidx_C = sidx[stress_rule_C == "Stressed"][1L],
+    stressed_sidx_A6 = sidx[stress_rule_A6 == "Stressed"][1L],
+    stressed_sidx_A5 = sidx[stress_rule_A5 == "Stressed"][1L],
+    stressed_sidx_A4 = sidx[stress_rule_A4 == "Stressed"][1L],
+    stressed_sidx_B6 = sidx[stress_rule_B6 == "Stressed"][1L],
+    stressed_sidx_B5 = sidx[stress_rule_B5 == "Stressed"][1L],
+    stressed_sidx_B4 = sidx[stress_rule_B4 == "Stressed"][1L],
     stressed_slope  = if ("slope_type" %in% names(vowels_ann))
       slope_type[.data[[paste0("stress_rule_", ACTIVE_RULE)]]
                  == "Stressed"][1L]
@@ -209,9 +219,9 @@ word_categories <- vowels_ann %>%
   arrange(word_id, sidx) %>%
   group_by(word_id) %>%
   summarise(
-    word_cat_A = word_category_string(vowel_label, "A"),
-    word_cat_B = word_category_string(vowel_label, "B"),
-    word_cat_C = word_category_string(vowel_label, "C"),
+    word_cat_6 = word_category_string(vowel_label, "6"),
+    word_cat_5 = word_category_string(vowel_label, "5"),
+    word_cat_4 = word_category_string(vowel_label, "4"),
     .groups    = "drop"
   )
 
@@ -219,9 +229,9 @@ words_ann <- words %>%
   left_join(word_stress,     by = "word_id") %>%
   left_join(word_categories, by = "word_id") %>%
   mutate(
-    duration_matches_stress  = (longest_sidx  == stressed_sidx_A),
+    duration_matches_stress  = (longest_sidx  == stressed_sidx_A6),
     intensity_matches_stress = if ("loudest_sidx" %in% names(.))
-      (loudest_sidx == stressed_sidx_A)
+      (loudest_sidx == stressed_sidx_A6)
     else NA
   ) %>%
   join_word_freq(word_col = "word_label")
@@ -249,9 +259,9 @@ zheltov_syl <- readRDS(file.path(PATHS$leveled_dir, "syllables_zheltov.rds"))
 zheltov_ann <- zheltov_syl %>%
   mutate(
     # ── Vowel categories under each rule ──────────────────────
-    vowel_cat_A = classify_vowel(vowel_label, "A"),
-    vowel_cat_B = classify_vowel(vowel_label, "B"),
-    vowel_cat_C = classify_vowel(vowel_label, "C"),
+    vowel_cat_6 = classify_vowel(vowel_label, "6"),
+    vowel_cat_5 = classify_vowel(vowel_label, "5"),
+    vowel_cat_4 = classify_vowel(vowel_label, "4"),
     vowel_cat   = classify_vowel(vowel_label, ACTIVE_RULE),
     
     # ── Three-way position label ───────────────────────────────
@@ -275,9 +285,9 @@ zheltov_ann <- zheltov_syl %>%
   # ── Word-level category strings ────────────────────────────
 group_by(word_label) %>%
   mutate(
-    word_cat_A = word_category_string(vowel_label[order(sidx)], "A"),
-    word_cat_B = word_category_string(vowel_label[order(sidx)], "B"),
-    word_cat_C = word_category_string(vowel_label[order(sidx)], "C")
+    word_cat_6 = word_category_string(vowel_label[order(sidx)], "6"),
+    word_cat_5 = word_category_string(vowel_label[order(sidx)], "5"),
+    word_cat_4 = word_category_string(vowel_label[order(sidx)], "4")
   ) %>%
   ungroup() %>%
   
@@ -312,9 +322,9 @@ mono_ann <- mono_syl %>%
   
   # ── Per-syllable vowel categories ─────────────────────────
 mutate(
-  vowel_cat_A = classify_vowel(vowel_label, "A"),
-  vowel_cat_B = classify_vowel(vowel_label, "B"),
-  vowel_cat_C = classify_vowel(vowel_label, "C"),
+  vowel_cat_6 = classify_vowel(vowel_label, "6"),
+  vowel_cat_5 = classify_vowel(vowel_label, "5"),
+  vowel_cat_4 = classify_vowel(vowel_label, "4"),
   vowel_cat   = classify_vowel(vowel_label, ACTIVE_RULE),
   syllable_coda = factor(             
     syl_coda_type(syllable_label),
@@ -325,14 +335,14 @@ mutate(
   # ── Word-level category strings ────────────────────────────
 group_by(word_label) %>%
   mutate(
-    word_cat_A = word_category_string(vowel_label[order(sidx)], "A"),
-    word_cat_B = word_category_string(vowel_label[order(sidx)], "B"),
-    word_cat_C = word_category_string(vowel_label[order(sidx)], "C")
+    word_cat_6 = word_category_string(vowel_label[order(sidx)], "6"),
+    word_cat_5 = word_category_string(vowel_label[order(sidx)], "5"),
+    word_cat_4 = word_category_string(vowel_label[order(sidx)], "4")
   ) %>%
   ungroup() %>%
   
   # ── Keep only words with at least one F or R vowel ─────────
-filter(str_detect(word_cat_A, "[FR]"))
+filter(str_detect(word_cat_6, "[FR]"))
 
 cat(sprintf("  Annotated: %d syllable rows | %d word types\n",
             nrow(mono_ann), n_distinct(mono_ann$word_label)))
@@ -390,7 +400,7 @@ vowels_ann <- vowels_ann %>%
     # WORD — orthographic, IPA, category
     any_of(c("word_label", "word_label_IPA", "word_label_IPA_syllabified",
              "word_category",
-             "word_cat_A", "word_cat_B", "word_cat_C")),
+             "word_cat_6", "word_cat_5", "word_cat_4")),
     # WORD POSITION IN SENTENCE
     any_of(c("widx", "wN", "phrase_position")),
     # SYLLABLE
@@ -398,13 +408,14 @@ vowels_ann <- vowels_ann %>%
     # VOWEL — label, position, features, strength
     any_of(c("vowel_label", "context", "vowel_position",
              "vowel_height", "vowel_backness", "vowel_rounding",
-             "vowel_strength")),
+             "vowel_class")),
     # PHONOLOGICAL CONTEXT
     any_of(c("pre_seg", "fol_seg", "abs_pre_seg", "abs_fol_seg")),
     # STRESS — observed (phon_stress from forced alignment) +
     #          predicted under each rule
     any_of(c("phon_stress",
-             "stress_rule_A", "stress_rule_B", "stress_rule_C",
+             "stress_rule_A6", "stress_rule_A5", "stress_rule_A4",
+             "stress_rule_B6", "stress_rule_B5", "stress_rule_B4",
              "stress_cat")),
     # TIMING
     any_of(c("start", "end", "duration", "log_duration", "time")),
@@ -443,13 +454,14 @@ words_ann <- words_ann %>%
     # WORD
     any_of(c("word_label", "word_label_IPA", "word_label_IPA_syllabified",
              "sN", "word_category",
-             "word_cat_A", "word_cat_B", "word_cat_C")),
+             "word_cat_6", "word_cat_5", "word_cat_4")),
     # WORD POSITION
     any_of(c("widx", "wN", "phrase_position")),
     # VOWEL/SYLLABLE SEQUENCES (what vowels / syllables make up the word)
     any_of(c("vowel_sequence", "syllable_sequence")),
     # PREDICTED STRESS under each rule
-    any_of(c("stressed_sidx_A", "stressed_sidx_B", "stressed_sidx_C",
+    any_of(c("stressed_sidx_A6", "stressed_sidx_A5", "stressed_sidx_A4",
+             "stressed_sidx_B6", "stressed_sidx_B5", "stressed_sidx_B4",
              "stressed_position", "stressed_slope")),
     # DOES THE ACOUSTIC WINNER MATCH PREDICTED STRESS?
     any_of(c("duration_matches_stress", "intensity_matches_stress")),
@@ -478,13 +490,13 @@ zheltov_ann <- zheltov_ann %>%
   select(
     # WORD
     any_of(c("word_label", "word_label_IPA", "word_label_IPA_syllabified")),
-    any_of(c("word_cat_A", "word_cat_B", "word_cat_C")),
+    any_of(c("word_cat_6", "word_cat_5", "word_cat_4")),
     # SYLLABLE
     any_of(c("sidx", "sN", "syllable_label", "syllable_coda",
              "syl_position", "position3")),
     # VOWEL
     any_of(c("vowel_label",
-             "vowel_cat", "vowel_cat_A", "vowel_cat_B", "vowel_cat_C")),
+             "vowel_cat", "vowel_cat_6", "vowel_cat_5", "vowel_cat_4")),
     # CORPUS FREQUENCY
     any_of(c("corpus_freq", "log_corpus_freq",
              "log_corpus_freq_smoothed", "in_mono_corpus"))
@@ -505,13 +517,13 @@ mono_ann <- mono_ann %>%
     any_of(c("word_label", "word_label_IPA", "word_label_IPA_syllabified")),
     # FREQUENCY (the primary property of this corpus)
     any_of(c("corpus", "corpus_freq", "log_corpus_freq")),
-    any_of(c("word_cat_A", "word_cat_B", "word_cat_C")),
+    any_of(c("word_cat_6", "word_cat_5", "word_cat_4")),
     # SYLLABLE
     any_of(c("sidx", "sN", "syllable_label", "syllable_coda",
              "syl_position")),
     # VOWEL
     any_of(c("vowel_label",
-             "vowel_cat", "vowel_cat_A", "vowel_cat_B", "vowel_cat_C"))
+             "vowel_cat", "vowel_cat_6", "vowel_cat_5", "vowel_cat_4"))
   )
 
 saveRDS(mono_ann,
@@ -522,7 +534,7 @@ cat(sprintf("  mono_ann       : %d rows × %d cols\n",
 
 cat(sprintf("\n✓ 04_annotate.R complete\n"))
 cat(sprintf("  Active rule : %s — %s\n",
-            ACTIVE_RULE, VOWEL_RULES[[ACTIVE_RULE]]$label))
+            ACTIVE_RULE, RULE_LABELS[[ACTIVE_RULE]]))
 cat("  To re-annotate with a different rule:\n")
 cat("    1. Edit ACTIVE_RULE in config/phonology_params.R\n")
 cat("    2. Rerun: source('pipeline/04_annotate.R')\n")

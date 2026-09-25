@@ -151,13 +151,8 @@ cat("\n--- EXTREME-VALUE BIAS IN peak_intensity ---\n"); print(step_bias, n = In
 
 # ---- 4. Derive the nine rules (same logic as stress_rule_comparison.R) ------
 
-rename_cat_cols <- function(df) {
-  df %>% rename(vowel_cat_6 = vowel_cat_A,
-                vowel_cat_5 = vowel_cat_B,
-                vowel_cat_4 = vowel_cat_C)
-}
-zheltov <- rename_cat_cols(zheltov)
-mono    <- rename_cat_cols(mono)
+# vowel_cat_6/5/4 now come straight from 04_annotate.R under these
+# names; the rename that used to live here is gone.
 
 vowel_cat_lookup <- bind_rows(
   zheltov %>% distinct(vowel_label, vowel_cat_6, vowel_cat_5, vowel_cat_4),

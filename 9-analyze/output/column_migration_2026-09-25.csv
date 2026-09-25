@@ -1,0 +1,32 @@
+old_name,new_name,kind,note
+VOWEL_RULES,"VOWEL_INVENTORIES + STRESS_DEFAULTS + STRESS_RULES",config object,"One overloaded list split into three: which vowels are full (inventory 6/5/4), what happens with no full vowel (default A/B), and their cross product (the six named rules)."
+VOWEL_RULES[[r]]$strong,STRESS_RULES[[r]]$full,config field,"Terminology unified on the manuscript's full/reduced."
+VOWEL_RULES[[r]]$weak,STRESS_RULES[[r]]$reduced,config field,
+active_strong(),rule_full(),config function,"active_strong() kept as an alias for the legacy root scripts."
+active_weak(),rule_reduced(),config function,"active_weak() kept as an alias."
+ACTIVE_RULE == 'A',ACTIVE_RULE == 'A6',config value,"Default unchanged in substance: 6 full vowels, leftmost-reduced default."
+vowel_cat_A,vowel_cat_6,data column,"F/R/L under the 6-full inventory."
+vowel_cat_B,vowel_cat_5,data column,"F/R/L under the 5-full inventory (u-bar reduced)."
+vowel_cat_C,vowel_cat_4,data column,"F/R/L under the 4-full inventory (u-bar and y reduced)."
+word_cat_A,word_cat_6,data column,
+word_cat_B,word_cat_5,data column,
+word_cat_C,word_cat_4,data column,
+stress_rule_A,stress_rule_A6,data column,
+stress_rule_B,stress_rule_A5,data column,"NOTE: old stress_rule_B was inventory 5 with the A default, NOT the B default. Anything that read old stress_rule_B as 'the stressless analysis' was wrong."
+stress_rule_C,stress_rule_A4,data column,
+(did not exist),stress_rule_B6,data column,"New. Rightmost full under inventory 6, else no stress."
+(did not exist),stress_rule_B5,data column,"New."
+(did not exist),stress_rule_B4,data column,"New."
+stressed_sidx_A,stressed_sidx_A6,data column,
+stressed_sidx_B,stressed_sidx_A5,data column,
+stressed_sidx_C,stressed_sidx_A4,data column,
+(did not exist),stressed_sidx_B6,data column,"New. NA means the rule assigns this word no stress, not missing data."
+(did not exist),stressed_sidx_B5,data column,"New."
+(did not exist),stressed_sidx_B4,data column,"New."
+vowel_strength,vowel_class,data column,"Values changed from strong/weak to full/reduced; factor levels corrected to match (they previously did not, which would have produced all-NA)."
+manuscript rule A,A6,manuscript label,"Manuscript Table tab:stress-rules rules A-F map to A6 A5 A4 B6 B5 B4 respectively."
+manuscript rule B,A5,manuscript label,
+manuscript rule C,A4,manuscript label,
+manuscript rule D,B6,manuscript label,
+manuscript rule E,B5,manuscript label,"The draft's preferred rule."
+manuscript rule F,B4,manuscript label,

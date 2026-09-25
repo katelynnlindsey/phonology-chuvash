@@ -8,6 +8,38 @@
 
 library(stringr)
 
+# ── 0. ENCODING GUARD ───────────────────────────────────────────
+# Every vowel identity in this project is an IPA character (ø ɵ ʉ y).
+# If the session's native encoding is not UTF-8, string literals
+# typed in a script do NOT compare equal to the values stored in the
+# .rds files: `vowel_label %in% c("ø","ɵ")` silently matches NOTHING
+# and returns zero rows with no error. That failure mode produced a
+# wrong "there are no all-reduced words" result during development.
+#
+# Guarding rather than warning, because a silent zero-match is worse
+# than a failed run. If this stops you on a machine where the data
+# really is fine, set the locale before sourcing:
+#   Sys.setlocale("LC_CTYPE", "en_US.UTF-8")    # macOS / Linux
+# On Windows use R >= 4.2, which is UTF-8 natively.
+local({
+  enc <- toupper(Sys.getenv("LC_ALL", Sys.getenv("LC_CTYPE", "")))
+  native_utf8 <- isTRUE(l10n_info()$`UTF-8`)
+  if (!native_utf8) {
+    stop("Native encoding is not UTF-8 (LC_CTYPE=", Sys.getlocale("LC_CTYPE"),
+         ").\n  IPA vowel literals will not match the stored vowel_label ",
+         "values, silently.\n  Fix with: ",
+         'Sys.setlocale("LC_CTYPE", "en_US.UTF-8")', call. = FALSE)
+  }
+  invisible(enc)
+})
+
+# Belt and braces: assert that the IPA literals this file defines
+# survive a round trip, so a mis-encoded *source file* is also caught.
+stopifnot(
+  "IPA literals in this config are mis-encoded" =
+    identical(nchar(c("ø", "ɵ", "ʉ", "y")), c(1L, 1L, 1L, 1L))
+)
+
 # ── 1. LABEL MAPPING: ARPAbet (in data) ↔ IPA (for display) ─────
 
 ARPABET_TO_IPA <- c(
@@ -96,102 +128,192 @@ VOWEL_BACKNESS <- list(
 VOWEL_ROUND  <- c("y", "ø", "u", "ɵ")
 VOWEL_UNROUND <- setdiff(TARGET_VOWELS_IPA, VOWEL_ROUND)
 
-# ── 3. VOWEL STRENGTH INVENTORIES ───────────────────────────────
-# Each named rule defines which vowels are "strong" (stress-eligible).
-# Weak vowels bear stress only when no strong vowel is present.
-# Add new rules here; all downstream code uses VOWEL_RULES[[name]].
+# ════════════════════════════════════════════════════════════════
+# 3-5.  STRESS RULES
+#
+# A candidate stress rule is TWO independent choices, and the old
+# A/B/C scheme conflated them into one letter. They are now separate
+# objects, and the six named rules are their cross product:
+#
+#            which vowels count as "full"      what happens in a word
+#            (the INVENTORY: 6, 5 or 4)        with no full vowel
+#                                              (the DEFAULT: A or B)
+#   A6   =   6 full                        x   leftmost reduced
+#   A5   =   5 full                        x   leftmost reduced
+#   A4   =   4 full                        x   leftmost reduced
+#   B6   =   6 full                        x   no stress at all
+#   B5   =   5 full                        x   no stress at all
+#   B4   =   4 full                        x   no stress at all
+#
+# This is the naming used in the manuscript and in analyses/. The old
+# names map as: vowel_cat_A/B/C -> vowel_cat_6/5/4, and
+# stress_rule_A/B/C -> stress_rule_A6/A5/A4 (the old config had no
+# equivalent of the B default at all).
+#
+# Terminology: "full" and "reduced" throughout, matching the
+# manuscript. The old config said "strong"/"weak" for the same thing.
+# ════════════════════════════════════════════════════════════════
 
-VOWEL_RULES <- list(
+# ── 3. VOWEL INVENTORIES ────────────────────────────────────────
+# The three inventories differ only in how far the reduced class
+# extends. Each is a substantive phonological hypothesis:
 
-  # Rule A — traditional description: ʉ (ы) is strong
-  A = list(
-    strong = c("a", "i", "y", "e", "u", "ʉ"),
-    weak   = c("ø", "ɵ"),
-    label  = "Rule A: ʉ strong"
+VOWEL_INVENTORIES <- list(
+
+  # 6 full — the traditional description (Krueger 1961): only the two
+  # mid central vowels are reduced.
+  "6" = list(
+    full    = c("a", "e", "i", "u", "y", "ʉ"),
+    reduced = c("ø", "ɵ"),
+    label   = "6 full (ʉ, y full)"
   ),
 
-  # Rule B — alternative: ʉ (ы) is weak
-  B = list(
-    strong = c("a", "i", "y", "e", "u"),
-    weak   = c("ø", "ɵ", "ʉ"),
-    label  = "Rule B: ʉ weak"
+  # 5 full — ʉ joins the reduced class. Motivated by word minimality:
+  # ʉ never forms an open monosyllable (see manuscript §word-min).
+  "5" = list(
+    full    = c("a", "e", "i", "u", "y"),
+    reduced = c("ø", "ɵ", "ʉ"),
+    label   = "5 full (ʉ reduced)"
   ),
 
-  # Rule C — restrictive: only the four cardinal vowels are strong
-  C = list(
-    strong = c("a", "i", "e", "u"),
-    weak   = c("ø", "ɵ", "y", "ʉ"),
-    label  = "Rule C: y, ʉ weak"
+  # 4 full — y also joins. Motivated by the phonetic centrality of
+  # y ʉ ɵ ø: only the four peripheral vowels remain full.
+  "4" = list(
+    full    = c("a", "e", "i", "u"),
+    reduced = c("ø", "ɵ", "ʉ", "y"),
+    label   = "4 full (ʉ, y reduced)"
   )
 )
 
-# ── Active rule: change "A" to "B" or "C" to shift globally ─────
-ACTIVE_RULE <- "A"
+# ── 4. DEFAULT PLACEMENT ────────────────────────────────────────
+# Every rule stresses the RIGHTMOST full vowel. They differ only in
+# what they do when a word contains no full vowel:
 
-active_strong <- function(rule = ACTIVE_RULE) VOWEL_RULES[[rule]]$strong
-active_weak   <- function(rule = ACTIVE_RULE) VOWEL_RULES[[rule]]$weak
+STRESS_DEFAULTS <- list(
+  A = list(label = "else leftmost reduced"),  # Krueger 1961
+  B = list(label = "else stressless")         # Dobrovolsky 1999
+)
 
-# ── 4. STRESS ASSIGNMENT ────────────────────────────────────────
-# Given an ordered vector of IPA vowel labels and a rule name,
-# return the 1-based index of the stressed syllable.
-# Logic: rightmost strong, else leftmost weak, else NA.
+# ── 5. THE SIX NAMED RULES ──────────────────────────────────────
+
+STRESS_RULES <- local({
+  out <- list()
+  for (d in names(STRESS_DEFAULTS)) {
+    for (inv in names(VOWEL_INVENTORIES)) {
+      nm <- paste0(d, inv)
+      out[[nm]] <- list(
+        default   = d,
+        inventory = inv,
+        full      = VOWEL_INVENTORIES[[inv]]$full,
+        reduced   = VOWEL_INVENTORIES[[inv]]$reduced,
+        label     = paste0(nm, ": rightmost full, ",
+                           STRESS_DEFAULTS[[d]]$label,
+                           "  [", VOWEL_INVENTORIES[[inv]]$label, "]")
+      )
+    }
+  }
+  out[c("A6", "A5", "A4", "B6", "B5", "B4")]
+})
+
+RULE_NAMES <- names(STRESS_RULES)
+
+# ── Active rule: any of RULE_NAMES. Governs the single-column
+#    convenience outputs (vowel_cat, vowel_class, stressed_position).
+#    All six rules are computed regardless, so changing this does not
+#    lose information — see pipeline/run_pipeline.R for which stage
+#    to re-run.
+ACTIVE_RULE <- "A6"
+
+stopifnot(
+  "ACTIVE_RULE must be one of A6 A5 A4 B6 B5 B4" =
+    ACTIVE_RULE %in% RULE_NAMES
+)
+
+rule_full    <- function(rule = ACTIVE_RULE) STRESS_RULES[[rule]]$full
+rule_reduced <- function(rule = ACTIVE_RULE) STRESS_RULES[[rule]]$reduced
+
+# Backward-compatible aliases. The legacy root scripts and older
+# analyses still call these; new code should use rule_full/rule_reduced.
+active_strong <- function(rule = ACTIVE_RULE) rule_full(rule)
+active_weak   <- function(rule = ACTIVE_RULE) rule_reduced(rule)
+
+# ── Stress assignment ───────────────────────────────────────────
+# Given an ordered vector of IPA vowel labels, return the 1-based
+# index of the stressed syllable, or NA.
+#
+# NA means two different things and the caller must distinguish them:
+#   under default A, NA = no vowel was classifiable at all
+#   under default B, NA = this word has no full vowel and is therefore
+#                         analysed as having NO stressed syllable, so
+#                         every syllable in it is Unstressed (not
+#                         missing). apply_stress_rule() handles this.
 
 assign_stress <- function(vowel_labels, rule = ACTIVE_RULE) {
-  r       <- VOWEL_RULES[[rule]]
-  strong  <- which(vowel_labels %in% r$strong)
-  weak    <- which(vowel_labels %in% r$weak)
-  if (length(strong) > 0) return(max(strong))
-  if (length(weak)   > 0) return(min(weak))
-  return(NA_integer_)
+  r    <- STRESS_RULES[[rule]]
+  full <- which(vowel_labels %in% r$full)
+  if (length(full) > 0) return(max(full))
+  if (r$default == "B") return(NA_integer_)        # stressless by design
+  red  <- which(vowel_labels %in% r$reduced)
+  if (length(red) > 0) return(min(red))
+  NA_integer_
 }
 
 # Apply one rule across a whole dataframe.
-# df must have columns: word_id, sidx (1-based), label (IPA).
+# df must have columns: word_id, sidx (1-based), vowel_label (IPA).
+#
+# A NA target yields "Unstressed" for every syllable of that word
+# rather than NA, so rule-B columns carry the same number of usable
+# rows as rule-A columns and model fits stay comparable.
 apply_stress_rule <- function(df, rule = ACTIVE_RULE) {
   col <- paste0("stress_rule_", rule)
   df %>%
     dplyr::group_by(word_id) %>%
     dplyr::mutate(
       .target = assign_stress(vowel_label[order(sidx)], rule),
-      !!col   := dplyr::if_else(sidx == .target, "Stressed", "Unstressed")
+      !!col   := dplyr::if_else(!is.na(.target) & sidx == .target,
+                                "Stressed", "Unstressed")
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(-.target)
 }
 
-# Apply all rules at once (adds stress_rule_A, _B, _C columns)
+# Adds stress_rule_A6, _A5, _A4, _B6, _B5, _B4.
 apply_all_stress_rules <- function(df) {
-  for (rule in names(VOWEL_RULES)) df <- apply_stress_rule(df, rule)
+  for (rule in RULE_NAMES) df <- apply_stress_rule(df, rule)
   df
 }
 
-# ── 5. VOWEL CATEGORY FOR WRITTEN CORPUS (F / R / L) ────────────
-# Classifies individual vowel characters in Cyrillic/Latin orthography.
-# Used for co-occurrence analyses on Zheltov + monolingual corpus.
+# ── Vowel category F / R / L, by inventory ──────────────────────
+# F = full, R = reduced, L = loan-only vowel (excluded from analysis).
+#
+# Keyed by INVENTORY ("6"/"5"/"4"), not by rule name: the default
+# placement has no bearing on how a vowel quality is classified, so
+# A6 and B6 share one categorization.
+#
+# IPA only. The previous version also listed Cyrillic and
+# Latin-with-breve graphemes, but every call site passes vowel_label,
+# which is IPA, so those entries were unreachable -- and inconsistent
+# (Cyrillic ы was absent from inventory 6's F list while present in
+# 5's and 4's R lists, which would have silently returned NA for it).
+# If you ever need to classify orthographic characters, transliterate
+# first with transliterate_word() and classify the IPA.
 
-VOWEL_CATEGORY_RULES <- list(
+VOWEL_CATEGORY_RULES <- lapply(VOWEL_INVENTORIES, function(inv) list(
+  F = inv$full,
+  R = inv$reduced,
+  L = c("o", "ɔ")          # /o/ occurs only in Russian loans
+))
 
-  A = list(
-    F = c("а","е","a","e","i","u","y","ʉ","и","у","ӱ","ӳ","ю","я"),
-    R = c("ø","ɵ","ӗ","ӑ"),
-    L = c("o","о","ё","ë","O")
-  ),
+# `inventory` is "6", "5" or "4"; a rule name like "A6" is also
+# accepted and its inventory taken.
+.as_inventory <- function(x) {
+  if (x %in% names(VOWEL_INVENTORIES)) return(x)
+  if (x %in% RULE_NAMES) return(STRESS_RULES[[x]]$inventory)
+  stop("not an inventory or rule name: ", x)
+}
 
-  B = list(
-    F = c("а","е","a","e","i","u","y","и","у","ӱ","ӳ","ю","я"),
-    R = c("ø","ɵ","ʉ","ӗ","ӑ","ы"),
-    L = c("o","о","ё","ë","O")
-  ),
-
-  C = list(
-    F = c("а","е","a","e","i","u","и","у","ю","я"),
-    R = c("ø","ɵ","y","ʉ","ӗ","ӑ","ы","ӱ","ӳ"),
-    L = c("o","о","ё","ë","O")
-  )
-)
-
-classify_vowel <- function(v, rule = ACTIVE_RULE) {
-  cats <- VOWEL_CATEGORY_RULES[[rule]]
+classify_vowel <- function(v, inventory = ACTIVE_RULE) {
+  cats <- VOWEL_CATEGORY_RULES[[.as_inventory(inventory)]]
   dplyr::case_when(
     v %in% cats$F ~ "F",
     v %in% cats$R ~ "R",
@@ -200,10 +322,10 @@ classify_vowel <- function(v, rule = ACTIVE_RULE) {
   )
 }
 
-# Build a word-level category string (e.g., "FR", "FFF") from
-# an ordered vector of vowel characters under a given rule.
-word_category_string <- function(vowel_chars, rule = ACTIVE_RULE) {
-  cats <- sapply(vowel_chars, classify_vowel, rule = rule)
+# Word-level category string (e.g. "FR", "FFF") from an ordered
+# vector of IPA vowel labels.
+word_category_string <- function(vowel_labels, inventory = ACTIVE_RULE) {
+  cats <- classify_vowel(vowel_labels, inventory)
   cats <- cats[!is.na(cats) & cats != "L"]   # exclude loan vowels
   paste(cats, collapse = "")
 }
@@ -299,8 +421,15 @@ VOWEL_COLORS <- c(
 STRESS_COLORS <- c("Stressed" = "#2166AC", "Unstressed" = "#D6604D")
 
 RULE_LABELS <- setNames(
-  vapply(VOWEL_RULES, `[[`, character(1), "label"),
-  names(VOWEL_RULES)
+  vapply(STRESS_RULES, `[[`, character(1), "label"),
+  RULE_NAMES
+)
+
+# Colour by default placement: the A rules and the B rules are the two
+# competing analyses, so they should read as two families in figures.
+RULE_COLORS <- c(
+  A6 = "#08519C", A5 = "#3182BD", A4 = "#6BAED6",   # blues  = default A
+  B6 = "#A50F15", B5 = "#DE2D26", B4 = "#FB6A4A"    # reds   = default B
 )
 
 # ═══════════════════════════════════════════════════════════════════════

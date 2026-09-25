@@ -34,7 +34,7 @@
 #   CLEANING thresholds, is_loan(), RUSSIAN/ENGLISH_SEQS -> from = 2
 #   syllabify_ipa(), IPA_VOWELS, IPA_DIGRAPHS,
 #     IPA_SONORITY, .max_onset_size()                    -> from = 3
-#   VOWEL_RULES, VOWEL_CATEGORY_RULES, ACTIVE_RULE,
+#   STRESS_RULES, VOWEL_CATEGORY_RULES, ACTIVE_RULE,
 #     VOWEL_HEIGHT/BACKNESS/ROUND, classify_vowel()      -> from = 4
 #
 # Changing anything in config/phonology_params.R that is NOT in the list
@@ -137,7 +137,7 @@ run_pipeline <- function(from   = 1L,
               if (is.na(sha)) "unavailable" else sha,
               if (isTRUE(dirty)) "  (UNCOMMITTED CHANGES PRESENT)" else ""))
   cat(sprintf("  Active rule  : %s — %s\n",
-              ACTIVE_RULE, VOWEL_RULES[[ACTIVE_RULE]]$label))
+              ACTIVE_RULE, RULE_LABELS[[ACTIVE_RULE]]))
   cat(sprintf("  Stages       : %s\n",
               paste(PIPELINE_STAGES[which_stages], collapse = ", ")))
   cat("════════════════════════════════════════════════════════════\n")
@@ -245,9 +245,9 @@ run_pipeline <- function(from   = 1L,
 
   w("PHONOLOGICAL ASSUMPTIONS")
   w(strrep("-", 60))
-  w("ACTIVE_RULE    : ", ACTIVE_RULE, " — ", VOWEL_RULES[[ACTIVE_RULE]]$label)
-  w("Strong vowels  : ", paste(active_strong(), collapse = " "))
-  w("Weak vowels    : ", paste(active_weak(),   collapse = " "))
+  w("ACTIVE_RULE    : ", ACTIVE_RULE, " — ", RULE_LABELS[[ACTIVE_RULE]])
+  w("Full vowels    : ", paste(rule_full(),    collapse = " "))
+  w("Reduced vowels : ", paste(rule_reduced(), collapse = " "))
   w("")
   w("Cleaning thresholds:")
   for (nm in names(CLEANING)) {
