@@ -336,13 +336,15 @@ IPA_DIGRAPHS <- c(
 # transliterate_word(). After first run, verify with:
 #   unique(unlist(tokenize_ipa_all(z_clean$word_label_IPA))) |> sort()
 # and confirm each vowel-like symbol appears here.
+# ── IPA vowel nuclei ─────────────────────────────────────────────────
 IPA_VOWELS <- c(
   "a", "ɑ", "æ",
   "e", "ɛ",
+  "ø", "œ",           # Chuvash ӗ → ø
   "ə", "ɘ", "ɵ",
   "i", "ɪ", "ɨ",
   "o", "ɔ",
-  "u", "ʊ",
+  "u", "ʊ", "y", "ʉ", # Chuvash ӳ/ӱ → y ; Chuvash ы → ʉ
   "ʌ", "ɐ"
 )
 
@@ -417,117 +419,6 @@ tokenize_ipa_all <- function(words, digraphs = IPA_DIGRAPHS) {
 #' candidates contain unknown sonority values.
 .max_onset_size <- function(cluster, sonority = IPA_SONORITY) {
   if (length(cluster) == 0L) 0L else 1L
-}
-
-# ══════════════════════════════════════════════════════════════════════
-# SYLLABIFICATION BLOCK
-# Append to the bottom of config/phonology_params.R
-# Used exclusively by pipeline/03_build_levels.R
-# ══════════════════════════════════════════════════════════════════════
-
-# ── Multi-character IPA segments (digraphs / affricates) ───────────────
-# tokenize_ipa() matches the longest form first, so order within the
-# vector does not matter functionally, but longer entries are listed
-# first for readability.
-# !! Keep in sync with what transliterate_word() actually outputs !!
-IPA_DIGRAPHS <- c(
-  "t͡ʃ", "d͡ʒ", "t͡s",        # tie-bar affricates  (U+0361 combiner)
-  "tʃ",  "dʒ",  "ts",        # plain-text affricates
-  "lʲ",  "nʲ",  "rʲ",        # palatalized sonorants
-  "sʲ",  "zʲ",  "tʲ",  "dʲ" # palatalized obstruents
-)
-
-# ── Vowel nuclei ────────────────────────────────────────────────────────
-# Must contain every nucleus symbol that transliterate_word() can produce.
-# After a first run, verify completeness with:
-#   unique(unlist(tokenize_ipa_all(mono_syl$word_label_IPA))) |>
-#     setdiff(c(IPA_VOWELS, names(IPA_SONORITY))) |> sort()
-IPA_VOWELS <- c(
-  "a", "ɑ", "æ",
-  "e", "ɛ",
-  "ø", "œ",                 # ← NEW: Chuvash ӗ → ø; add œ for safety
-  "ə", "ɘ", "ɵ",
-  "i", "ɪ", "ɨ",
-  "o", "ɔ",
-  "u", "ʊ", "y", "ʉ",      # ← NEW: Chuvash ӳ/ӱ → y
-  "ʌ", "ɐ"
-)
-
-# ── Sonority scale ──────────────────────────────────────────────────────
-# Higher value = more sonorous.
-# Segments absent from this table get NA → onset-maximisation falls back
-# to the single rightmost consonant rule for that cluster.
-IPA_SONORITY <- c(
-  # Stops
-  "p"   = 1L, "b"   = 1L, "t"   = 1L, "d"   = 1L,
-  "k"   = 1L, "ɡ"   = 1L, "g"   = 1L, "q"   = 1L,
-  # Affricates — both encodings
-  "t͡s" = 2L, "t͡ʃ" = 2L, "d͡ʒ" = 2L,
-  "ts"  = 2L, "tʃ"  = 2L, "dʒ"  = 2L,
-  # Fricatives
-  "f"   = 3L, "v"   = 3L, "h"   = 3L, "ɦ"   = 3L,
-  "s"   = 3L, "z"   = 3L, "ʃ"   = 3L, "ʒ"   = 3L,
-  "ɕ"   = 3L, "ʑ"   = 3L,
-  "x"   = 3L, "ɣ"   = 3L, "χ"   = 3L, "ʁ"   = 3L,
-  "sʲ"  = 3L, "zʲ"  = 3L,
-  # Nasals
-  "m"   = 4L, "n"   = 4L, "ŋ"   = 4L, "nʲ"  = 4L,
-  # Laterals
-  "l"   = 5L, "lʲ"  = 5L,
-  # Rhotics
-  "r"   = 6L, "rʲ"  = 6L,
-  # Approximants / glides         ← NEW: ʋ (Chuvash в in some positions)
-  "ʋ"   = 6L,
-  "j"   = 7L, "w"   = 7L
-)
-
-
-# ══════════════════════════════════════════════════════════════════════
-# FUNCTIONS
-# ══════════════════════════════════════════════════════════════════════
-
-#' Tokenize one IPA string into a character vector of segments.
-#' Digraphs in `digraphs` are matched greedily (longest first).
-tokenize_ipa <- function(s, digraphs = IPA_DIGRAPHS) {
-  if (is.na(s) || nchar(s) == 0L) return(character(0L))
-  # Sort by descending length so longer patterns win ties
-  dgs  <- digraphs[order(-nchar(digraphs))]
-  segs <- character(0L)
-  while (nchar(s) > 0L) {
-    matched <- FALSE
-    for (dg in dgs) {
-      if (startsWith(s, dg)) {
-        segs    <- c(segs, dg)
-        s       <- substr(s, nchar(dg) + 1L, nchar(s))
-        matched <- TRUE
-        break
-      }
-    }
-    if (!matched) {
-      segs <- c(segs, substr(s, 1L, 1L))
-      s    <- substr(s, 2L, nchar(s))
-    }
-  }
-  segs
-}
-
-#' Vectorised wrapper — returns a list of segment vectors.
-#' Useful for inventory checks:  unique(unlist(tokenize_ipa_all(words)))
-tokenize_ipa_all <- function(words, digraphs = IPA_DIGRAPHS) {
-  lapply(words, tokenize_ipa, digraphs = digraphs)
-}
-
-#' How many segments from the RIGHT of `cluster` form a valid onset?
-#' Valid = single consonant, OR strictly rising sonority with no unknowns.
-.max_onset_size <- function(cluster, sonority = IPA_SONORITY) {
-  n <- length(cluster)
-  if (n == 0L) return(0L)
-  for (k in seq(n, 1L)) {
-    cand <- cluster[(n - k + 1L):n]
-    s    <- sonority[cand]
-    if (k == 1L || (all(!is.na(s)) && all(diff(s) > 0L))) return(k)
-  }
-  1L
 }
 
 #' Syllabify a single IPA word; returns a period-delimited string.
