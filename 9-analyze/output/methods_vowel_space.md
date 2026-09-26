@@ -2,12 +2,12 @@
 
 *2026-09-26. `analyses/vowel_space.R` plus the clustering in
 `fig_vowel_clustering.png`. n = 213,477 vowels in non-palatal contexts,
-85 speakers, Lobanov-normalised within speaker.*
+84 speakers, Lobanov-normalised within speaker.*
 
 Speaker term: `speaker` is the Common Voice `client_id` where it exists and the
 inferred Chuvash Voice `voice_label` otherwise (see
 `methods_speaker_structure.md`). Speakers with fewer than 20 tokens are dropped,
-because a z-score over fewer is noise; that leaves 85 of 115.
+because a z-score over fewer is noise; that leaves 84 of 115.
 Non-palatal excludes vowels adjacent to /j ɕ ʃ tɕ ʒ/, 76.1% of the data.
 
 ## Rounding
