@@ -77,6 +77,90 @@ all_vowel_chars <- c(
 
 SOFT_SIGNS <- "[ьь]"
 
+# ── 1b. ORTHOGRAPHIC NORMALISATION ──────────────────────────────
+# The Zheltov wordlist is typed with LATIN homoglyphs where the
+# monolingual corpus and the spoken corpora use Cyrillic:
+#
+#     ă  U+0103  LATIN SMALL LETTER A WITH BREVE     for  ӑ  U+04D1
+#     ĕ  U+0115  LATIN SMALL LETTER E WITH BREVE     for  ӗ  U+04D7
+#     ç  U+00E7  LATIN SMALL LETTER C WITH CEDILLA   for  ҫ  U+04AB
+#
+# 63.5% of wordlist types contain at least one. transliterate_word()
+# maps both forms, so word_label_IPA was always correct — but every
+# *string* join on the orthographic label silently failed for those
+# words. That is why in_mono_corpus read 19.8% for Zheltov when the
+# true figure is 69.4%, and why corpus_freq was NA for all 323
+# breve-containing monosyllabic types against 20 of 615 others.
+# Since ӑ and ӗ ARE the reduced vowels, the missingness in the
+# frequency covariate was perfectly confounded with the phonological
+# contrast under study.
+#
+# Normalise every orthographic word label at load, in every corpus.
+ORTHOGRAPHY_HOMOGLYPHS <- c(
+  "\u0103" = "\u04d1",   # ă → ӑ
+  "\u0115" = "\u04d7",   # ĕ → ӗ
+  "\u00e7" = "\u04ab",   # ç → ҫ
+  "\u0102" = "\u04d0",   # Ă → Ӑ
+  "\u0114" = "\u04d6",   # Ĕ → Ӗ
+  "\u00c7" = "\u04aa"    # Ç → Ҫ
+)
+
+SOFT_HYPHEN <- "\u00ad"
+
+# Fold the Latin homoglyphs onto Cyrillic and drop soft hyphens.
+# Idempotent; safe to apply to already-Cyrillic corpora.
+normalise_orthography <- function(x) {
+  x <- stringr::str_replace_all(x, stringr::fixed(SOFT_HYPHEN), "")
+  for (from in names(ORTHOGRAPHY_HOMOGLYPHS)) {
+    x <- stringr::str_replace_all(
+      x, stringr::fixed(from), ORTHOGRAPHY_HOMOGLYPHS[[from]]
+    )
+  }
+  x
+}
+
+# Hard stop if a homoglyph reaches a table that will be joined on.
+assert_orthography <- function(x, where = "orthographic labels") {
+  bad <- names(ORTHOGRAPHY_HOMOGLYPHS)
+  hits <- vapply(
+    bad, function(ch) sum(stringr::str_detect(x, stringr::fixed(ch)), na.rm = TRUE),
+    integer(1)
+  )
+  if (any(hits > 0)) {
+    stop(sprintf(
+      "Latin homoglyphs survived normalisation in %s: %s",
+      where,
+      paste(sprintf("%s x%d", bad[hits > 0], hits[hits > 0]), collapse = ", ")
+    ), call. = FALSE)
+  }
+  invisible(TRUE)
+}
+
+# ── 1c. LINE-BREAK REPAIR (running text only) ───────────────────
+# The monolingual corpus is drawn from digitised print. Three
+# segmentation artifacts survive into it, all of which manufacture
+# open monosyllables that are not words:
+#
+#   (1) de-hyphenation failure — "йышӑн­ нӑ", "вил- се", "Ас­ лӑ".
+#       The token regex in 02_clean.R does not include the hyphen or
+#       the soft hyphen, so BOTH halves become separate word types.
+#   (2) letter-spaced emphasis (разрядка) — "ӗ ҫ е р нӗ" for ӗҫернӗ.
+#   (3) Russian passages left in place.
+#
+# (1) is repairable here. (2) and (3) are not, and are the reason the
+# corpus cannot carry a type-level phonotactic claim on its own —
+# see output/minimal_word_diagnosis.md.
+repair_line_breaks <- function(txt) {
+  # soft hyphen at a line break, with or without the following space
+  txt <- stringr::str_replace_all(txt, "(\\S)\u00ad\\s+", "\\1")
+  txt <- stringr::str_replace_all(txt, stringr::fixed(SOFT_HYPHEN), "")
+  # hard hyphen at a line break: no space BEFORE it, whitespace after.
+  # A spaced dash (" - ") has a space before and is left alone, as are
+  # genuine compounds (ҫурт-йӗр), which have no space after.
+  txt <- stringr::str_replace_all(txt, "(\\S)-\\s+(?=\\S)", "\\1")
+  txt
+}
+
 transliterate_word <- function(word) {
   w <- word
   

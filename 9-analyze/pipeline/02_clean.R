@@ -286,6 +286,18 @@ z      <- readRDS(file.path(PATHS$loaded_dir, "zheltov_raw.rds"))
 n_raw  <- nrow(z)
 cat(sprintf("  Raw: %d rows | %d word types\n", n_raw, n_distinct(z$word)))
 
+# Fold the Latin breve/cedilla homoglyphs onto Cyrillic FIRST, so that
+# (a) the loan filter does not see ç as a stray Latin letter and
+# (b) word_label can be joined against the other two corpora at all.
+# Keep the source spelling for traceability.
+z <- z %>%
+  mutate(word_source = word,
+         word        = normalise_orthography(word))
+
+n_folded <- sum(z$word != z$word_source)
+cat(sprintf("  Orthography: %d of %d rows (%.1f%%) contained a Latin homoglyph\n",
+            n_folded, nrow(z), 100 * n_folded / nrow(z)))
+
 z_clean <- z %>%
   filter(!is_loan(word))  %>%             # no loanwords
   mutate(
@@ -294,6 +306,8 @@ z_clean <- z %>%
       str_remove_all("['\\-–\\^’ ]") %>%           # remove the punctuation/symbols you listed
       str_squish()                                  # cleans up any leftover whitespace (optional, in case some symbols were meant as word separators)
 )
+
+assert_orthography(z_clean$word, "zheltov_clean$word")
 
 z_clean <- z_clean %>%
   mutate(IPA = map_chr(word, transliterate_word))
@@ -318,8 +332,18 @@ cat("\n── Monolingual corpus ──\n")
 mono_raw <- readRDS(file.path(PATHS$loaded_dir, "mono_raw.rds"))
 cat(sprintf("  Raw: %d sentences\n", nrow(mono_raw)))
 
+# Repair line-break hyphenation BEFORE tokenising. The character class
+# below excludes both the hyphen and the soft hyphen, so without this
+# step every hyphenated line break contributes two spurious word types
+# — which is where the corpus's open monosyllables with reduced vowels
+# come from (нӑ, тӑ, лӑ, нӗ, ҫӗ, чӗ are suffixes, not words).
+n_soft <- sum(str_detect(mono_raw$chv, fixed(SOFT_HYPHEN)), na.rm = TRUE)
+cat(sprintf("  Line breaks: %d sentences (%.1f%%) carry a soft hyphen\n",
+            n_soft, 100 * n_soft / nrow(mono_raw)))
+
 mono_clean <- mono_raw %>%
-  mutate(chv = str_to_lower(chv)) %>%
+  mutate(chv = repair_line_breaks(chv)) %>%
+  mutate(chv = normalise_orthography(str_to_lower(chv))) %>%
   mutate(token = str_extract_all(chv, "[а-яёӑӗӱӳыҫА-ЯЁҪa-z]+")) %>%
   unnest(token) %>%
   filter(nchar(token) > 0) %>%
@@ -336,6 +360,24 @@ mono_clean <- mono_raw %>%
          corpus          = "mono") %>%
   mutate(IPA = map_chr(token, transliterate_word))
 
+assert_orthography(mono_clean$token, "mono_clean$token")
+
+# Flag types attested in the Zheltov wordlist. The corpus's own type
+# inventory is contaminated by de-hyphenation failure, letter-spaced
+# emphasis and Russian passages, none of which can be filtered
+# phonotactically — the fragments are legal Chuvash syllables. The
+# corpus therefore cannot carry a type-level claim about possible
+# words on its own; what it CAN carry is the token frequency of types
+# that are independently attested. Restrict to in_wordlist for the
+# former, use the full table for the latter.
+mono_clean <- mono_clean %>%
+  mutate(in_wordlist = token %in% unique(z_clean$word))
+
+cat(sprintf("  Types attested in the Zheltov wordlist: %d (%.1f%%), %.1f%% of tokens\n",
+            sum(mono_clean$in_wordlist),
+            100 * mean(mono_clean$in_wordlist),
+            100 * sum(mono_clean$corpus_freq[mono_clean$in_wordlist]) /
+              sum(mono_clean$corpus_freq)))
 
 cat(sprintf("  Unique word types after cleaning: %d\n", nrow(mono_clean)))
 cat(sprintf("  Total token occurrences counted : %d\n",

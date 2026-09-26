@@ -38,6 +38,11 @@ cat(sprintf("  Frequency range : %d – %d  (median %d)\n",
 # Joins word frequency to any table on `word_col`.
 # Renames 'token' → word_col before joining so the key matches.
 join_word_freq <- function(df, word_col = "word_label") {
+  # A Latin homoglyph on either side of this join makes it fail
+  # silently, and the failure is not random: it hits every word
+  # containing ӑ or ӗ. Stop instead.
+  assert_orthography(df[[word_col]], paste0("join_word_freq(", word_col, ")"))
+  assert_orthography(word_freq_lookup$token, "word_freq_lookup$token")
   df %>%
     left_join(
       word_freq_lookup %>% rename(!!word_col := token),
@@ -527,6 +532,10 @@ mono_ann <- mono_ann %>%
     any_of(c("word_label", "word_label_IPA", "word_label_IPA_syllabified")),
     # FREQUENCY (the primary property of this corpus)
     any_of(c("corpus", "corpus_freq", "log_corpus_freq")),
+    # in_wordlist: attested in the Zheltov wordlist. Required for any
+    # type-level claim — the raw type inventory contains segmentation
+    # artifacts that are phonotactically legal (see 02_clean.R).
+    any_of(c("in_wordlist")),
     any_of(c("word_cat_6", "word_cat_5", "word_cat_4")),
     # SYLLABLE
     any_of(c("sidx", "sN", "syllable_label", "syllable_coda",
