@@ -1,0 +1,33 @@
+draft_location,draft_value,current_value,macro,status,note
+"§Data, Table tab:datasets","615,634 vowels extracted","615,634",\NvowelsExtracted,matches,"Reproduced exactly once the interval join replaced the (file_name,sidx,sN) key join. This is the count entering cleaning."
+"§Data, Table tab:datasets","591,305 retained after loanword exclusion","see exclusion_log.csv",,superseded,"The cleaning pipeline now has six numbered steps with their own counts; a single post-loanword figure no longer describes it. Cite \PctVowelsKept or the exclusion log."
+"§Acoustics of stress, body","N=350,872 vowels (full dataset)","280,955",\NvowelsAnalysed,STALE,"Draft figure predates the identity fixes. 280,955 after duplicate removal and cleaning."
+"§Acoustics of stress, body","n=11,711 (conflict subset)","7,411 words / 15,631 vowels",\NallReducedWords / \NallReducedVowels,STALE,"The old 'conflict subset' pooled all rule disagreements. The informative subset is polysyllabic all-reduced words, which is where A and B differ."
+"§Reanalysis of stress, body","N=350,872 / n=11,711","280,955 / 15,631",\NvowelsAnalysed / \NallReducedVowels,STALE,"Same as above; repeated in the body text."
+"Table tab:lmer_results caption","N=350,872 / n=11,711","280,955 / 15,631",\NvowelsAnalysed / \NallReducedVowels,STALE,
+"Table tab:lmer_results","Num. obs. = 316,418","263,135",\NmodelRows,STALE,"Rows entering the mixed models after dropping incomplete cases."
+"Table tab:lmer_results","Num. groups: word = 17,739","15,690",\NwordTypes,STALE,
+"Table tab:lmer_results","Num. groups: speaker_id = 108","105",\Nspeakers,CORRECTED,"Speaker ids were recoverable all along; 01_load_raw.R was discarding the TSV columns that carry them. Report the imbalance alongside: \PctVowelsTopSpeaker of all vowels come from one talker."
+"§Acoustics of stress, body","stressed vowels +3.2 dB more intense","0.40 dB (rule B5) / 0.45 dB (best-fitting)",\ArguedRuleIntensity / \IntensityEffectBest,WRONG,"No intensity measure yields 3.2 dB. All are 0.23-0.46 dB, far below the 3 dB JND cited from Moore (2007)."
+"§Reanalysis of stress, body","162 dB more intense in total amplitude","0.40 dB",\ArguedRuleIntensity,WRONG,"161.90 was the coefficient on total_intensity, a sum of 20 per-step dB readings. Not decibels and not a physical quantity; that variable correlates with duration at \CorrTotalIntensityDuration."
+"§Acoustics of stress, body","12.2% longer","16.1%",\ArguedRuleDuration,STALE,"Under rule B5 on the current data. \ArguedRuleDurationLog in log units."
+"§Reanalysis of stress, body","11.3% longer in the conflict subset","see rule_default_evidence.csv",,superseded,"Replaced by the JND-referenced contrast: \AllReducedDeltaDuration duration and \AllReducedDeltaIntensity intensity, neither perceptible."
+"§Reanalysis of stress, body","AIC decrease 1,125 (duration)","909",\DeltaAICdurationArguedVsA,STALE,"A5 minus B5 on log duration, current models."
+"§Reanalysis of stress, body","AIC decrease 2,133 (amplitude)","n/a",,WITHDRAWN,"Computed on total_intensity. Intensity now ranks the A rules first, not the B rules, so this comparison reverses sign; see rule_acoustic_models.csv."
+"Table tab:AIC (whole table)","all four columns","n/a",,REBUILD,"Built on total_intensity and the old N. Regenerate from rule_acoustic_models.csv."
+"§Vowel inventory, body","mean F1/F2 of 388,502 vowels","280,955",\NvowelsAnalysed,STALE,"And it disagreed with its own figure caption (387,436). One number now."
+"fig:vowels caption","n=387,436 vowels","280,955",\NvowelsAnalysed,STALE,"See above; body and caption must use the same macro."
+"fig:medial_unstressed_vowels caption","n=246,825 vowels","recompute",,STALE,"Subset-specific; recompute from the current data for whatever filter the figure applies."
+"fig:disyll-dur / fig:disyll-amp captions","n = 85,956 vowels","recompute",,STALE,
+"fig:stress caption","n = 36,998 / 24,585 / 353,015","recompute",,STALE,
+"fig:ss caption","n = 183,380 vowels","recompute",,STALE,
+"fig:dv caption","N = 33,156","recompute",,STALE,
+"fig:f0 caption","N=460,269 vowels","280,955",\NvowelsAnalysed,STALE,"460,269 exceeds even the pre-cleaning count of 615,634 minus exclusions; cannot be a vowel count from this pipeline."
+"§Loanword removal","excluded 24,329 vowels from loanwords","see exclusion_log.csv",,STALE,"The loanword step's own count is in the exclusion log, per corpus."
+"Table tab:min, Zheltov columns","/ø/ 0 of 99, /ʉ/ 0 of 35, /ɵ/ 2 of 188","0 of 90, 0 of 37, 2 of 175",\OpenMonoOslash etc.,STALE,"Same pattern, slightly different totals after the affricate fix and re-cleaning. The generalisation holds."
+"Table tab:min, monolingual columns","/ø/ 0.0% open, /ʉ/ 0.0% open","19.7% (types) / 13.6% (tokens)",,NOT REPRODUCIBLE,"The monolingual corpus contains vowel-stripped non-words the syllabifier reads as open monosyllables. Neither weighting yields 0.0%. Rest the minimal-word claim on the Zheltov wordlist and drop or heavily caveat the monolingual column."
+"§The minimal word, body","open monosyllables 17-52% in the monolingual corpus","17-63%",,WRONG,"The stated upper bound missed /e/ at 62.8%. Contradicted by the draft's own table."
+"§Distribution of high and central vowels","/ʉ/ 95% initial (Zheltov)","89.5%",,STALE,"From rule_positional.csv, polysyllabic word types."
+"§Distribution of high and central vowels","96% of /ʉ/ tokens initial (spoken), n=8,810","recompute",,STALE,
+"§Syllable segmentation","'onset maximization and sonority-sequencing principles'","n/a",\PctDivergeZheltov etc.,WRONG,"The code assigns exactly one consonant to each onset and never reads IPA_SONORITY. Replacement prose in methods_syllabification.md."
+"Table tab:extraction_params","pitch floor / ceiling '[specify]'","n/a",,OPEN,"Still unspecified. Needed for Methods, and it is the parameter that determines the intensity analysis window and hence the undefined-step problem."

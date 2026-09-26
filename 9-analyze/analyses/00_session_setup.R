@@ -94,7 +94,7 @@ vowels %>%
     vowels     = n(),
     words      = n_distinct(word_id),
     utterances = n_distinct(file_name),
-    speakers   = n_distinct(speaker_id),
+    speakers   = n_distinct(speaker_id, na.rm = TRUE),
     .groups    = "drop"
   ) %>%
   print()
@@ -121,7 +121,11 @@ exclusion_log <- read_csv(
   show_col_types = FALSE
 )
 
+# Column names are step_id/step_name/vowels_lost, not step/vowels_excluded —
+# any_of() so a future change to 02_clean.R's log schema degrades to a
+# narrower table rather than stopping the whole session setup.
 cat("Cleaning pipeline summary (vowel counts):\n")
 exclusion_log %>%
-  select(step, corpus, n_vowels, vowels_excluded, pct_vowels_kept, reason) %>%
-  print()
+  select(any_of(c("step_id", "step_name", "corpus", "n_vowels",
+                  "vowels_lost", "pct_vowels_kept", "reason"))) %>%
+  print(n = Inf)
