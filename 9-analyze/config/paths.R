@@ -110,6 +110,17 @@ PATHS <- list(
   
   leveled_dir = here::here(
     "9-analyze", "data", "leveled"
+  ),
+
+  # Every deliverable an analysis writes -- CSVs, figures, .md notes and
+  # results_macros.tex. Scripts previously each defined their own OUT_DIR,
+  # so there was no single place to change it.
+  output_dir = here::here(
+    "9-analyze", "output"
+  ),
+
+  run_log_dir = here::here(
+    "9-analyze", "data", "run_log"
   )
 )
 
@@ -119,7 +130,9 @@ PATHS <- list(
 for (d in c(
   PATHS$loaded_dir,
   PATHS$cleaned_dir,
-  PATHS$leveled_dir
+  PATHS$leveled_dir,
+  PATHS$output_dir,
+  PATHS$run_log_dir
 )) {
   dir.create(
     d,

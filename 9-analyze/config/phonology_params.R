@@ -569,8 +569,38 @@ IPA_VOWELS <- c(
   "i", "ɪ", "ɨ",
   "o", "ɔ",
   "u", "ʊ", "y", "ʉ", # Chuvash ӳ/ӱ → y ; Chuvash ы → ʉ
+  "ɯ",                # the ALIGNER's symbol for ы. 5-recode/chuvash_phonology.py
+                      #   transcribes ы as ɯ, this config's g2p as ʉ. Omitting it
+                      #   here classified 20,259 aligner-labelled ы tokens as
+                      #   consonants. See ALIGNER_IPA_TO_CONFIG below.
   "ʌ", "ɐ"
 )
+
+# ── Aligner IPA ↔ this config's IPA ─────────────────────────────────────
+# The MFA dictionary and the recoded TextGrids use a different transcription
+# of the same eight vowels from the one this config's transliterate_word()
+# produces. Anything that reads phone labels straight off a TextGrid must
+# translate first, or the two notations will not join.
+ALIGNER_IPA_TO_CONFIG <- c(
+  "ɑ" = "a", "e" = "e", "i" = "i", "u" = "u", "y" = "y",
+  "ɯ" = "ʉ",   # ы
+  "ɛ" = "ø",   # ӗ
+  "ʌ" = "ɵ",   # ӑ
+  "o" = "o",   # loan only
+  "tʃ" = "tɕ", # the tie-bar form t͡ʃ never matched, so grids carry plain tʃ
+  "χ" = "x",
+  "v" = "ʋ"
+)
+
+# Translate a vector of aligner phone labels into this config's IPA,
+# preserving any length mark. Unknown labels pass through unchanged.
+from_aligner_ipa <- function(x) {
+  long <- grepl("ː", x, fixed = TRUE)
+  base <- sub("ː", "", x, fixed = TRUE)
+  out  <- ifelse(base %in% names(ALIGNER_IPA_TO_CONFIG),
+                 ALIGNER_IPA_TO_CONFIG[base], base)
+  ifelse(long, paste0(out, "ː"), out)
+}
 
 # ── Sonority scale ──────────────────────────────────────────────────────
 # Higher value = more sonorous.
