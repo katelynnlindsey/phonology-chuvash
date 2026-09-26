@@ -162,7 +162,84 @@ for (p in list(c("zheltov","Zheltov"), c("mono","Mono"), c("spoken","Spoken"))) 
       "medial clusters of one or two consonants")
 }
 
-# ---- 8. Write ---------------------------------------------------------------
+# ---- 8. Orthography and the minimal-word diagnosis -------------------------
+
+mwd <- read_csv(file.path(OUT_DIR, "minimal_word_diagnosis.csv"),
+                show_col_types = FALSE)
+for (p in list(c("ʉ","YBar"), c("ø","Oe"), c("ɵ","SchwaBar"),
+               c("y","YRound"), c("a","A"), c("e","E"))) {
+  r <- mwd[mwd$vowel == p[1], ]
+  if (!nrow(r)) next
+  add(paste0("OpenMonoWordlist", p[2]),
+      fmt_pct(r$`Wordlist (types)`, 1), "open-syllable share of monosyllables, wordlist")
+  add(paste0("OpenMonoCorpus", p[2]),
+      fmt_pct(r$`Corpus, attested types`, 1), "same, corpus restricted to attested types")
+}
+
+# ---- 9. Segment inventory and phonotactics ---------------------------------
+
+gem <- read_csv(file.path(OUT_DIR, "inventory_geminates.csv"), show_col_types = FALSE)
+add("NGeminateTokens", fmt_int(sum(gem$total)),
+    "long-consonant tokens in the pre-recode TextGrids")
+add("NGeminateTypes", fmt_int(nrow(gem)), "distinct long consonants attested")
+shp <- read_csv(file.path(OUT_DIR, "phonotactics_syllable_shapes.csv"),
+                show_col_types = FALSE)
+for (p in list(c("zheltov","Zheltov"), c("mono","Mono"), c("spoken","Spoken"))) {
+  s <- shp[shp$corpus == p[1], ]
+  add(paste0("PctCVorCVC", p[2]),
+      fmt_pct(100 * sum(s$n_syllables[s$shape %in% c("CV","CVC")]) / sum(s$n_syllables), 1),
+      "syllables that are CV or CVC")
+}
+
+# ---- 10. Speaker structure -------------------------------------------------
+
+ss <- read_csv(file.path(OUT_DIR, "speaker_structure.csv"), show_col_types = FALSE)
+add("PctChuvashVoiceOneSpeaker",
+    fmt_pct(100 * mean(ss$voice_label == "voice_main"), 1),
+    "Chuvash Voice recordings assigned to the dominant voice")
+add("NChuvashVoiceVoices", fmt_int(dplyr::n_distinct(ss$voice_label)),
+    "acoustic voice clusters in Chuvash Voice")
+
+# ---- 11. Vowel space, coda and sonority ------------------------------------
+
+rc <- read_csv(file.path(OUT_DIR, "rounding_contrasts.csv"), show_col_types = FALSE)
+r_ao <- rc[rc$pair == "ɵ vs a" & rc$dv == "F3z", ]
+if (nrow(r_ao)) add("SchwaBarFThreeZ", sprintf("%.3f", r_ao$difference[1]),
+                    "F3 of the reduced back vowel minus /a/: no rounding")
+vs <- read_csv(file.path(OUT_DIR, "vowel_separability.csv"), show_col_types = FALSE)
+pick <- function(a, b) {
+  r <- vs[(vs$v1 == a & vs$v2 == b) | (vs$v1 == b & vs$v2 == a), ]
+  if (nrow(r)) sprintf("%.3f", r$balanced_accuracy[1]) else "NA"
+}
+add("SepYBarSchwaBar", pick("ʉ", "ɵ"), "pairwise separability, chance = 0.500")
+add("SepIY",          pick("i", "y"),  "pairwise separability, chance = 0.500")
+
+cs <- read_csv(file.path(OUT_DIR, "coda_sonority_models.csv"), show_col_types = FALSE)
+gr <- function(pr, ou) {
+  r <- cs[cs$prominence == pr & cs$outcome == ou, ]
+  if (nrow(r)) sprintf("%.2f", r$odds_ratio[1]) else "NA"
+}
+add("OddsCodaLongest",       gr("duration, intrinsic removed", "coda"),
+    "odds of a coda on the longest syllable, intrinsic duration removed")
+add("OddsLowVowelLongest",   gr("duration, intrinsic removed", "/a/"),
+    "odds of /a/ on the longest syllable, intrinsic duration removed")
+add("OddsLowVowelLongestRaw", gr("raw duration", "/a/"),
+    "the same before the intrinsic control")
+add("OddsLowVowelLoudest",   gr("intensity, intrinsic removed", "/a/"),
+    "odds of /a/ on the loudest syllable, intrinsic intensity removed")
+
+pos <- read_csv(file.path(OUT_DIR, "positional_restrictions.csv"), show_col_types = FALSE)
+pct_initial <- function(v) {
+  p <- pos[pos$vowel_label == v & pos$position != "only", ]
+  if (!nrow(p)) return("NA")
+  fmt_pct(100 * sum(p$n[p$position == "initial"]) / sum(p$n), 1)
+}
+for (p in list(c("ʉ","YBar"), c("u","U"), c("y","YRound"), c("e","E"))) {
+  add(paste0("PctInitial", p[2]), pct_initial(p[1]),
+      "share of this vowel's polysyllabic tokens standing in syllable 1")
+}
+
+# ---- 12. Write ---------------------------------------------------------------
 
 lines <- c(
   "% results_macros.tex -- GENERATED, do not edit by hand.",

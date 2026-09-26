@@ -506,3 +506,49 @@ None of these were in the original audit. Each changed reported numbers.
 6. **The `weight` rule's fallback is arbitrary** — all-open-syllable words
    fall back to final stress. Undetermined by the brief; documented in the
    script but not justified.
+
+---
+
+# Version 4 — 2026-09-26
+
+## Closed since version 3
+
+**Open item (a), the 12.50% unmatched FAVE points, is withdrawn.** Those rows
+are new-FAVE `SIL` records (14.8% of Chuvash Voice point rows) plus `OW`, the
+loan vowel excluded by design. 703,582 − 615,634 = 87,948 accounts for them
+exactly, and cleaning step 01 would have dropped every one. No vowels are
+missing. The two extractions also come from one alignment: 100.0% of contour
+vowel intervals match the `6-annotate` ARPAbet grids over 2,024 intervals in
+both corpora. Detail in `extraction_provenance.md`.
+
+**Open item (c), the unspecified pitch floor and ceiling, is answered.**
+100 / 800 Hz, filtered autocorrelation, 10 Hz smoothing, 2-semitone stylisation,
+20 points at *k*/21 of the vowel. Recovered from `time-series_f0-int.praat`.
+
+## Defects found and fixed in version 4
+
+| # | defect | effect | status |
+|---|---|---|---|
+| 12 | Zheltov wordlist typed with Latin `ă ĕ ç` where everything else uses Cyrillic `ӑ ӗ ҫ`; 63.5% of types affected | every cross-corpus string join failed silently, and only for words containing the reduced vowels, so `corpus_freq` missingness was confounded with the contrast under study. `in_mono_corpus` 19.8% → 69.2% | fixed: `normalise_orthography()` + `assert_orthography()` |
+| 13 | monolingual corpus token stream contains word fragments from de-hyphenated line breaks, letter-spaced emphasis and Russian passages | 310 types / 184,979 tokens of spurious open monosyllables with reduced vowels; made `tab:min` unreproducible | `repair_line_breaks()` + `in_wordlist`; see `minimal_word_diagnosis.md` |
+| 14 | `IPA_VOWELS` missing the aligner's symbol for ⟨ы⟩ | 20,259 vowel tokens classified as consonants by anything reading phone labels | fixed; `ALIGNER_IPA_TO_CONFIG` added |
+| 15 | `5-recode/chuvash_phonology.py` maps 8 geminates to their singleton, and `ɕ`, `tʃ`, `ts` are absent from the map entirely | 26,832 of 33,315 long-consonant tokens unrecoverable from the recoded grids; `ALL_CONSONANTS_ARPABET` missing three consonants | documented; use the pre-recode grids |
+| 16 | `PATHS` had no `output_dir`; each analysis defined its own | silent no-op reads when a script used `PATHS$output_dir` | fixed |
+| 17 | Chuvash Voice gender metadata gives `male_masculine` for a 225.7 Hz voice | 193,978 vowels, 69% of the data, mislabelled; gender unusable across corpora | flagged, not fixable here |
+| 18 | `7-extract/contours/vowels/` corpus directories are swapped | nothing downstream (corpus is derived from the filename prefix) but misleading | documented |
+
+## Open, in priority order
+
+1. **Cleaning step 06 discards 45–47% of vowels** by excluding a whole
+   polysyllabic word when any one vowel failed earlier, cascading from step 05.
+   Step 05's fences are computed within vowel × corpus, not within speaker or
+   stress, so the filter is correlated with both the dependent variable and
+   speaker identity. Replacement design in `alignment_confidence.md`.
+2. **Run the re-extraction** (`7-extract/reextract/`). Until then f0 is stylised
+   to 2 semitones and intensity is trustworthy only at the midpoint.
+3. **Gemination, final lengthening, sentence type and the moraic questions**
+   all wait on that run.
+4. Written corpora still do not carry `stress_rule_*`; analyses derive them
+   locally.
+5. `widx`'s 1.25% collision rate still propagates into `phrase_position`.
+6. The `weight` rule's all-open-syllable fallback is still arbitrary.
