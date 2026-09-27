@@ -112,6 +112,8 @@ def load(out):
     D["gemi"] = g("inventory_geminates.csv")
     D["shapes"] = g("phonotactics_syllable_shapes.csv")
     D["spk"] = g("speaker_structure_validation.csv")
+    D["mr"] = g("master_rule_comparison.csv")
+    D["ram"] = g("rule_acoustic_models.csv")
     return D
 
 
@@ -228,6 +230,48 @@ def main():
        "Raw contrast (open) against the same contrast with the edges in the model (filled), for three vowel inventories. Shaded band is the cited JND. The duration effect that appeared to contradict a stressless default is entirely an edge effect.")}
   <p class="cap">Verdict: <strong>default B</strong> — rightmost full vowel,
   else stressless — on three times the sample the filtered estimate rested on.</p>""")
+
+    # ── 3b the AIC ranking, with its caveats ──────────────────────────
+    mr = D["mr"].set_index("rule")
+    named = ["A6", "A5", "A4", "B6", "B5", "B4"]
+    dur_best = min(named, key=lambda r: mr.loc[r, "dAIC_log_duration"])
+    int_best = min(named, key=lambda r: mr.loc[r, "dAIC_int_midpoint"])
+    dur_gap = (sorted(mr.loc[named, "dAIC_log_duration"])[3]
+               - sorted(mr.loc[named, "dAIC_log_duration"])[0])
+    int_gap = (sorted(mr.loc[named, "dAIC_int_midpoint"])[3]
+               - sorted(mr.loc[named, "dAIC_int_midpoint"])[0])
+    S.append(f"""
+  <h2>Duration ranks B first, intensity ranks A first — Dobrovolsky's asymmetry</h2>
+  <p class="sub">Mixed models over the whole dataset, one per rule per
+  measure, with vowel quality, coda, utterance position, speech rate and word
+  frequency controlled and
+  <code>(1|speaker) + (1|file_name) + (1|word_label)</code>.</p>
+  <table>
+    <tr><th>Rule</th><th class="num">Δ AIC, duration</th><th class="num">β duration</th><th class="num">Δ AIC, intensity</th><th class="num">β intensity (dB)</th><th class="num">accuracy</th></tr>
+    {''.join(f'<tr{" class=hi" if r in (dur_best, int_best) else ""}><td>{r}</td><td class="num">{mr.loc[r, "dAIC_log_duration"] - mr.loc[dur_best, "dAIC_log_duration"]:,.0f}</td><td class="num">{mr.loc[r, "estimate_log_duration"]:+.4f}</td><td class="num">{mr.loc[r, "dAIC_int_midpoint"] - mr.loc[int_best, "dAIC_int_midpoint"]:,.0f}</td><td class="num">{mr.loc[r, "estimate_int_midpoint"]:+.3f}</td><td class="num">{mr.loc[r, "detected_accuracy_DESCRIPTIVE"]:.4f}</td></tr>' for r in named)}
+  </table>
+  <p>Duration puts <strong>{dur_best}</strong> first by
+  {mr.loc['A5', 'dAIC_log_duration'] - mr.loc[dur_best, 'dAIC_log_duration']:,.0f}
+  AIC over the best A rule; intensity puts <strong>{int_best}</strong> first by
+  {mr.loc['B6', 'dAIC_int_midpoint'] - mr.loc[int_best, 'dAIC_int_midpoint']:,.0f}
+  over the best B rule. This is the asymmetry Dobrovolsky (1999) reported on 80
+  vowels, reproduced on {int(D['ram'].n_obs.iloc[0]):,}.</p>
+  <div class="note"><strong>Three reasons not to read this table as the
+  answer.</strong> (1) The intensity coefficients are
+  {mr.loc[named, 'estimate_int_midpoint'].min():.2f}–{mr.loc[named, 'estimate_int_midpoint'].max():.2f} dB
+  against a 3 dB JND — six to seven times too small to hear. Statistically
+  overwhelming, perceptually nothing. (2) Overall accuracy does not discriminate at all —
+  all six named rules fall in
+  {mr.loc[named, 'detected_accuracy_DESCRIPTIVE'].min():.4f}–{mr.loc[named, 'detected_accuracy_DESCRIPTIVE'].max():.4f},
+  and it is not independent of the AIC columns anyway. (3) The ranking is
+  dominated by the ~90% of words where all six rules agree.</div>
+  <p class="cap">The <code>final</code> baseline beats every named rule on
+  duration by ΔAIC {mr.loc[dur_best, 'dAIC_log_duration'] - mr.loc['final', 'dAIC_log_duration']:,.0f}
+  and on intensity while carrying a <em>negative</em> coefficient
+  ({mr.loc['final', 'estimate_int_midpoint']:+.2f} dB). Its predictor is
+  &ldquo;word-final syllable&rdquo;, which is the final-lengthening and
+  declination confound itself, so that row measures the edge, not stress. It
+  is excluded from the comparison rather than reported as a winner.</p>""")
 
     # ── 4 final lengthening ───────────────────────────────────────────
     S.append(f"""

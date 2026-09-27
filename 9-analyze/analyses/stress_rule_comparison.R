@@ -1,6 +1,33 @@
 # =============================================================================
 # stress_rule_comparison.R                              rewritten 2026-09-25
 #
+# ⚠ THE Q2 SECTION OF THIS SCRIPT IS SUPERSEDED. Do not quote its
+# initial-vs-non-initial contrast. It compares the initial syllable of an
+# all-reduced polysyllable against the non-initial ones without controlling
+# position, and in a disyllable — most of that sample — "non-initial" *is*
+# the final syllable. output/final_lengthening_models.csv puts the final
+# syllable of an utterance-final word at +69% duration against +4.4% for
+# stress, so the raw contrast is an edge measurement: it reports duration
+# −19.6 ms and f0 +12.4 Hz, both past their JNDs, where the same contrast
+# with the edges in the model is +0.59 ms (t = 0.64) and −2.52 Hz.
+# Use analyses/default_adjudication.R for the A-vs-B question.
+#
+# ⚠ A SECOND, SMALLER CAVEAT on the acoustic model ranking below. CONTROLS
+# carries phrase_position and z_relpos (= widx/wN, where the WORD sits in the
+# utterance) but not where the SYLLABLE sits in the word, nor the conjunction
+# of the two. Since a word-final syllable in an utterance-final word runs
+# +69% (output/final_lengthening_models.csv), any rule whose predictor
+# correlates with word-final position absorbs some of that. It bites hardest
+# on the `final` baseline, whose predictor IS "word-final syllable": `final`
+# beats all six named rules on every intensity measure while carrying a
+# NEGATIVE coefficient, which is declination, not prominence. The `final`
+# baseline is therefore not comparable to the others here, and it cannot be
+# made comparable by adding syl_final to CONTROLS — its predictor would then
+# be collinear with a control. Treat the six named rules' relative ranking as
+# descriptive and the `final` row as uninterpretable.
+#
+# Q1 inventory and the coda-attraction section are unaffected.
+#
 # QUESTION: which candidate stress rule do the Chuvash corpora support?
 #
 # THE KEY RESTRUCTURE. A rule is two independent choices (see

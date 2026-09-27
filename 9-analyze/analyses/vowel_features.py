@@ -351,6 +351,57 @@ def positional(v, out):
     print(d.to_string())
 
 
+# ── 7. Words whose vowel sits nearer another phoneme ──────────────────
+def lexical_outliers(v, out, min_n=30):
+    """Kate's 'should this word be written with a different character?' test.
+
+    For every word x syllable cell with enough tokens, compute the cell's mean
+    in F1z/F2z/F3z and its Mahalanobis distance to every phoneme's
+    distribution.  A cell whose own phoneme is not the nearest is a candidate
+    for a different vowel than the orthography assigns.
+
+    Three kinds of hit come out, and only the third is interesting: Russian
+    names and loans, the acoustically merged pairs (which are merged
+    everywhere, not just in these words), and genuine lexical oddities.
+    """
+    np_ = v[v.non_palatal == True].dropna(subset=["F1z", "F2z", "F3z"])
+    F = ["F1z", "F2z", "F3z"]
+    params = {}
+    for vw, s in np_.groupby("vowel_label"):
+        if len(s) < 200:
+            continue
+        X = s[F].values
+        params[vw] = (X.mean(0), np.linalg.pinv(np.cov(X.T)))
+    cells = (np_.groupby(["word_label", "sidx", "vowel_label"])[F]
+                .agg(["mean", "size"]))
+    n = cells[("F1z", "size")]
+    cells = cells[n >= min_n]
+    rows = []
+    for (w, sidx, vw), r in cells.iterrows():
+        if vw not in params:
+            continue
+        x = np.array([r[(f, "mean")] for f in F])
+        d = {}
+        for p, (mu, inv) in params.items():
+            dd = x - mu
+            d[p] = float(np.sqrt(dd @ inv @ dd))
+        nearest = min(d, key=d.get)
+        if nearest != vw:
+            rows.append(dict(word=w, sidx=int(sidx), written=vw,
+                             nearest=nearest, n=int(r[("F1z", "size")]),
+                             d_written=round(d[vw], 3),
+                             d_nearest=round(d[nearest], 3),
+                             margin=round(d[vw] - d[nearest], 3)))
+    o = pd.DataFrame(rows).sort_values("margin", ascending=False)
+    o.to_csv(os.path.join(out, "lexical_vowel_outliers.csv"), index=False)
+    print(f"\n== lexical outliers: {len(o)} of {len(cells)} word x syllable "
+          f"cells (n>={min_n}) sit nearer another phoneme ==")
+    if len(o):
+        pair = (o.written + "→" + o.nearest).value_counts().head(6)
+        print("commonest reassignments:", pair.to_dict())
+        print(o.head(12).to_string(index=False))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo", required=True)
@@ -364,13 +415,14 @@ def main():
           f"{v.speaker.nunique()} speakers")
     todo = (a.only.split(",") if a.only else
             ["rounding", "clustering", "separability", "context", "shift",
-             "positional"])
+             "positional", "outliers"])
     if "rounding" in todo:     rounding(v, out)
     if "clustering" in todo:   clustering(v, out)
     if "separability" in todo: separability(v, out)
     if "context" in todo:      contrast_recovery(v, out)
     if "shift" in todo:        shift(v, out)
     if "positional" in todo:   positional(v, out)
+    if "outliers" in todo:     lexical_outliers(v, out)
     print("\nvowel_features.py complete")
 
 
