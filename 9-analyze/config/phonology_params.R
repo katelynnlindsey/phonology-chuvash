@@ -209,6 +209,20 @@ VOWEL_BACKNESS <- list(
   back    = c("u", "ɵ", "ʉ")
 )
 
+# Rounding follows Krueger (1961) and is LEFT AS HE HAS IT for the back
+# series, deliberately. The corpus cannot adjudicate there:
+# analyses/vowel_features.py tests rounding as a within-series F3 difference
+# against an unrounded anchor, and that test fails its own positive control on
+# the back row — /u/, which is rounded in every description of Chuvash, shows
+# dF3z = +0.04 against /a/. F3 lowering is a *front*-rounding cue; on back
+# vowels the rounding gesture lands in F2, where backness also lands, so the
+# two cannot be separated with these measurements.
+#
+# The front row IS confirmed by that test: /y/ −0.57 and /ø/ −0.40 against
+# /i/, with /e/ at −0.03. Do not drop "ɵ" from this vector on the strength of
+# its positive dF3z — a positive value there means the test has no power, not
+# that the vowel is unrounded. See output/rounding_contrasts.csv, column
+# `test_has_power`.
 VOWEL_ROUND  <- c("y", "ø", "u", "ɵ")
 VOWEL_UNROUND <- setdiff(TARGET_VOWELS_IPA, VOWEL_ROUND)
 
