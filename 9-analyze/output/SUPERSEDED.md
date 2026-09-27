@@ -98,3 +98,27 @@ non-alternating gives final vowel β −0.0158 (t −1.17), rhyme −0.0053 (t �
 final consonant +0.0257 (t +1.78). The morphological confound documented in
 `minimal_word_diagnosis.md` still applies and is still the reason this corpus
 cannot settle the question.
+
+## 2026-09-27 (later) — "word-final geminate" was the wrong description
+
+`gemination_mora.R` block 3 joins the consonant at `pidx - 1` to the word-final
+vowel, so the measured unit is the **final CV sequence** and a long consonant in
+it is **intervocalic** (пул-ли), not word-final. Two things were mislabelled:
+
+- The unit was called a **rhyme**. It is not: in пул.ли the consonant belongs to
+  the preceding syllable. `median_rhyme` is now `median_final_CV`.
+- `c_long` was described as a **word-final geminate**. It is the geminate of
+  пулли, which is prevocalic.
+
+The numbers are unchanged and the comparison is a good one — it is exactly the
+пулӑ ~ пулли contrast — but it must be described as the final CV sequence:
+C+full 195.7 ms, Cː+full 233.5, C+reduced 181.8, Cː+reduced 217.7.
+
+**The corpus cannot address word-final geminates.** Chuvash Voice has 61
+word-final long-consonant tokens in 22 word types, almost all Russian loans
+(класс, пресс, стресс, Кирилл, кристалл) plus onomatopoeia and line-break
+truncations. The orthography agrees: word-final geminates are 1.2% of
+monolingual types and 0.050% of tokens, against 85.3% intervocalic. Any claim
+about the phonetics of word-final geminates in Chuvash is therefore out of
+reach here, and the earlier framing of the 2×2 as a word-final weight result
+should not be reused.

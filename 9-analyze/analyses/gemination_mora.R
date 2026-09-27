@@ -243,10 +243,28 @@ if (length(mora_rows))
   readr::write_csv(rbindlist(mora_rows, fill = TRUE),
                    file.path(OUT, "mora_evidence.csv"))
 
-# ══ 3. Word-final rhyme shapes ════════════════════════════════════════
-# Kate's question: does a word-final geminate followed by a reduced vowel
-# differ phonetically from a singleton followed by a full vowel?  The four
-# cells of (long / short consonant) x (reduced / full final vowel).
+# ══ 3. The word-final CV sequence ════════════════════════════════════════
+# This is the пулӑ ~ пулли comparison: the last consonant-plus-vowel of the
+# word, by whether that consonant is long and whether the vowel is full or
+# reduced.  The four cells of (long / short C) x (reduced / full final V).
+#
+# NAMING, CORRECTED 2026-09-27.  Earlier versions of this block, and the
+# summaries built from it, called the measured unit a "word-final rhyme" and
+# c_long a "word-final geminate".  Both are wrong and the error mattered.
+# The join below takes the consonant at pidx - 1, i.e. the one BEFORE the
+# final vowel, so the unit is the final CV sequence and a long consonant here
+# is INTERVOCALIC (пул-ли), not word-final.  A CV sequence is not a rhyme --
+# in пул.ли the consonant belongs to the preceding syllable.
+#
+# The corpus cannot speak to word-final geminates at all: Chuvash Voice has
+# 61 word-final long-consonant tokens in 22 word types, and they are almost
+# all Russian loans (класс, пресс, стресс, Кирилл, кристалл) plus a few
+# onomatopoeia and line-break truncations.  That agrees with the orthographic
+# distribution -- word-final geminates are 1.2% of monolingual types and
+# 0.05% of tokens -- so the generalisation is that a Chuvash geminate is
+# licensed prevocalically (96.7% of types V__V or C__V), and пулӑ ~ пулли is
+# what a /CVCː/ stem looks like when nothing follows it.  See
+# output/geminate_position.csv and output/geminating_stems.csv.
 
 FULL <- c("a", "e", "i", "u", "y")
 RED  <- c("ø", "ɵ", "ʉ")
@@ -265,16 +283,16 @@ sh[, cell := paste0(ifelse(c_long == 1L, "Cː", "C"), "+", v_class)]
 
 shp <- sh[, .(n = .N, types = uniqueN(word_label),
               median_C = median(c_dur), median_V = median(v_dur),
-              median_rhyme = median(c_dur + v_dur),
+              median_final_CV = median(c_dur + v_dur),
               mean_C = round(mean(c_dur), 1), mean_V = round(mean(v_dur), 1)),
           by = .(cell, c_long, v_class)][order(-n)]
 readr::write_csv(shp, file.path(OUT, "gemination_final.csv"))
-cat("\ngemination_final.csv — word-final C+V shapes\n")
+cat("\ngemination_final.csv — word-final C+V sequences\n")
 print(shp)
 
 # The raw cell medians are not a controlled comparison: the four cells hold
-# different consonants and different vowels, so "Cː+reduced has the same
-# rhyme as C+full" could be an accident of which segments happen to occur.
+# different consonants and different vowels, so a level result across cells
+# could be an accident of which segments happen to occur.
 # The model below puts the consonant's identity, the utterance edge and the
 # pause in, and estimates the four cells as a 2x2 interaction.  The moraic
 # prediction is that Cː+reduced and C+full come out level while Cː+full is
