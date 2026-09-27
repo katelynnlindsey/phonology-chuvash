@@ -202,37 +202,137 @@ add("NChuvashVoiceVoices", fmt_int(dplyr::n_distinct(ss$voice_label)),
 
 # ---- 11. Vowel space, coda and sonority ------------------------------------
 
+# Rounding. rounding_contrasts.csv was reshaped on 2026-09-27: it is now one
+# row per vowel with `series`, `anchor`, `dF3z` and `test_has_power`, and the
+# macro that asserted the reduced back vowel is unrounded has been REMOVED.
+# The F3 test fails its positive control on the back series (/u/ vs /a/ shows
+# no F3 drop although /u/ is rounded), so no back-series rounding macro should
+# exist. Only the front-series contrasts, and the control itself, are exported.
 rc <- read_csv(file.path(OUT_DIR, "rounding_contrasts.csv"), show_col_types = FALSE)
-r_ao <- rc[rc$pair == "ɵ vs a" & rc$dv == "F3z", ]
-if (nrow(r_ao)) add("SchwaBarFThreeZ", sprintf("%.3f", r_ao$difference[1]),
-                    "F3 of the reduced back vowel minus /a/: no rounding")
-vs <- read_csv(file.path(OUT_DIR, "vowel_separability.csv"), show_col_types = FALSE)
-pick <- function(a, b) {
-  r <- vs[(vs$v1 == a & vs$v2 == b) | (vs$v1 == b & vs$v2 == a), ]
-  if (nrow(r)) sprintf("%.3f", r$balanced_accuracy[1]) else "NA"
+rpick <- function(vw) {
+  r <- rc[rc$vowel == vw, ]
+  if (nrow(r)) sprintf("%.3f", r$dF3z[1]) else "NA"
 }
-add("SepYBarSchwaBar", pick("ʉ", "ɵ"), "pairwise separability, chance = 0.500")
-add("SepIY",          pick("i", "y"),  "pairwise separability, chance = 0.500")
+add("RoundYFThreeZ",    rpick("y"),
+    "F3 of /y/ minus /i/ (z): front rounded")
+add("RoundOeFThreeZ",   rpick("ø"),
+    "F3 of the front reduced vowel minus /i/ (z): front rounded")
+add("RoundEFThreeZ",    rpick("e"),
+    "F3 of /e/ minus /i/ (z): front unrounded")
+add("RoundControlUFThreeZ", rpick("u"),
+    "F3 of /u/ minus /a/ (z): the positive control, which the back series fails")
 
-cs <- read_csv(file.path(OUT_DIR, "coda_sonority_models.csv"), show_col_types = FALSE)
-gr <- function(pr, ou) {
-  r <- cs[cs$prominence == pr & cs$outcome == ou, ]
-  if (nrow(r)) sprintf("%.2f", r$odds_ratio[1]) else "NA"
+sep <- read_csv(file.path(OUT_DIR, "separability_classifier_comparison.csv"),
+                show_col_types = FALSE)
+spick <- function(lab, col) {
+  r <- sep[sep$pair == lab, ]
+  if (nrow(r)) sprintf("%.3f", r[[col]][1]) else "NA"
 }
-add("OddsCodaLongest",       gr("duration, intrinsic removed", "coda"),
-    "odds of a coda on the longest syllable, intrinsic duration removed")
-add("OddsLowVowelLongest",   gr("duration, intrinsic removed", "/a/"),
-    "odds of /a/ on the longest syllable, intrinsic duration removed")
-add("OddsLowVowelLongestRaw", gr("raw duration", "/a/"),
+add("SepYBarSchwaBarQda",      spick("ʉ vs ɵ", "qda"),
+    "pairwise separability, quadratic discriminant, chance = 0.500")
+add("SepYBarSchwaBarBoosting", spick("ʉ vs ɵ", "boosting"),
+    "pairwise separability, gradient boosting, same sample")
+add("SepIYQda",                spick("i vs y", "qda"),
+    "pairwise separability, quadratic discriminant, chance = 0.500")
+add("SepIYBoosting",           spick("i vs y", "boosting"),
+    "pairwise separability, gradient boosting, same sample")
+
+# coda_sonority_models.csv was reshaped on 2026-09-27: the keys are now
+# `predictor` (has_coda / is_a / is_nonhigh), `prominence` (prom_duration /
+# prom_dur_adj / prom_int_midpoint / prom_int_adj / rule_*) and `sample`
+# (all / strict).
+cs <- read_csv(file.path(OUT_DIR, "coda_sonority_models.csv"), show_col_types = FALSE)
+gr <- function(pred, prom, smp = "all") {
+  r <- cs[cs$predictor == pred & cs$prominence == prom & cs$sample == smp, ]
+  if (nrow(r)) sprintf("%.3f", r$odds_ratio[1]) else "NA"
+}
+add("OddsCodaLongest",        gr("has_coda", "prom_dur_adj"),
+    "odds of a coda on the most-prominent syllable, intrinsic duration removed")
+add("OddsCodaLongestStrict",  gr("has_coda", "prom_dur_adj", "strict"),
+    "the same on the strict subset")
+add("OddsCodaRuleBFive",      gr("has_coda", "rule_B5"),
+    "odds of a coda on the syllable rule B5 stresses")
+add("OddsLowVowelLongest",    gr("is_a", "prom_dur_adj"),
+    "odds of /a/ on the most-prominent syllable, intrinsic duration removed")
+add("OddsLowVowelLongestRaw", gr("is_a", "prom_duration"),
     "the same before the intrinsic control")
-add("OddsLowVowelLoudest",   gr("intensity, intrinsic removed", "/a/"),
+add("OddsLowVowelLoudest",    gr("is_a", "prom_int_adj"),
     "odds of /a/ on the loudest syllable, intrinsic intensity removed")
+add("OddsNonHighLongest",     gr("is_nonhigh", "prom_dur_adj"),
+    "odds of a non-high vowel on the most-prominent syllable, intrinsic removed")
+
+# ---- 11b. Edges, weight and sentence type (added 2026-09-27) ---------------
+
+fl <- read_csv(file.path(OUT_DIR, "final_lengthening_models.csv"),
+               show_col_types = FALSE)
+flp <- function(tm) {
+  r <- fl[fl$term == tm, ]
+  if (nrow(r)) r$estimate[1] else NA_real_
+}
+add("PctLongerStressed", fmt_pct(100 * (exp(flp("stressed")) - 1), 1),
+    "duration change for a stressed vowel, vowel quality held constant")
+add("PctLongerUttFinal",
+    fmt_pct(100 * (exp(flp("syl_final") + flp("word_utt_final") +
+                       flp("syl_final:word_utt_final")) - 1), 1),
+    "duration change for the final syllable of an utterance-final word")
+
+da <- read_csv(file.path(OUT_DIR, "default_adjudication.csv"),
+               show_col_types = FALSE)
+dap <- function(cue, col, inv = "5") {
+  r <- da[da$cue == cue & as.character(da$inventory) == inv, ]
+  if (nrow(r)) sprintf("%.2f", r[[col]][1]) else "NA"
+}
+# LaTeX forbids digits in command names, so f0 becomes FZero.
+CUE_MACRO <- c(duration = "Duration", intensity = "Intensity", f0 = "FZero")
+for (cu in c("duration", "intensity", "f0")) {
+  nm <- CUE_MACRO[[cu]]
+  add(paste0("AdjInitial", nm), dap(cu, "adj_diff"),
+      "initial minus non-initial in all-reduced polysyllables, edges controlled")
+  add(paste0("RawInitial", nm), dap(cu, "raw_diff"),
+      "the same contrast without the edge controls")
+}
+
+gm <- read_csv(file.path(OUT_DIR, "gemination_models.csv"), show_col_types = FALSE)
+gmk <- gm[gm$measurable, ]
+add("GeminateRatioLow",  sprintf("%.2f", min(gmk$lmm_ratio)),
+    "smallest long-to-singleton duration ratio across measurable places")
+add("GeminateRatioHigh", sprintf("%.2f", max(gmk$lmm_ratio)),
+    "largest long-to-singleton duration ratio")
+add("GeminateRatioMedian", sprintf("%.2f", stats::median(gmk$lmm_ratio)),
+    "median long-to-singleton duration ratio")
+add("NGeminateTokens", fmt_int(sum(gmk$n_long)),
+    "long-consonant tokens entering the length comparison")
+
+gw <- read_csv(file.path(OUT_DIR, "gemination_weight_model.csv"),
+               show_col_types = FALSE)
+gwp <- function(cell) {
+  r <- gw[gw$kind == "adjusted_cell" & gw$term == cell, ]
+  if (nrow(r)) fmt_pct(100 * (exp(r$estimate[1]) - 1), 1) else "NA"
+}
+add("WeightLongCFullV",    gwp("Cː+full"),
+    "adjusted final-rhyme duration vs short C + full vowel")
+add("WeightShortCReducedV", gwp("C+reduced"), "the same")
+add("WeightLongCReducedV",  gwp("Cː+reduced"), "the same")
+
+st <- read_csv(file.path(OUT_DIR, "sentence_type_subtypes.csv"),
+               show_col_types = FALSE)
+stp <- function(g, col) {
+  r <- st[st$group == g, ]
+  if (nrow(r)) sprintf("%.2f", r[[col]][1]) else "NA"
+}
+add("EndFZeroCliticQuestion", stp("question_clitic_final", "end_st"),
+    "end-of-utterance f0 in semitones re speaker median, clitic-marked question")
+add("EndFZeroWhQuestion",     stp("question_content", "end_st"), "wh-question")
+add("EndFZeroStatement",      stp("statement_other", "end_st"),  "statement")
 
 pos <- read_csv(file.path(OUT_DIR, "positional_restrictions.csv"), show_col_types = FALSE)
+# positional_restrictions.csv is now one row per vowel with a
+# pct_polysyll_in_syl1 column, computed in analyses/vowel_features.py.
+vcol <- names(pos)[1]
 pct_initial <- function(v) {
-  p <- pos[pos$vowel_label == v & pos$position != "only", ]
+  p <- pos[pos[[vcol]] == v, ]
   if (!nrow(p)) return("NA")
-  fmt_pct(100 * sum(p$n[p$position == "initial"]) / sum(p$n), 1)
+  fmt_pct(p$pct_polysyll_in_syl1[1], 1)
 }
 for (p in list(c("ʉ","YBar"), c("u","U"), c("y","YRound"), c("e","E"))) {
   add(paste0("PctInitial", p[2]), pct_initial(p[1]),

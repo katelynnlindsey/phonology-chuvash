@@ -1,42 +1,42 @@
 % results_macros.tex -- GENERATED, do not edit by hand.
-% Written by 9-analyze/analyses/make_macros.R on 2026-09-26 19:01:40 EDT.
+% Written by 9-analyze/analyses/make_macros.R on 2026-09-27 05:21:00 EDT.
 % Every value is computed from data/leveled/ or read from output/*.csv.
 % Regenerate after any pipeline run:  source('analyses/make_macros.R')
 
 % ACTIVE_RULE at generation time: A6
 
-\newcommand{\NvowelsAnalysed}{280,955}   % vowel tokens after cleaning
-\newcommand{\NwordTokens}{141,097}   % word tokens, spoken
-\newcommand{\NwordTypes}{15,690}   % word types, spoken
-\newcommand{\Nrecordings}{41,337}   % recordings
+\newcommand{\NvowelsAnalysed}{574,344}   % vowel tokens after cleaning
+\newcommand{\NwordTokens}{303,139}   % word tokens, spoken
+\newcommand{\NwordTypes}{31,103}   % word types, spoken
+\newcommand{\Nrecordings}{46,336}   % recordings
 \newcommand{\NzheltovTypes}{18,984}   % Zheltov word types after cleaning
 \newcommand{\NmonoTypes}{430,008}   % monolingual word types after cleaning
-\newcommand{\NvowelsChuvashVoice}{211,798}   % vowels, Chuvash Voice
-\newcommand{\NvowelsCommonVoice}{69,157}   % vowels, Common Voice
+\newcommand{\NvowelsChuvashVoice}{440,768}   % vowels, Chuvash Voice
+\newcommand{\NvowelsCommonVoice}{133,576}   % vowels, Common Voice
 \newcommand{\NvowelsExtracted}{615,634}   % vowels entering cleaning (after the interval join)
-\newcommand{\PctVowelsKept}{45.6\%}   % share surviving cleaning
+\newcommand{\PctVowelsKept}{93.3\%}   % share surviving cleaning
 \newcommand{\Nspeakers}{105}   % talkers with a speaker id
-\newcommand{\PctVowelsWithSpeaker}{93.7\%}   % vowels carrying a speaker id
-\newcommand{\PctVowelsTopSpeaker}{69.0\%}   % share of all vowels from the single largest talker
+\newcommand{\PctVowelsWithSpeaker}{45.8\%}   % vowels carrying a speaker id
+\newcommand{\PctVowelsTopSpeaker}{33.8\%}   % share of all vowels from the single largest talker
 \newcommand{\NspeakersHalfData}{5}   % talkers needed to cover 90% of speaker-labelled vowels
 \newcommand{\MedianVowelsPerSpeaker}{51}   % median vowels per talker
 \newcommand{\BestRuleIntensity}{A6}   % rule with lowest AIC on midpoint intensity
-\newcommand{\BestRuleDuration}{B5}   % rule with lowest AIC on log duration
-\newcommand{\IntensityEffectBest}{0.45~dB}   % stress effect on midpoint intensity, best-fitting rule
-\newcommand{\IntensityEffectBestSE}{0.017}
+\newcommand{\BestRuleDuration}{final}   % rule with lowest AIC on log duration
+\newcommand{\IntensityEffectBest}{0.50~dB}   % stress effect on midpoint intensity, best-fitting rule
+\newcommand{\IntensityEffectBestSE}{0.015}
 \newcommand{\DurationEffectBest}{16.1\%}   % stress effect on duration, best-fitting rule, as a percentage
-\newcommand{\DurationEffectBestLog}{0.149}
+\newcommand{\DurationEffectBestLog}{0.150}
 \newcommand{\ArguedRule}{B5}   % the rule the paper argues for
 \newcommand{\ArguedRuleIntensity}{0.40~dB}
-\newcommand{\ArguedRuleDuration}{16.1\%}
-\newcommand{\ArguedRuleDurationLog}{0.149}
-\newcommand{\DeltaAICdurationArguedVsA}{909}   % AIC penalty for A5 over B5 on duration
-\newcommand{\NmodelRows}{263,135}   % rows entering the acoustic models
-\newcommand{\NallReducedWords}{7,411}   % polysyllabic all-reduced word tokens, inventory 5
-\newcommand{\NallReducedVowels}{15,631}   % their vowel tokens
-\newcommand{\AllReducedDeltaIntensity}{0.28~dB}   % initial minus non-initial
-\newcommand{\AllReducedDeltaDuration}{-1.06~ms}   % initial minus non-initial
-\newcommand{\AllReducedDeltaFzero}{0.66~Hz}   % initial minus non-initial
+\newcommand{\ArguedRuleDuration}{6.8\%}
+\newcommand{\ArguedRuleDurationLog}{0.066}
+\newcommand{\DeltaAICdurationArguedVsA}{961}   % AIC penalty for A5 over B5 on duration
+\newcommand{\NmodelRows}{499,357}   % rows entering the acoustic models
+\newcommand{\NallReducedWords}{12,212}   % polysyllabic all-reduced word tokens, inventory 5
+\newcommand{\NallReducedVowels}{25,813}   % their vowel tokens
+\newcommand{\AllReducedDeltaIntensity}{1.36~dB}   % initial minus non-initial
+\newcommand{\AllReducedDeltaDuration}{-15.74~ms}   % initial minus non-initial
+\newcommand{\AllReducedDeltaFzero}{9.29~Hz}   % initial minus non-initial
 \newcommand{\OpenMonoOslash}{0}
 \newcommand{\TotalMonoOslash}{90}
 \newcommand{\PctOpenMonoOslash}{0.0\%}
@@ -50,9 +50,9 @@
 \newcommand{\TotalMonoYfront}{52}
 \newcommand{\PctOpenMonoYfront}{15.4\%}
 \newcommand{\PctIntensityStepsUndefined}{71.0\%}   % share of the 20-step intensity cells that are Praat undefined
-\newcommand{\PctVowelsTwoValidSteps}{41.9\%}   % vowels with only two valid intensity readings
-\newcommand{\CorrTotalIntensityDuration}{0.909}   % correlation of total_intensity with duration
-\newcommand{\CorrMidpointDuration}{-0.063}   % correlation of int_midpoint with duration
+\newcommand{\PctVowelsTwoValidSteps}{39.5\%}   % vowels with only two valid intensity readings
+\newcommand{\CorrTotalIntensityDuration}{0.827}   % correlation of total_intensity with duration
+\newcommand{\CorrMidpointDuration}{-0.245}   % correlation of int_midpoint with duration
 \newcommand{\PctDivergeZheltov}{25.6\%}   % word types parsed differently by the documented onset-maximisation rule
 \newcommand{\PctClusterOneOrTwoZheltov}{96.7\%}   % medial clusters of one or two consonants
 \newcommand{\PctDivergeMono}{26.3\%}   % word types parsed differently by the documented onset-maximisation rule
@@ -71,21 +71,46 @@
 \newcommand{\OpenMonoCorpusA}{4.1\%}   % same, corpus restricted to attested types
 \newcommand{\OpenMonoWordlistE}{5.7\%}   % open-syllable share of monosyllables, wordlist
 \newcommand{\OpenMonoCorpusE}{6.0\%}   % same, corpus restricted to attested types
-\newcommand{\NGeminateTokens}{33,315}   % long-consonant tokens in the pre-recode TextGrids
+\newcommand{\NGeminateTokens}{22,580}   % long-consonant tokens entering the length comparison
 \newcommand{\NGeminateTypes}{14}   % distinct long consonants attested
 \newcommand{\PctCVorCVCZheltov}{90.5\%}   % syllables that are CV or CVC
 \newcommand{\PctCVorCVCMono}{90.8\%}   % syllables that are CV or CVC
-\newcommand{\PctCVorCVCSpoken}{92.5\%}   % syllables that are CV or CVC
+\newcommand{\PctCVorCVCSpoken}{92.4\%}   % syllables that are CV or CVC
 \newcommand{\PctChuvashVoiceOneSpeaker}{93.4\%}   % Chuvash Voice recordings assigned to the dominant voice
 \newcommand{\NChuvashVoiceVoices}{11}   % acoustic voice clusters in Chuvash Voice
-\newcommand{\SchwaBarFThreeZ}{0.013}   % F3 of the reduced back vowel minus /a/: no rounding
-\newcommand{\SepYBarSchwaBar}{0.527}   % pairwise separability, chance = 0.500
-\newcommand{\SepIY}{0.518}   % pairwise separability, chance = 0.500
-\newcommand{\OddsCodaLongest}{0.78}   % odds of a coda on the longest syllable, intrinsic duration removed
-\newcommand{\OddsLowVowelLongest}{1.48}   % odds of /a/ on the longest syllable, intrinsic duration removed
-\newcommand{\OddsLowVowelLongestRaw}{3.17}   % the same before the intrinsic control
-\newcommand{\OddsLowVowelLoudest}{1.19}   % odds of /a/ on the loudest syllable, intrinsic intensity removed
-\newcommand{\PctInitialYBar}{96.5\%}   % share of this vowel's polysyllabic tokens standing in syllable 1
-\newcommand{\PctInitialU}{91.2\%}   % share of this vowel's polysyllabic tokens standing in syllable 1
-\newcommand{\PctInitialYRound}{86.0\%}   % share of this vowel's polysyllabic tokens standing in syllable 1
-\newcommand{\PctInitialE}{16.3\%}   % share of this vowel's polysyllabic tokens standing in syllable 1
+\newcommand{\RoundYFThreeZ}{-0.567}   % F3 of /y/ minus /i/ (z): front rounded
+\newcommand{\RoundOeFThreeZ}{-0.396}   % F3 of the front reduced vowel minus /i/ (z): front rounded
+\newcommand{\RoundEFThreeZ}{-0.030}   % F3 of /e/ minus /i/ (z): front unrounded
+\newcommand{\RoundControlUFThreeZ}{0.043}   % F3 of /u/ minus /a/ (z): the positive control, which the back series fails
+\newcommand{\SepYBarSchwaBarQda}{0.518}   % pairwise separability, quadratic discriminant, chance = 0.500
+\newcommand{\SepYBarSchwaBarBoosting}{0.626}   % pairwise separability, gradient boosting, same sample
+\newcommand{\SepIYQda}{0.503}   % pairwise separability, quadratic discriminant, chance = 0.500
+\newcommand{\SepIYBoosting}{0.579}   % pairwise separability, gradient boosting, same sample
+\newcommand{\OddsCodaLongest}{0.653}   % odds of a coda on the most-prominent syllable, intrinsic duration removed
+\newcommand{\OddsCodaLongestStrict}{0.757}   % the same on the strict subset
+\newcommand{\OddsCodaRuleBFive}{0.932}   % odds of a coda on the syllable rule B5 stresses
+\newcommand{\OddsLowVowelLongest}{1.348}   % odds of /a/ on the most-prominent syllable, intrinsic duration removed
+\newcommand{\OddsLowVowelLongestRaw}{2.071}   % the same before the intrinsic control
+\newcommand{\OddsLowVowelLoudest}{1.119}   % odds of /a/ on the loudest syllable, intrinsic intensity removed
+\newcommand{\OddsNonHighLongest}{1.166}   % odds of a non-high vowel on the most-prominent syllable, intrinsic removed
+\newcommand{\PctLongerStressed}{4.4\%}   % duration change for a stressed vowel, vowel quality held constant
+\newcommand{\PctLongerUttFinal}{69.0\%}   % duration change for the final syllable of an utterance-final word
+\newcommand{\AdjInitialDuration}{0.59}   % initial minus non-initial in all-reduced polysyllables, edges controlled
+\newcommand{\RawInitialDuration}{-19.56}   % the same contrast without the edge controls
+\newcommand{\AdjInitialIntensity}{-0.20}   % initial minus non-initial in all-reduced polysyllables, edges controlled
+\newcommand{\RawInitialIntensity}{1.84}   % the same contrast without the edge controls
+\newcommand{\AdjInitialFZero}{-2.52}   % initial minus non-initial in all-reduced polysyllables, edges controlled
+\newcommand{\RawInitialFZero}{12.41}   % the same contrast without the edge controls
+\newcommand{\GeminateRatioLow}{1.11}   % smallest long-to-singleton duration ratio across measurable places
+\newcommand{\GeminateRatioHigh}{1.71}   % largest long-to-singleton duration ratio
+\newcommand{\GeminateRatioMedian}{1.32}   % median long-to-singleton duration ratio
+\newcommand{\WeightLongCFullV}{19.4\%}   % adjusted final-rhyme duration vs short C + full vowel
+\newcommand{\WeightShortCReducedV}{-12.1\%}   % the same
+\newcommand{\WeightLongCReducedV}{4.6\%}   % the same
+\newcommand{\EndFZeroCliticQuestion}{2.70}   % end-of-utterance f0 in semitones re speaker median, clitic-marked question
+\newcommand{\EndFZeroWhQuestion}{-3.38}   % wh-question
+\newcommand{\EndFZeroStatement}{-4.28}   % statement
+\newcommand{\PctInitialYBar}{96.2\%}   % share of this vowel's polysyllabic tokens standing in syllable 1
+\newcommand{\PctInitialU}{89.6\%}   % share of this vowel's polysyllabic tokens standing in syllable 1
+\newcommand{\PctInitialYRound}{80.9\%}   % share of this vowel's polysyllabic tokens standing in syllable 1
+\newcommand{\PctInitialE}{12.3\%}   % share of this vowel's polysyllabic tokens standing in syllable 1
