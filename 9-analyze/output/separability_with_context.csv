@@ -1,5 +1,9 @@
-features,all_eight,i_vs_y,ybar_vs_schwabar
-formants only,0.5430412708674064,0.6764844447035008,0.6873918921094948
-+ duration,0.5537524004027807,0.6754849316930303,0.702899796936282
-+ neighbouring segments,0.753206514042007,0.8610268759470123,0.9403702113726136
-+ word harmony class,0.7889591354279726,0.8907126193504412,0.9426353869207186
+features,cv,all eight,/i/ vs /y/,/ʉ/ vs /ɵ/,n
+formants only (F1 F2 F3),random,0.479,0.603,0.596,40000
+formants only (F1 F2 F3),grouped_by_word,0.469,0.606,0.588,40000
++ duration,random,0.497,0.601,0.622,40000
++ duration,grouped_by_word,0.491,0.611,0.613,40000
++ neighbouring segments,random,0.673,0.71,0.887,40000
++ neighbouring segments,grouped_by_word,0.643,0.713,0.833,40000
++ word harmony class,random,0.712,0.78,0.887,40000
++ word harmony class,grouped_by_word,0.675,0.757,0.833,40000
