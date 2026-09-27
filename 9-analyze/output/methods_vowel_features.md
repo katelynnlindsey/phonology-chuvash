@@ -9,6 +9,8 @@ described them as "at chance". Those were quadratic-discriminant accuracies,
 which assume each vowel is a Gaussian ellipsoid. On the **same samples and the
 same three formants**, a gradient-boosting classifier does considerably better:
 
+*From `separability_classifier_comparison.csv`: 20,000-token subsets per pair.*
+
 | pair | QDA | gradient boosting |
 |---|---|---|
 | /i/ vs /y/ | 0.518 | **0.672** |
@@ -80,11 +82,14 @@ The midpoint formant space resolves four to six categories, not eight. But there
 are phonemic minimal pairs for eight qualities, so the question is where the
 contrast lives rather than whether it exists.
 
-Balanced accuracy of a gradient-boosting classifier, non-palatal contexts:
+Balanced accuracy of a gradient-boosting classifier, non-palatal contexts, from
+`separability_with_context.csv` (40,000-token samples; the pairwise columns are
+not the same runs as the classifier comparison above, so the two tables' shared
+cells differ in the third decimal):
 
 | features | all eight | /i/ vs /y/ | /ʉ/ vs /ɵ/ |
 |---|---|---|---|
-| formants only (F1 F2 F3) | 0.543 | 0.672 | 0.690 |
+| formants only (F1 F2 F3) | 0.543 | 0.676 | 0.687 |
 | + duration | 0.554 | 0.675 | 0.703 |
 | + neighbouring segments | **0.753** | **0.861** | **0.940** |
 | + word harmony class | 0.789 | 0.891 | 0.943 |
@@ -93,7 +98,7 @@ Chance is 0.125 for the eight-way problem and 0.500 for a pair.
 
 Formants at the midpoint give 0.543. **The entire improvement comes from
 phonological context, not from anything in the vowel itself**; duration adds
-almost nothing. The two crowded pairs go from about 0.68 to 0.86 and 0.94.
+almost nothing. The two crowded pairs go from 0.676 and 0.687 to 0.861 and 0.940.
 
 This is what a language with vowel harmony and pervasive consonant palatalisation
 should look like: the vowel's identity is partly distributed onto its neighbours.
