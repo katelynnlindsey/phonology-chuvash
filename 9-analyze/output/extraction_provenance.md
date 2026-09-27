@@ -17,8 +17,11 @@ Sampling 500 recordings per corpus:
 | Common Voice | 4,478 | 45 (1.00%) — `OW` 1.00% |
 
 `SIL` is silence. `OW` is the loan vowel /o/, which `VOWEL_CATEGORY_RULES`
-classifies as `L` and excludes by design. This reproduces the 15.50% / 1.23%
-asymmetry exactly — Chuvash Voice utterances are long and contain labelled
+classifies as `L` and excludes by design. These sampled rates — 16.05% and 1.00% — are close to, but not the same
+statistic as, the 15.50% / 1.23% unmatched-join rates in the 2026-09-25 audit:
+those were computed over every row of the joined table, these over a 500-file
+sample of the raw FAVE output. They agree in direction and magnitude, which is
+what identifies the cause — Chuvash Voice utterances are long and contain labelled
 pauses, Common Voice clips do not. And the arithmetic closes: 703,582 raw point
 rows − 615,634 target vowels = 87,948, which is the unmatched count to the row.
 Cleaning step 01 ("target vowels only") would have dropped every one of them.
