@@ -129,8 +129,11 @@ Balanced accuracy of a gradient-boosting classifier, non-palatal contexts, from
 not the same runs as the classifier comparison above, so the two tables' shared
 cells differ in the third decimal). Folds are **grouped by word type**, so the
 context features cannot succeed by memorising particular words; the
-random-fold figures are in the CSV alongside and differ by at most 0.04, so the
-context gain is not leakage:
+random-fold figures are in the CSV alongside and are higher by at most **0.054**
+(the two /ʉ/~/ɵ/ context rows; 0.037 for the eight-way problem, 0.023 for
+/i/~/y/, and under 0.01 in every row without context features). The grouped
+figures are the conservative ones and the context gain survives in them, so it
+is not word memorisation:
 
 | features | all eight | /i/ vs /y/ | /ʉ/ vs /ɵ/ |
 |---|---|---|---|
