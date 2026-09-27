@@ -472,8 +472,12 @@ words <- spoken %>%
     # Duration
     total_duration    = sum(duration,     na.rm = TRUE),
     dur_per_syl       = list(setNames(duration, paste0("v", sidx))),
-    dur_ratio_v1      = first(duration[sidx == 1L]) /
-      sum(duration, na.rm = TRUE),
+    # Since incomplete words are retained (2026-09-27), syllable 1 may be
+    # absent, and `first()` on an empty vector errors rather than returning NA.
+    # This measure is only interpretable when word_complete is TRUE anyway.
+    dur_ratio_v1      = if (any(sidx == 1L))
+                          duration[sidx == 1L][1L] / sum(duration, na.rm = TRUE)
+                        else NA_real_,
     longest_sidx      = sidx[which.max(duration)][1L],
     log_duration_mean = mean(log_duration, na.rm = TRUE),
     # Sequences
