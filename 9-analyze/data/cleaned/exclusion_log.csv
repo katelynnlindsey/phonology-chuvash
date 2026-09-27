@@ -1,15 +1,15 @@
 corpus,n_vowels,n_words,n_utterances,step_id,step_name,reason,vowels_lost,words_lost,pct_vowels_kept,pct_vowels_lost
-chuvash_voice,555523,264474,29679,00,raw data loaded,all rows from 01_load_raw.R,0,0,100,0
-chuvash_voice,469394,237332,29655,01,target vowels only,kept ARPAbet labels: AA IY UX EY EH IX UW AH,86129,27142,84.5,15.5
-chuvash_voice,454723,231133,29559,02,Loanwords removed,word matched LOANWORD_PATTERN filter (see phonology_params.R),14671,6199,81.9,2.6
-chuvash_voice,452891,230846,29559,03,duration bounds,kept 20–400 ms,1832,287,81.5,0.3
-chuvash_voice,448306,229899,29552,04,absolute formant bounds,"F1 [200–1100 Hz], F2 [500–3500 Hz]",4585,947,80.7,0.8
-chuvash_voice,380962,212822,29348,05,IQR outliers removed,"Tukey 1.5×IQR within vowel×corpus for: duration, F1, F2",67344,17077,68.6,12.1
-chuvash_voice,217306,107055,26802,06,complete polysyllabic words,polysyllabic words with ≥1 missing syllable removed,163656,105767,39.1,29.5
-common_voice_chuvash,148059,76887,16870,00,raw data loaded,all rows from 01_load_raw.R,0,0,100,0
-common_voice_chuvash,146240,76803,16870,01,target vowels only,kept ARPAbet labels: AA IY UX EY EH IX UW AH,1819,84,98.8,1.2
-common_voice_chuvash,144343,75935,16849,02,Loanwords removed,word matched LOANWORD_PATTERN filter (see phonology_params.R),1897,868,97.5,1.3
-common_voice_chuvash,144006,75862,16844,03,duration bounds,kept 20–400 ms,337,73,97.3,0.2
-common_voice_chuvash,134917,73371,16785,04,absolute formant bounds,"F1 [200–1100 Hz], F2 [500–3500 Hz]",9089,2491,91.1,6.1
-common_voice_chuvash,125695,70878,16673,05,IQR outliers removed,"Tukey 1.5×IQR within vowel×corpus for: duration, F1, F2",9222,2493,84.9,6.2
-common_voice_chuvash,70112,35211,14641,06,complete polysyllabic words,polysyllabic words with ≥1 missing syllable removed,55583,35667,47.4,37.5
+chuvash_voice,469394,242501,29655,00,raw data loaded,all rows from 01_load_raw.R,0,0,100,0
+chuvash_voice,469394,242501,29655,01,target vowels only,kept ARPAbet labels: AA IY UX EY EH IX UW AH,0,0,100,0
+chuvash_voice,447083,231055,29558,02,Loanwords removed,word matched LOANWORD_PATTERN filter (see phonology_params.R),22311,11446,95.2,4.8
+chuvash_voice,445265,230766,29558,03,duration bounds,kept 20–400 ms,1818,289,94.9,0.4
+chuvash_voice,440768,229809,29551,04,absolute formant bounds,"F1 [200–1100 Hz], F2 [500–3500 Hz]",4497,957,93.9,1
+chuvash_voice,440768,229809,29551,05,IQR outliers flagged (not removed),"Tukey 1.5×IQR within vowel×speaker_id for: duration, F1, F2 — flag only",0,0,93.9,0
+chuvash_voice,440768,229809,29551,06,word completeness flagged (not removed),"polysyllabic words with a missing or outlying syllable are marked, not dropped",0,0,93.9,0
+common_voice_chuvash,146240,77756,16870,00,raw data loaded,all rows from 01_load_raw.R,0,0,100,0
+common_voice_chuvash,146240,77756,16870,01,target vowels only,kept ARPAbet labels: AA IY UX EY EH IX UW AH,0,0,100,0
+common_voice_chuvash,142911,75909,16849,02,Loanwords removed,word matched LOANWORD_PATTERN filter (see phonology_params.R),3329,1847,97.7,2.3
+common_voice_chuvash,142575,75835,16844,03,duration bounds,kept 20–400 ms,336,74,97.5,0.2
+common_voice_chuvash,133576,73330,16785,04,absolute formant bounds,"F1 [200–1100 Hz], F2 [500–3500 Hz]",8999,2505,91.3,6.2
+common_voice_chuvash,133576,73330,16785,05,IQR outliers flagged (not removed),"Tukey 1.5×IQR within vowel×speaker_id for: duration, F1, F2 — flag only",0,0,91.3,0
+common_voice_chuvash,133576,73330,16785,06,word completeness flagged (not removed),"polysyllabic words with a missing or outlying syllable are marked, not dropped",0,0,91.3,0

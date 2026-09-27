@@ -1,0 +1,256 @@
+{
+  "pbase_version": "data as of 2 October 2022; CC BY-NC-SA 4.0",
+  "n_patterns": 21791,
+  "n_languages": 629,
+  "pattern_types": {
+    "Target": 9518,
+    "Trigger": 8855,
+    "Distribution": 3150,
+    "TriggerPASS": 86,
+    "TargetPASS": 53,
+    "DistributionPASS": 10,
+    "Inventory": 1
+  },
+  "n_patterns_conditioned_on_stress": 0,
+  "chuvash_in_pbase": false,
+  "turkic_languages": [
+    "Azari, Iranian (South Azerbaijani)",
+    "Kirghiz",
+    "Turkish",
+    "Turkmen",
+    "Tyvan (Tuvin)",
+    "Xakas (Khakas)"
+  ],
+  "n_patterns_turkic": 265,
+  "closest_inventory_literal": {
+    "language": "Cheremis, Eastern (Mari)",
+    "family": "URALIC (Finno-Ugric)",
+    "jaccard_literal": 0.7778,
+    "vowels": "a e i o u y ø ə"
+  },
+  "closest_inventory_strict": {
+    "language": "Karo Batak",
+    "family": "AUSTRONESIAN",
+    "jaccard_strict": 0.75,
+    "vowels": "a e i o u ə ɯ"
+  },
+  "best_turkic_rank": {
+    "language": "Kirghiz",
+    "jaccard_literal": 0.6,
+    "rank_literal": 9,
+    "rank_strict": 63
+  },
+  "mari_row": {
+    "language": "Cheremis, Eastern (Mari)",
+    "jaccard_literal": 0.7778,
+    "rank_literal": 1,
+    "jaccard_strict": 0.6667,
+    "rank_strict": 5
+  },
+  "corpus": {
+    "n_phones": 1424952,
+    "n_word_tokens": 253332,
+    "n_word_types": 33380,
+    "pct_tokens_after_first_syllable": {
+      "a": 67.8,
+      "e": 84.7,
+      "i": 52.2,
+      "u": 10.4,
+      "y": 19.6,
+      "ø": 68.1,
+      "ɵ": 67.2,
+      "ʉ": 5.4
+    },
+    "pct_tokens_in_first_syllable": {
+      "a": 32.2,
+      "e": 15.3,
+      "i": 47.8,
+      "u": 89.6,
+      "y": 80.4,
+      "ø": 31.9,
+      "ɵ": 32.8,
+      "ʉ": 94.6
+    },
+    "n_after_first_syllable": {
+      "a": 115333,
+      "e": 83441,
+      "ɵ": 53637,
+      "ø": 52598,
+      "i": 27671,
+      "u": 5334,
+      "y": 874,
+      "ʉ": 779
+    },
+    "n_polysyllabic_vowels": 549091,
+    "monosyllable_vowel_types": {
+      "a": 360,
+      "e": 201,
+      "i": 147,
+      "u": 118,
+      "ɵ": 108,
+      "ø": 73,
+      "ʉ": 26,
+      "y": 17
+    },
+    "monosyllable_vowel_tokens": {
+      "a": 12444,
+      "e": 10691,
+      "u": 6926,
+      "ɵ": 5849,
+      "ø": 4218,
+      "i": 2617,
+      "ʉ": 987,
+      "y": 176
+    },
+    "harmony_all": {
+      "pct_uniform_tokens": 73.0,
+      "pct_uniform_types": 62.5,
+      "n_tokens": 209424,
+      "n_types": 32330
+    },
+    "harmony_i_neutral": {
+      "pct_uniform_tokens": 75.4,
+      "pct_uniform_types": 68.0,
+      "n_tokens": 184912,
+      "n_types": 30341
+    },
+    "c_word_initial": {
+      "t": 36428,
+      "p": 35391,
+      "k": 25336,
+      "ɕ": 25097,
+      "χ": 18027,
+      "v": 16352,
+      "j": 11393,
+      "s": 10374,
+      "m": 10137,
+      "tʃ": 6866,
+      "ʃ": 5606,
+      "l": 3915,
+      "n": 3008,
+      "r": 1578,
+      "d": 930,
+      "f": 725,
+      "b": 634,
+      "ts": 83,
+      "g": 41,
+      "ʒ": 3
+    },
+    "c_word_initial_common": [
+      "b",
+      "d",
+      "f",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n",
+      "p",
+      "r",
+      "s",
+      "t",
+      "ts",
+      "tʃ",
+      "v",
+      "ɕ",
+      "ʃ",
+      "χ"
+    ],
+    "c_word_initial_absent": [],
+    "c_word_final": {
+      "n": 33007,
+      "r": 12925,
+      "χ": 12382,
+      "m": 10633,
+      "t": 9354,
+      "l": 8016,
+      "k": 7053,
+      "ɕ": 4728,
+      "j": 3449,
+      "v": 3106,
+      "s": 2697,
+      "p": 2201,
+      "ʃ": 1868,
+      "tʃ": 650,
+      "d": 196,
+      "b": 33,
+      "g": 30,
+      "ts": 28,
+      "f": 21,
+      "ʒ": 1
+    },
+    "c_word_final_common": [
+      "d",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n",
+      "p",
+      "r",
+      "s",
+      "t",
+      "tʃ",
+      "v",
+      "ɕ",
+      "ʃ",
+      "χ"
+    ],
+    "c_word_final_absent": [],
+    "final_vowel_by_prev_class": {
+      "a": {
+        "back": 64474,
+        "front": 3864
+      },
+      "e": {
+        "back": 10521,
+        "front": 46942
+      },
+      "i": {
+        "back": 8034,
+        "front": 5734
+      },
+      "u": {
+        "back": 1463,
+        "front": 451
+      },
+      "y": {
+        "back": 20,
+        "front": 419
+      },
+      "ø": {
+        "back": 15768,
+        "front": 23523
+      },
+      "ɵ": {
+        "back": 27414,
+        "front": 384
+      },
+      "ʉ": {
+        "back": 355,
+        "front": 58
+      }
+    },
+    "final_reduced_by_prev_class_pct": {
+      "ø": {
+        "back": 36.5,
+        "front": 98.4
+      },
+      "ɵ": {
+        "back": 63.5,
+        "front": 1.6
+      }
+    },
+    "pct_polysyll_ending_reduced": 32.0,
+    "pct_of_tokens_word_final": {
+      "a": 26.2,
+      "e": 37.6,
+      "i": 19.5,
+      "u": 3.2,
+      "y": 9.4,
+      "ø": 33.7,
+      "ɵ": 13.3,
+      "ʉ": 0.0
+    }
+  }
+}

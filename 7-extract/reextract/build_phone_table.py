@@ -22,9 +22,18 @@ import argparse, csv, glob, os, re, sys
 
 SIL = {"sil", "sp", "spn", "", "<eps>", "silence", "SIL"}
 
-# Aligner IPA (MFA chuvash_mfa) -> the config's IPA.  Kept in sync with
-# ALIGNER_IPA_TO_CONFIG in 9-analyze/config/phonology_params.R.
-ALIGNER_TO_CONFIG = {"ɑ": "a", "ɛ": "e", "ʌ": "ɵ", "ɯ": "ʉ"}
+# Aligner IPA (MFA chuvash_mfa) -> the config's IPA.  MUST stay in sync with
+# ALIGNER_IPA_TO_CONFIG in 9-analyze/config/phonology_params.R, which is
+# authoritative.
+#
+# BUG FIXED 2026-09-27: this had 'ɛ': 'e'. The aligner writes ⟨ӗ⟩ (the reduced
+# front vowel, this config's /ø/) as ɛ and ⟨е⟩ as e — stage 5 confirms it by
+# classing ɛ as WEAK and e as STRONG. Mapping ɛ to e therefore pooled the
+# reduced front vowel with the full one, left /ø/ absent from the phone table
+# entirely, and silently put every ⟨ӗ⟩ token into the full-vowel class. That
+# invalidated the word-final weight model and the mora test, both of which
+# select on the reduced-vowel set.
+ALIGNER_TO_CONFIG = {"ɑ": "a", "ɛ": "ø", "ʌ": "ɵ", "ɯ": "ʉ"}
 VOWELS = set("aeiuyoɵøʉ") | {"ɑ", "ɛ", "ʌ", "ɯ"}
 
 
