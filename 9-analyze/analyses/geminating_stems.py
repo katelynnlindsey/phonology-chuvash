@@ -9,10 +9,15 @@ WHY THIS SCRIPT EXISTS
 An earlier attempt identified the class the wrong way round: it took every type
 ending in a reduced vowel and asked whether `stem + C + C + и` happened to be
 attested.  That over-generates (it accepts any accidental string match) and it
-under-generates (it only ever looks for one suffix, -и), and the resulting
-sample was 97.5% suffix-shaped words -- -лӑ, -нӑ, -тӑ participles and
-adjectives whose final reduced vowel is a suffix vowel, not a stem vowel.  The
-morphology, not the phonology, drove the result.
+under-generates (it only ever looks for one suffix, -и).  Worse, it left both
+sides of the comparison dominated by suffix-shaped words -- -лӑ, -нӑ, -тӑ
+participles and adjectives whose final reduced vowel is a suffix vowel rather
+than a stem vowel -- and it left them dominated to *different* degrees:
+**64.9%** of the 94 candidate types where the geminate form was attested, against
+**97.5%** of the 983 comparison types where it was not.  So the contrast that
+test actually measured was stem-shaped versus suffix-shaped words, not
+fleeting versus stable vowels.  The morphology, not the phonology, drove the
+result.
 
 This script inverts the search.  **The geminate is directly observable in the
 orthography**, so it enumerates attested word forms that contain a written
