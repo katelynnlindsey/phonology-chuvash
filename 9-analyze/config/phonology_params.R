@@ -313,6 +313,51 @@ STRESS_RULES <- local({
   out[c("A6", "A5", "A4", "B6", "B5", "B4")]
 })
 
+# ── SON: pure rightmost-to-sonority ─────────────────────────────
+# A6-B4 all work by a binary full/reduced split plus a default. This rule
+# drops the binary split and the default entirely: the vowels are ranked on a
+# single sonority scale, and stress goes to the RIGHTMOST vowel belonging to
+# the most sonorous tier the word contains. No word is stressless, and no
+# word needs a fallback, because every word contains a vowel from some tier.
+#
+# The scale is Kate Lindsey's, and it is the paper's thesis stated as a rule:
+# if rightmost stress in Chuvash is fundamentally sonority-sensitive, this is
+# what the grammar looks like without a full/reduced primitive at all.
+#
+#   1  a            low
+#   2  e            mid front
+#   3  i  y  u      high peripheral
+#   4  ø  ɵ         mid reduced
+#   5  ʉ            high central
+#
+# Note tier 5 sits BELOW tier 4: /ʉ/ is ranked as the least sonorous vowel in
+# the language, under the reduced mid vowels rather than with the other high
+# vowels. That is a substantive claim and the reason this rule is not just a
+# re-parameterisation of A6-B4 — it cannot be produced by any full/reduced
+# partition, because tiers 3 and 5 are both "high" and sit on opposite ends.
+SONORITY_TIERS <- list(
+  c("a"),
+  c("e"),
+  c("i", "y", "u"),
+  c("ø", "ɵ"),
+  c("ʉ")
+)
+
+stopifnot(
+  "SONORITY_TIERS must partition the eight native vowels exactly once" =
+    setequal(unlist(SONORITY_TIERS), setdiff(TARGET_VOWELS_IPA, "o")) &&
+    !anyDuplicated(unlist(SONORITY_TIERS))
+)
+
+STRESS_RULES[["SON"]] <- list(
+  type      = "sonority",
+  default   = NA_character_,
+  inventory = NA_character_,
+  tiers     = SONORITY_TIERS,
+  label     = paste0("SON: rightmost vowel of the most sonorous tier present ",
+                     "[a > e > i y u > ø ɵ > ʉ]")
+)
+
 RULE_NAMES <- names(STRESS_RULES)
 
 # ── Active rule: any of RULE_NAMES. Governs the single-column
@@ -347,7 +392,19 @@ active_weak   <- function(rule = ACTIVE_RULE) rule_reduced(rule)
 #                         missing). apply_stress_rule() handles this.
 
 assign_stress <- function(vowel_labels, rule = ACTIVE_RULE) {
-  r    <- STRESS_RULES[[rule]]
+  r <- STRESS_RULES[[rule]]
+
+  # SON has no full/reduced primitive and no default: walk the sonority
+  # tiers from most to least sonorous and take the rightmost member of the
+  # first tier the word contains.
+  if (!is.null(r$type) && r$type == "sonority") {
+    for (tier in r$tiers) {
+      hit <- which(vowel_labels %in% tier)
+      if (length(hit) > 0) return(max(hit))
+    }
+    return(NA_integer_)                            # no classifiable vowel
+  }
+
   full <- which(vowel_labels %in% r$full)
   if (length(full) > 0) return(max(full))
   if (r$default == "B") return(NA_integer_)        # stressless by design

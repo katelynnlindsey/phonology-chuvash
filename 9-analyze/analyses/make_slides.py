@@ -13,7 +13,7 @@ Usage:
 markers.json maps figure filename -> artifact id, e.g.
     {"fig_default_adjudication.png": "1227abc4-..."}
 """
-import argparse, json, os, sys
+import argparse, base64, json, os, sys
 import pandas as pd
 import numpy as np
 
@@ -122,14 +122,40 @@ def main():
     ap.add_argument("--repo", required=True)
     ap.add_argument("--out", default="chuvash_findings_slides.html")
     ap.add_argument("--markers", default=None)
+    ap.add_argument("--figdir", default=None,
+                    help="directory holding the PNGs; if given, every figure "
+                         "is embedded as a base64 data URI so the HTML is "
+                         "self-contained and opens correctly outside the app")
     a = ap.parse_args()
     out = os.path.join(a.repo, "9-analyze", "output")
     D = load(out)
     mk = json.load(open(a.markers)) if a.markers else {}
 
+    missing = []
+
     def img(fn, cap):
-        src = "{{artifact:art_%s}}" % mk[fn] if fn in mk else fn
-        return (f'<figure><img src="{src}" alt="">'
+        """Return a <figure>.
+
+        Three ways to reference the image, in order of preference:
+          --figdir   embed the bytes as a data URI -> the file works anywhere,
+                     including emailed, printed, or opened from disk
+          --markers  an artifact marker -> resolves inside Claude Science only
+          neither    a relative filename -> works only beside the PNGs
+        """
+        if a.figdir:
+            path = os.path.join(a.figdir, fn)
+            if os.path.exists(path):
+                b64 = base64.b64encode(open(path, "rb").read()).decode()
+                src = f"data:image/png;base64,{b64}"
+            else:
+                missing.append(fn)
+                return (f'<figure><p class="cap"><strong>[missing figure: '
+                        f'{fn}]</strong></p><figcaption>{cap}</figcaption></figure>')
+        elif fn in mk:
+            src = "{{artifact:art_%s}}" % mk[fn]
+        else:
+            src = fn
+        return (f'<figure><img src="{src}" alt="{cap[:80]}">'
                 f'<figcaption>{cap}</figcaption></figure>')
 
     # ── numbers ───────────────────────────────────────────────────────
@@ -794,7 +820,12 @@ def main():
     html += ["</div>", "</body>", "</html>"]
     with open(a.out, "w", encoding="utf-8") as fh:
         fh.write("\n".join(html))
-    print(f"wrote {a.out}: {len(S)} slides")
+    print(f"wrote {a.out}: {len(S)} slides, "
+          f"{os.path.getsize(a.out) / 1e6:.1f} MB")
+    if missing:
+        print("MISSING FIGURES (placeholders written):")
+        for fn in sorted(set(missing)):
+            print("  ", fn)
 
 
 if __name__ == "__main__":

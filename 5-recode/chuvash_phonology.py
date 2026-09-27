@@ -40,10 +40,50 @@ IPA_TO_ARPABET = {
     'b':   'B',  'g':   'G',  'ʒ': 'ZH',  'ɾ': 'DX',
     'χ':  'HH',
     'd͡ʒ': 'JH',  't͡ʃ': 'CH',
-    # Geminates → base consonant
-    'tː': 'T',  'lː': 'L',  'pː': 'P',  'mː': 'M',
-    'nː': 'N',  'rː': 'R',  'sː': 'S',  'kː': 'K',
+
+    # ── Long consonants ──────────────────────────────────────────────────────
+    # These USED to be mapped onto their singletons ('tː': 'T' and so on),
+    # which destroyed the length contrast for eight of the fourteen long
+    # consonants MFA labels — 26,832 tokens — before the data reached any
+    # analysis. Chuvash writes these as doubled letters and they are
+    # phonetically long: intervocalic word-medial ratios run 1.11-1.71 against
+    # the singleton (9-analyze/output/gemination_models.csv), so collapsing
+    # them was a loss, not a normalisation.
+    #
+    # The convention is the singleton's output label plus ':'. That keeps the
+    # long and short labels adjacent and strippable (see strip_length below),
+    # and it stays self-consistent for the three consonants that have no
+    # ARPAbet symbol and pass through as IPA: 'ɕ' vs 'ɕ:'.
+    #
+    # Anything that collapses length must now do so DELIBERATELY, by calling
+    # strip_length(), rather than by accident here.
+    'tː': 'T:',  'lː': 'L:',  'pː': 'P:',  'mː': 'M:',
+    'nː': 'N:',  'rː': 'R:',  'sː': 'S:',  'kː': 'K:',
+    'χː': 'HH:', 'ʃː': 'SH:', 'vː': 'V:',  'jː': 'J:',
+    'ɕː': 'ɕ:',  'tsː': 'ts:',
 }
+
+# Consonants MFA emits that have no ARPAbet equivalent and are therefore left
+# as IPA by recode_textgrid_ARPABET.py (which warns and passes through).
+# 'ɕ' is Chuvash ҫ, 'tʃ' is the affricate written without the U+0361 tie bar
+# that 't͡ʃ' above carries, so the map never matches it.
+#
+# KNOWN INCONSISTENCY, left alone deliberately: these are not remapped here
+# because doing so would change every pre_seg / fol_seg value in
+# 9-analyze/data and is a separate decision from the length fix above.
+PASSTHROUGH_IPA_CONSONANTS = {'ɕ', 'tʃ', 'ts'}
+
+LONG_SUFFIX = ':'
+GEMINATE_ARPABET = {v for k, v in IPA_TO_ARPABET.items() if k.endswith('ː')}
+
+
+def strip_length(label: str) -> str:
+    """Collapse a long consonant label onto its singleton.
+
+    Use this wherever length should be ignored, so that the choice is visible
+    at the point of use instead of baked into the recode map.
+    """
+    return label[:-1] if label.endswith(LONG_SUFFIX) else label
 
 # ── IPA vowel sets (used during recode + as source of truth) ─────────────────
 STRONG_VOWELS_IPA = {'ɑ', 'u', 'y', 'e', 'o', 'i', 'ɯ'}
