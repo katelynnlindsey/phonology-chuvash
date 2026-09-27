@@ -17,7 +17,8 @@ transcribes four of the eight vowels differently from `transliterate_word()`:
 
 Eight native vowels plus loan /o/. Their token shares agree closely across all
 three corpora, which is the basic check that the transliteration and the
-aligner agree about what is in these texts:
+aligner agree about what is in these texts. The largest spread across corpora
+is 3.6 points, for /e/ (14.7-18.3%), followed by /ɵ/ at 2.7 points:
 
 | | a | e | i | u | y | ʉ | ø | ɵ | o |
 |---|---|---|---|---|---|---|---|---|---|

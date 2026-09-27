@@ -68,7 +68,7 @@ sets are visually indistinguishable, which is why this survived inspection.
 But every *string* join on the orthographic label failed silently for those
 words:
 
-- `in_mono_corpus` for the wordlist read 19.8%; the true figure is **69.4%**
+- `in_mono_corpus` for the wordlist read 19.8%; the measured figure after the fix is **69.2%**
 - `corpus_freq` was NA for **all 323** breve-containing monosyllabic types,
   against 20 of 615 others
 

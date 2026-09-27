@@ -89,7 +89,7 @@ SOFT_SIGNS <- "[ьь]"
 # maps both forms, so word_label_IPA was always correct — but every
 # *string* join on the orthographic label silently failed for those
 # words. That is why in_mono_corpus read 19.8% for Zheltov when the
-# true figure is 69.4%, and why corpus_freq was NA for all 323
+# measured figure after the fix is 69.2%, and why corpus_freq was NA for all 323
 # breve-containing monosyllabic types against 20 of 615 others.
 # Since ӑ and ӗ ARE the reduced vowels, the missingness in the
 # frequency covariate was perfectly confounded with the phonological

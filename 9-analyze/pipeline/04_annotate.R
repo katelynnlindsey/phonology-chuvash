@@ -374,7 +374,12 @@ SPOKEN_DROP <- c(
   # fave extraction parameters / internal IDs — not linguistic data
   "B1", "B2", "B3",        # formant bandwidths
   "max_formant",            # fave setting, not a measurement
-  "smooth_error",           # fave tracking quality flag
+  # smooth_error is NOT dropped. It is new-FAVE's per-vowel formant-tracking
+  # error, i.e. a direct measurement-quality index, and it is the one signal
+  # that separates "this vowel is unusual" from "this measurement is
+  # unreliable" — which the IQR fences cannot do. alignment_confidence.md
+  # proposes it as a component of the per-vowel confidence score, so it has
+  # to survive to the annotated output.
   "id",                     # internal fave row counter
   "group",                  # unclear provenance
   "speaker_num",            # redundant with speaker_id
