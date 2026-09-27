@@ -459,6 +459,16 @@ words <- spoken %>%
     word_label_IPA_syllabified = first(word_label_IPA_syllabified),
     sN                         = first(sN),
     word_category              = first(word_category),
+    # Data quality. Since 2026-09-27 incomplete words are kept rather
+    # than deleted, so every word-level measure below may be computed
+    # over fewer syllables than sN. Any analysis of stress placement,
+    # duration ratios or the bottom-up votes must filter on
+    # word_complete; vowel-level analyses need not.
+    n_syl_present     = dplyr::n_distinct(sidx),
+    word_complete     = if ("word_complete" %in% names(spoken))
+                          all(word_complete) else NA,
+    n_iqr_outliers    = if ("iqr_outlier_any" %in% names(spoken))
+                          sum(iqr_outlier_any) else NA_integer_,
     # Duration
     total_duration    = sum(duration,     na.rm = TRUE),
     dur_per_syl       = list(setNames(duration, paste0("v", sidx))),

@@ -218,59 +218,100 @@ snapshot("04", "absolute formant bounds", d,
                  CLEANING$min_F1_hz, CLEANING$max_F1_hz,
                  CLEANING$min_F2_hz, CLEANING$max_F2_hz))
 
-# ── Step 05: IQR outlier removal ─────────────────────────────────
-# Tukey 1.5×IQR fences applied within vowel × corpus.
-# Cells with fewer than min_cell_n tokens are dropped entirely.
+# ── Step 05: IQR outliers — FLAGGED, not removed ─────────────────
+#
+# Changed 2026-09-27. These fences used to delete rows, and the
+# deletion was not neutral:
+#
+#   * they were computed within vowel × CORPUS, pooling stressed and
+#     unstressed tokens. Stressed vowels are longer, so they populate
+#     the upper tail, and trimming a pooled distribution removed
+#     stressed tokens preferentially — the filter was correlated with
+#     the dependent variable.
+#   * they were not computed within speaker. One speaker supplies
+#     ~69% of all vowels, so the fences were effectively his and the
+#     other 104 speakers were trimmed against a distribution that is
+#     not theirs.
+#
+# Both are fixed by computing within vowel × SPEAKER and by writing a
+# flag instead of dropping the row. Physically impossible values are
+# already gone at step 03/04; what is left is a judgement about which
+# tokens an analysis should trust, and that belongs to the analysis.
+#
+# `iqr_outlier_any` reproduces the old exclusion set, so the strict
+# analysis remains available: filter(!iqr_outlier_any, word_complete).
 
-remove_iqr <- function(df, col) {
+.speaker_col <- if ("speaker_id" %in% names(d)) "speaker_id" else "corpus"
+
+flag_iqr <- function(df, col) {
   if (!col %in% names(df)) {
     message("  '", col, "' not found — skipping"); return(df)
   }
+  out <- paste0("iqr_outlier_", col)
   df %>%
-    group_by(label, corpus) %>%
-    filter(n() >= CLEANING$min_cell_n) %>%
+    group_by(label, .data[[.speaker_col]]) %>%
     mutate(
-      .q1    = quantile(.data[[col]], 0.25, na.rm = TRUE),
-      .q3    = quantile(.data[[col]], 0.75, na.rm = TRUE),
-      .iqr   = .q3 - .q1,
-      .fence_lo = .q1 - CLEANING$iqr_multiplier * .iqr,
-      .fence_hi = .q3 + CLEANING$iqr_multiplier * .iqr
-    ) %>%
-    filter(
-      is.na(.data[[col]]) |
-        between(.data[[col]], .fence_lo, .fence_hi)
+      .n_cell = n(),
+      .q1  = quantile(.data[[col]], 0.25, na.rm = TRUE),
+      .q3  = quantile(.data[[col]], 0.75, na.rm = TRUE),
+      .iqr = .q3 - .q1,
+      "{out}" := !is.na(.data[[col]]) &
+        .n_cell >= CLEANING$min_cell_n &
+        !dplyr::between(.data[[col]],
+                        .q1 - CLEANING$iqr_multiplier * .iqr,
+                        .q3 + CLEANING$iqr_multiplier * .iqr)
     ) %>%
     select(!starts_with(".")) %>%
     ungroup()
 }
 
 for (col in CLEANING$iqr_cols) {
-  n_before <- nrow(d)
-  d        <- remove_iqr(d, col)
-  cat(sprintf("    IQR %-12s  removed %d rows\n",
-              col, n_before - nrow(d)))
+  d <- flag_iqr(d, col)
+  fl <- paste0("iqr_outlier_", col)
+  if (fl %in% names(d))
+    cat(sprintf("    IQR %-12s  flagged %d rows (%.1f%%)\n",
+                col, sum(d[[fl]]), 100 * mean(d[[fl]])))
 }
 
-snapshot("05", "IQR outliers removed", d,
-         sprintf("Tukey %.1f×IQR within vowel×corpus for: %s",
-                 CLEANING$iqr_multiplier,
+.iqr_flags <- intersect(paste0("iqr_outlier_", CLEANING$iqr_cols), names(d))
+d <- d %>%
+  mutate(iqr_outlier_any = if (length(.iqr_flags))
+           rowSums(across(all_of(.iqr_flags))) > 0 else FALSE)
+
+cat(sprintf("    any IQR flag  : %d rows (%.1f%%)  — NOT removed\n",
+            sum(d$iqr_outlier_any), 100 * mean(d$iqr_outlier_any)))
+
+snapshot("05", "IQR outliers flagged (not removed)", d,
+         sprintf("Tukey %.1f×IQR within vowel×%s for: %s — flag only",
+                 CLEANING$iqr_multiplier, .speaker_col,
                  paste(CLEANING$iqr_cols, collapse = ", ")))
 
-# ── Step 06: Complete polysyllabic words ─────────────────────────
-# If any syllable of a polysyllabic word is absent after the above
-# steps, the word cannot support word-level analyses and is likely
-# a partially misaligned token.
-complete_ids <- d %>%
-  filter(sN > 1) %>%
+# ── Step 06: Word completeness — FLAGGED, not removed ────────────
+#
+# Changed 2026-09-27. This used to discard a whole polysyllabic word
+# when any one of its syllables had been dropped earlier, which cost
+# 45-47% of all vowels — by far the largest filter in the pipeline,
+# and one that cascaded off the stress-correlated step above. A word
+# is now marked rather than deleted.
+#
+# `word_complete` means every syllable of this word survived to here
+# and is not an IQR outlier: word-level measures (stress placement,
+# duration ratios) need that, vowel-level measures do not.
+d <- d %>%
   group_by(word_id) %>%
-  filter(n_distinct(sidx) == first(sN)) %>%
-  pull(word_id) %>%
-  unique()
+  mutate(
+    n_syl_present = n_distinct(sidx),
+    word_complete = (first(sN) == 1) |
+      (n_syl_present == first(sN) & !any(iqr_outlier_any))
+  ) %>%
+  ungroup()
 
-d <- d %>% filter(sN == 1 | word_id %in% complete_ids)
+cat(sprintf("    word_complete : %d rows (%.1f%%) | incomplete %d rows kept\n",
+            sum(d$word_complete), 100 * mean(d$word_complete),
+            sum(!d$word_complete)))
 
-snapshot("06", "complete polysyllabic words", d,
-         "polysyllabic words with ≥1 missing syllable removed")
+snapshot("06", "word completeness flagged (not removed)", d,
+         "polysyllabic words with a missing or outlying syllable are marked, not dropped")
 
 # ── Save ──────────────────────────────────────────────────────────
 saveRDS(d, file.path(PATHS$cleaned_dir, "vowels_spoken_clean.rds"))

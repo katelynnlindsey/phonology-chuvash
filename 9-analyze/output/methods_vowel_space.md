@@ -48,6 +48,15 @@ eight and falls away:
 At six components the eight phonemes fall into groups that share a modal
 component: **{e, i, ø}** and **{u, ʉ, ɵ}**, with /a/ and /y/ separate.
 
+> **Correction, 2026-09-27.** The separability figures in this section are
+> quadratic-discriminant accuracies, which assume Gaussian classes. A
+> gradient-boosting classifier on the *same samples and the same three formants*
+> reaches 0.672 for /i/~/y/ and 0.690 for /ʉ/~/ɵ/. "At chance" below was
+> therefore too strong — it was at chance for that model class. The claim that
+> the /ʉ/~/ɵ/ merger gives independent acoustic support for inventory 5 is
+> weakened accordingly: they are poorly separated, not unseparated. See
+> `methods_vowel_features.md`.
+
 ## Pairwise separability
 
 Balanced accuracy of a quadratic discriminant on F1/F2/F3, 5-fold

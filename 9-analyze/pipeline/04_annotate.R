@@ -425,6 +425,13 @@ vowels_ann <- vowels_ann %>%
              "vowel_class")),
     # PHONOLOGICAL CONTEXT
     any_of(c("pre_seg", "fol_seg", "abs_pre_seg", "abs_fol_seg")),
+    # DATA QUALITY — flags, not filters. `iqr_outlier_any` and
+    # `word_complete` together reproduce the old cleaning exclusion,
+    # which cost 45-47% of vowels and was correlated with stress.
+    # Filter on them in an analysis; do not assume they are applied.
+    any_of(c("iqr_outlier_duration", "iqr_outlier_F1", "iqr_outlier_F2",
+             "iqr_outlier_any", "n_syl_present", "word_complete",
+             "smooth_error")),
     # STRESS — predicted under each of the six rules. There is no
     # "observed stress" column: phon_stress came from the aligner
     # dictionary and was ~98% identical to stress_rule_A6, and
@@ -489,6 +496,10 @@ words_ann <- words_ann %>%
     any_of(c("loudest_sidx", "intensity_per_syl")),
     # SPEECH RATE
     any_of("log_speech_rate"),
+    # DATA QUALITY — every word-level measure above may be computed
+    # over fewer than sN syllables. Filter on word_complete for any
+    # analysis of stress placement or duration ratios.
+    any_of(c("n_syl_present", "word_complete", "n_iqr_outliers")),
     # CORPUS FREQUENCY
     any_of(c("corpus_freq", "log_corpus_freq",
              "log_corpus_freq_smoothed", "in_mono_corpus"))
