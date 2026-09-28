@@ -349,14 +349,58 @@ stopifnot(
     !anyDuplicated(unlist(SONORITY_TIERS))
 )
 
-STRESS_RULES[["SON"]] <- list(
-  type      = "sonority",
-  default   = NA_character_,
-  inventory = NA_character_,
-  tiers     = SONORITY_TIERS,
-  label     = paste0("SON: rightmost vowel of the most sonorous tier present ",
-                     "[a > e > i y u > ø ɵ > ʉ]")
+# The tiers above are the classic vocalic sonority hierarchy (de Lacy 2002,
+# 2004, 2006; Kenstowicz 1997; Gordon 2006) as it applies to this inventory:
+#
+#   tier 1  a          low peripheral
+#   tier 2  e          mid peripheral
+#   tier 3  i y u      high peripheral
+#   tier 4  ø ɵ        mid central
+#   tier 5  ʉ          high central
+#
+# Both dimensions are measurable in this corpus and recover these five tiers
+# exactly for all eight vowels (analyses/sonority_peripherality.R): height from
+# F1, peripherality from convex-hull membership in the speaker's own F1 x F2
+# space, on tokens no stress rule calls stressed.
+#
+# ── The three sonority variants ────────────────────────────────────────
+# The A-vs-B question — whether a word with no high-sonority vowel gets stress
+# somewhere or gets none at all — is orthogonal to the tier mechanism, so it
+# crosses with it exactly as it crosses with the full/reduced inventories.
+# CENTRAL_TIERS names the tiers that are "too low to bear stress" under the
+# A and B variants; it is tiers 4 and 5, the mid-central and high-central
+# vowels, which is the same cut as the full/reduced partition of rule B5 but
+# arrived at from the hierarchy rather than stipulated.
+CENTRAL_TIERS <- 4:5
+
+STRESS_RULES[["SON_F"]] <- list(
+  type = "sonority", subtype = "F", default = NA_character_,
+  inventory = NA_character_, tiers = SONORITY_TIERS,
+  central_tiers = CENTRAL_TIERS,
+  label = paste0("SON-F: rightmost vowel of the most sonorous tier present, ",
+                 "always [a > e > i y u > ø ɵ > ʉ]")
 )
+STRESS_RULES[["SON_A"]] <- list(
+  type = "sonority", subtype = "A", default = "A",
+  inventory = NA_character_, tiers = SONORITY_TIERS,
+  central_tiers = CENTRAL_TIERS,
+  label = paste0("SON-A: rightmost vowel of the most sonorous tier present, ",
+                 "but LEFTMOST if that tier is mid-central or high-central")
+)
+STRESS_RULES[["SON_B"]] <- list(
+  type = "sonority", subtype = "B", default = "B",
+  inventory = NA_character_, tiers = SONORITY_TIERS,
+  central_tiers = CENTRAL_TIERS,
+  label = paste0("SON-B: rightmost vowel of the most sonorous tier present, ",
+                 "but STRESSLESS if that tier is mid-central or high-central")
+)
+
+# SON is retained as an alias of SON_F so that earlier output and the
+# stress_rule_SON column keep their meaning.
+STRESS_RULES[["SON"]] <- STRESS_RULES[["SON_F"]]
+STRESS_RULES[["SON"]]$label <- paste0(
+  "SON: rightmost vowel of the most sonorous tier present ",
+  "[a > e > i y u > ø ɵ > ʉ]  (= SON-F)")
 
 RULE_NAMES <- names(STRESS_RULES)
 
@@ -368,7 +412,7 @@ RULE_NAMES <- names(STRESS_RULES)
 ACTIVE_RULE <- "A6"
 
 stopifnot(
-  "ACTIVE_RULE must be one of A6 A5 A4 B6 B5 B4" =
+  "ACTIVE_RULE must be one of RULE_NAMES" =
     ACTIVE_RULE %in% RULE_NAMES
 )
 
@@ -394,13 +438,27 @@ active_weak   <- function(rule = ACTIVE_RULE) rule_reduced(rule)
 assign_stress <- function(vowel_labels, rule = ACTIVE_RULE) {
   r <- STRESS_RULES[[rule]]
 
-  # SON has no full/reduced primitive and no default: walk the sonority
-  # tiers from most to least sonorous and take the rightmost member of the
-  # first tier the word contains.
+  # The sonority rules have no full/reduced primitive: walk the tiers from
+  # most to least sonorous and act on the first tier the word contains.
+  #
+  #   SON_F  rightmost member of that tier, whatever the tier
+  #   SON_A  rightmost, but LEFTMOST when the tier is mid- or high-central
+  #   SON_B  rightmost, but NO STRESS when the tier is mid- or high-central
+  #
+  # SON_F/A/B therefore differ only in words whose most sonorous vowel is
+  # /ø ɵ ʉ/, which is what makes them the sonority analogue of the A-vs-B
+  # contrast rather than three re-parameterisations of one rule.
   if (!is.null(r$type) && r$type == "sonority") {
-    for (tier in r$tiers) {
-      hit <- which(vowel_labels %in% tier)
-      if (length(hit) > 0) return(max(hit))
+    central <- if (is.null(r$central_tiers)) integer(0) else r$central_tiers
+    sub <- if (is.null(r$subtype)) "F" else r$subtype
+    for (i in seq_along(r$tiers)) {
+      hit <- which(vowel_labels %in% r$tiers[[i]])
+      if (length(hit) == 0) next
+      if (i %in% central) {
+        if (sub == "B") return(NA_integer_)        # stressless by design
+        if (sub == "A") return(min(hit))           # leftmost of a central tier
+      }
+      return(max(hit))                             # rightmost otherwise
     }
     return(NA_integer_)                            # no classifiable vowel
   }
