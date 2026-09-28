@@ -72,12 +72,25 @@ a correlate of stress.
 hull. The hull of the Chuvash vowel space is `{a, u, y, i, e}` — precisely de
 Lacy's peripheral set — with `{ø, ɵ, ʉ}` inside it.
 
-Centroid distance fails because the centroid of an eight-vowel inventory sits
-wherever the inventory is densest; Chuvash has four front vowels, which pulls
-the centroid forward and deflates /e/'s distance while ⟨ӑ⟩, sitting alone in the
-low-back region, gets an inflated one. Backness deviation fails because ⟨ӗ⟩ is
-not in fact central in F2 (z +0.368) — it is front, just not *peripherally*
-front.
+Both failures are driven by the same two vowels, and neither involves ⟨ӗ⟩.
+
+**Centroid distance** puts ⟨ӑ⟩ /ɵ/ at 0.712 above /e/ at 0.666, so the two
+classes overlap by −0.046 and the pair swaps. The centroid of an eight-vowel
+inventory sits wherever the inventory is densest: Chuvash has four front
+vowels, which pulls it forward and deflates /e/'s distance, while ⟨ӑ⟩ sits
+alone in the low-back region and gets an inflated one.
+
+**Backness deviation** overlaps by −0.161, and the boundary cases are again
+⟨ӑ⟩ and one peripheral vowel — here /y/, the *lowest* peripheral value at
+0.470, against ⟨ӑ⟩ as the highest central at 0.631. This measure collapses the
+F1 dimension entirely, so /y/ (front but high, |F2 − centroid| only 0.470) is
+indistinguishable from a central vowel with a moderately displaced F2. ⟨ӗ⟩ at
+0.212 is not implicated in either overlap; it is comfortably inside the central
+range on both measures.
+
+What this means for the paper is that "peripheral" has to be defined as
+position at the *edge of the two-dimensional space*, not as displacement along
+either axis on its own. Hull membership does that; the other two do not.
 
 **Height is recovered perfectly by F1, 8 of 8**, within both classes:
 peripheral a(low) > e(mid) > u, i, y(high); central ɵ(mid) > ø(mid) > ʉ(high).
