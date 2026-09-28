@@ -1,199 +1,156 @@
-# Deriving a sonority hierarchy for Chuvash without circularity
+# Sonority in Chuvash: a correction, and the measurement that works
 
-Answering: *knowing there are eight phonemic vowels, which is the most sonorous
-phonetically? And do the most sonorous vowels align with the phonetic
-correlates of stress in the spoken data and the phonological correlates in the
-written data — or is that circular?*
+**This supersedes `sonority_note.md` v1 on its central conclusion.** v1 said
+rule SON's tiers were "a height hierarchy refined by reducedness" and that the
+refinement was circular, because full-versus-reduced is established in this
+project from stress behaviour. **That was wrong, and the error was mine.**
 
-Script `analyses/sonority_hierarchy.R`. Outputs `sonority_intrinsic.csv`,
-`sonority_hierarchies.csv`, `sonority_rule_tests.csv`, `sonority_written.csv`.
+## 1. What I got wrong
 
-## 1. The logic is sound. The current implementation is not.
-
-The chain you describe — derive sonority from something independent, then test
-whether it predicts stress — is a valid design, and it is the right one. It
-fails only if the independent measure isn't independent. Two places it isn't.
-
-**The obvious one.** Rank the vowels by intensity or duration and you have
-ranked them by the two things this project uses as the phonetic correlates of
-stress. Ask then whether sonorous vowels attract stress and the answer is built
-in. Below, the intensity- and duration-derived hierarchies are computed anyway
-and labelled `circular_for_this_outcome`, to show how much a circular
-hierarchy flatters itself: the duration-derived hierarchy "predicts" duration
-at +6.58%, half again the best honest number in the whole project.
-
-**The one that matters, because it is inside rule SON already.** SON's tiers are
+SON's tiers are
 
 > a > e > {i y u} > {ø ɵ} > ʉ
 
-On vowel height the eight vowels form **three** classes: /a/ low, /e ø ɵ/ mid,
-/i y u ʉ/ high. SON cuts across that twice. It separates /e/ from /ø ɵ/, all
-three of which are mid. And it puts /ʉ/ below /i y u/, all four of which are
-high. Both cuts are exactly the full/reduced distinction — and in this project
-full-versus-reduced is established *from stress behaviour*, via the
-minimal-word asymmetry and the default adjudication. So SON's tier structure is
-a height hierarchy refined by reducedness, and the refinement is the circular
-part. It is not a phonetic sonority hierarchy, and the paper should not call it
-one without the argument below.
+v1 correctly observed that these depart from pure vowel height on exactly three
+vowels — /e/ split from /ø ɵ/ (all mid), /ʉ/ split from /i y u/ (all high) — and
+then inferred that the departure *was* the full/reduced distinction. It is not.
+The departure is **peripherality**, the second dimension of the standard
+vocalic sonority hierarchy:
 
-## 2. Which vowel is the most sonorous phonetically?
+> low peripheral > mid peripheral > high peripheral > mid central > high central
 
-Derived from a **rule-neutral unstressed set**: the 330,869 vowel tokens
-(57.6% of the data, 30,143 word types) that *all six* stress rules agree are
-unstressed. A ranking built only from tokens no rule calls stressed cannot
-encode the stress pattern. Values are adjusted — vowel identity as a factor
-with syllable-final, syllable-initial, closed-syllable, speaker and word-type
-structure partialled out — and F1 and intensity are z-scored within speaker.
+(de Lacy 2002, 2004, 2006; Kenstowicz 1997; Gordon 2006.) Mapped onto the
+Chuvash inventory that hierarchy *is* SON, exactly:
 
-| vowel | n | height | adj F1 (z) | adj intensity (z) | adj log duration | SON tier |
-|---|---|---|---|---|---|---|
-| /a/ ⟨а⟩ | 108,489 | low | **+0.900** | **+0.366** | **4.564** | 1 |
-| /ɵ/ ⟨ӑ⟩ | 53,199 | mid | **−0.167** | +0.061 | 4.328 | 4 |
-| /ø/ ⟨ӗ⟩ | 55,977 | mid | **−0.475** | −0.130 | 4.485 | 4 |
-| /e/ ⟨е⟩ | 46,239 | mid | −0.641 | +0.258 | 4.505 | 2 |
-| /u/ ⟨у⟩ | 33,583 | high | −0.662 | −0.012 | 4.452 | 3 |
-| /ʉ/ ⟨ы⟩ | 5,697 | high | −0.762 | −0.113 | 4.405 | 5 |
-| /i/ ⟨и⟩ | 24,687 | high | −1.049 | −0.107 | 4.506 | 3 |
-| /y/ ⟨ӳ⟩ | 2,998 | high | −1.142 | −0.163 | 4.458 | 3 |
-
-**The most sonorous vowel is /a/, unambiguously — on all three measures.**
-Beyond that the three measures disagree, and the disagreement is the finding.
-
-**On aperture, which is the standard articulatory correlate of sonority, the
-two reduced vowels are the second and third most sonorous vowels in the
-language.** ⟨ӑ⟩ at −0.167 and ⟨ӗ⟩ at −0.475 are more open than /e/, and more
-open than every high vowel. This is not a subtle margin: ⟨ӑ⟩ is 0.88 z more
-open than /y/. F1 is also the one measure here that is *not* used anywhere in
-this project as a correlate of stress, which is what makes it usable.
-
-So an aperture-derived hierarchy is
-
-> a > ɵ > ø > e > u > ʉ > i > y
-
-and it inverts SON exactly where SON departs from height. Note also that
-neither intensity nor duration groups the reduced vowels together: on intensity
-⟨ӑ⟩ is 3rd but ⟨ӗ⟩ 7th; on duration ⟨ӗ⟩ is 4th but ⟨ӑ⟩ is **last**. Whatever
-unites ⟨ӑ⟩ and ⟨ӗ⟩, no single phonetic scale measured here does it.
-
-Spearman correlations with SON: duration +0.761, intensity +0.589, height
-+0.377, aperture +0.184. **SON resembles the duration ranking most and the
-aperture ranking least** — i.e. it resembles the circular one most.
-
-## 3. Does the non-circular hierarchy predict stress?
-
-Each hierarchy is turned into a stress rule by the same algorithm SON uses —
-stress the rightmost vowel of the most sonorous tier the word contains — and
-tested on the 61,630 polysyllabic word tokens (24.1%) where the five
-hierarchies disagree. Model frame 145,077 vowels, 9,725 word types, with vowel
-identity, word-final syllable, utterance-final word, their interaction and
-speech rate controlled.
-
-| hierarchy | duration β | % | ΔAIC | intensity β (dB) | ΔAIC | circular? |
-|---|---|---|---|---|---|---|
-| DUR | +0.0637 | **+6.58** | 0 | −0.032 | 28.5 | for duration |
-| **SON** | +0.0453 | **+4.64** | 330 | **+0.224** | **0** | yes, §1 |
-| INT | +0.0048 | +0.49 | 754 | +0.114 | 21.6 | for intensity |
-| HEIGHT | −0.0009 | −0.09 | 758 | +0.176 | 13.1 | no |
-| F1 (aperture) | −0.0057 | −0.57 | 753 | −0.021 | 28.8 | no |
-
-**The two non-circular hierarchies do not predict duration at all.** Height
-gives −0.09% and aperture −0.57%, both indistinguishable from zero and ~750
-AIC behind. SON gives +4.64%.
-
-Since SON is height plus the reducedness refinement, and **height on its own is
-inert**, all of SON's duration power comes from the refinement. That is,
-from the full/reduced contrast — which is rule B5's primitive, not a sonority
-scale.
-
-On intensity the ordering is different: SON first, then height, then the
-circular intensity hierarchy. But every coefficient is 0.02–0.22 dB against a
-3 dB just-noticeable difference, so intensity does not discriminate
-perceptibly here and should not carry the argument.
-
-## 4. The written corpora, where there are no acoustics at all
-
-This is the other half of your question, and it is the cleaner test, because
-the written data cannot contain a phonetic circularity. Two phonological
-correlates from the Zheltov wordlist — the share of a vowel's syllables that
-stand in an open monosyllable (the minimal-word diagnostic) and the share of
-its polysyllabic tokens that are non-initial:
-
-| vowel | % open monosyllable | % non-initial |
+| tier | de Lacy class | Chuvash |
 |---|---|---|
-| /a/ | 0.06 | 70.8 |
-| /e/ | 0.07 | 83.9 |
-| /i/ | 0.19 | 52.0 |
-| /u/ | 0.32 | 30.7 |
-| /y/ | 0.77 | 28.6 |
-| /ø/ | **0.00** | 63.9 |
-| /ɵ/ | 0.02 | 68.8 |
-| /ʉ/ | **0.00** | 10.2 |
+| 1 | low peripheral | /a/ ⟨а⟩ |
+| 2 | mid peripheral | /e/ ⟨е⟩ |
+| 3 | high peripheral | /i y u/ ⟨и ӳ у⟩ |
+| 4 | mid central | /ø ɵ/ ⟨ӗ ӑ⟩ |
+| 5 | high central | /ʉ/ ⟨ы⟩ |
 
-Spearman ρ against each hierarchy (tier 1 = most sonorous, so a negative ρ
-means *more sonorous → more of the property*):
+So SON is not an ad hoc partition and not the full/reduced split wearing a
+different hat. It is a published, independently motivated hierarchy applied to
+this inventory. That the tier-3/tier-4 boundary happens to coincide with
+Chuvash's full/reduced split is a **substantive claim about Chuvash**, not a
+circularity — and it is the interesting claim, because it says the language's
+phonological vowel classes fall where the universal sonority scale predicts.
 
-| hierarchy | vs open monosyllables | vs non-initial |
+## 2. What is peripherality based on phonetically, and can it be measured?
+
+A peripheral vowel sits at the **edge** of the vowel space; a central vowel sits
+inside it. That is formant geometry, so it is directly measurable. Which
+operationalisation you choose turns out to decide the answer, so three were
+tried, on the **rule-neutral unstressed set** — the 315,531 tokens all six
+stress rules agree are unstressed, from the 9 speakers who have all eight
+vowels at n ≥ 20. Using only unstressed tokens is essential rather than
+fastidious: stressed vowels are hyperarticulated and therefore more peripheral,
+so measuring on all tokens would let the stress pattern into the measure meant
+to be independent of it. Neither F1 nor F2 is used anywhere in this project as
+a correlate of stress.
+
+| vowel | de Lacy | centroid distance | backness deviation | % on convex hull | F1 (z) |
+|---|---|---|---|---|---|
+| /a/ ⟨а⟩ | low periph | 1.245 | 0.550 | **100.0** | +0.720 |
+| /e/ ⟨е⟩ | mid periph | 0.666 | 0.644 | **88.9** | −0.508 |
+| /i/ ⟨и⟩ | high periph | 0.946 | 0.787 | **100.0** | −0.872 |
+| /u/ ⟨у⟩ | high periph | 0.897 | 0.867 | **100.0** | −0.597 |
+| /y/ ⟨ӳ⟩ | high periph | 0.730 | 0.470 | **66.7** | −0.898 |
+| /ɵ/ ⟨ӑ⟩ | mid central | 0.712 | 0.631 | 11.1 | −0.080 |
+| /ø/ ⟨ӗ⟩ | mid central | 0.265 | 0.212 | 11.1 | −0.274 |
+| /ʉ/ ⟨ы⟩ | high central | 0.258 | 0.151 | 11.1 | −0.551 |
+
+| measure | separates peripheral from central? | clean per speaker |
 |---|---|---|
-| SON | **−0.562** | −0.577 |
-| HEIGHT | +0.439 | **−0.861** |
-| F1 (aperture) | +0.539 | −0.738 |
+| distance from the vowel-space centroid | **no** — overlap of −0.046; /e/ and /ɵ/ swap | 1 of 9 |
+| backness deviation \|F2 − centroid\| | **no** — overlap of −0.161 | 0 of 9 |
+| **convex-hull membership** | **yes** — 66.7–100% vs 11.1%, gap 55.6 points | 3 of 9 |
 
-The two correlates pull apart, and informatively. On the **minimal-word**
-correlate only SON has the right sign: the aperture hierarchy gets it backwards
-(+0.539), because it ranks ⟨ӑ⟩ and ⟨ӗ⟩ near the top and those are precisely
-the two vowels that never stand in an open monosyllable. On the **non-initial**
-correlate height does best (−0.861) — which is the positional result already in
-the paper, that the restriction tracks height and not weight.
+**Convex-hull membership works, and it is also the formally correct reading of
+"peripheral":** a vowel at the edge of the space is a vertex of its convex
+hull. The hull of the Chuvash vowel space is `{a, u, y, i, e}` — precisely de
+Lacy's peripheral set — with `{ø, ɵ, ʉ}` inside it.
 
-## 5. So: is the logic circular?
+Centroid distance fails because the centroid of an eight-vowel inventory sits
+wherever the inventory is densest; Chuvash has four front vowels, which pulls
+the centroid forward and deflates /e/'s distance while ⟨ӑ⟩, sitting alone in the
+low-back region, gets an inflated one. Backness deviation fails because ⟨ӗ⟩ is
+not in fact central in F2 (z +0.368) — it is front, just not *peripherally*
+front.
 
-**Your design is not circular. Rule SON, as currently specified, is.** And the
-non-circular versions of it do not work. Three ways forward, in order of how
-much they concede.
+**Height is recovered perfectly by F1, 8 of 8**, within both classes:
+peripheral a(low) > e(mid) > u, i, y(high); central ɵ(mid) > ø(mid) > ʉ(high).
 
-**(a) Rename the rule and keep the result.** What the data support is a rule
-sensitive to the full/reduced contrast — which is B5 — and the evidence for the
-contrast is the minimal-word asymmetry in the written corpora, which involves
-no acoustics and no stress. That is a clean, non-circular argument, and it is
-already the paper's core. SON then becomes a reformulation of B5 with the tier
-mechanism doing the work of the full/reduced partition, and "sonority-sensitive"
-should be dropped or heavily qualified, because the phonetic scale that would
-justify it puts the reduced vowels near the top.
+## 3. The whole hierarchy, reconstructed from formants alone
 
-**(b) Argue that Chuvash sonority is not aperture.** Defensible — phonological
-sonority scales are routinely language-particular and need not be reducible to
-one acoustic dimension — but it costs the phonetic grounding the term was
-supposed to buy, and the honest version has to say which dimension it *is*. On
-this data no single measured dimension groups ⟨ӑ⟩ with ⟨ӗ⟩ and both below the
-high vowels.
+Splitting on hull membership and then ranking by F1 within each class
+reconstructs **all five tiers for all eight vowels, Spearman ρ = +1.000**
+(`sonority_delacy_test.csv`). No reference to stress, duration, intensity or f0
+enters the reconstruction.
 
-**(c) Find an independent measure that does order the vowels as SON needs.**
-Candidates not tested here, in decreasing order of how likely I think they are
-to work: perceptual loudness in sones rather than dB SPL; total periodic
-energy over the vowel rather than midpoint intensity; F1 bandwidth or spectral
-tilt; and the degree to which the vowel resists coarticulatory
-undershoot — reduced vowels are typically more undershoot-prone, which would
-give a principled reason for them to pattern below full vowels of the same
-height. The last is the one I would try, and it can be measured on this corpus
-as the vowel's formant distance from its own speaker-specific target as a
-function of duration.
+So the answer to your question is yes: the classic hierarchy is measurable in
+this data, and Chuvash instantiates it exactly.
 
-## 6. Limits
+## 4. What this does to the rule comparison
 
-- The rule-neutral unstressed set is defined by the six full/reduced rules, so
-  it inherits their vowel partition in deciding *which tokens* to include —
-  though not in ranking the vowels, which is what matters here. A token that
-  every rule calls unstressed is a conservative choice and the set is 57.6% of
-  the data, so this is unlikely to drive the ranking; it has not been tested
-  against an alternative definition.
-- /y/ and /ʉ/ have 2,998 and 5,697 tokens against 108,489 for /a/. Their
-  positions in the ranking are the least secure.
-- Both intrinsic models reported a singular fit and a convergence warning
-  (`negative eigenvalue`), which for a model this large with two crossed random
-  effects usually means one variance component is at zero. The fixed effects
-  are the quantity of interest and are stable, but the warning is real and the
-  ranking should be re-checked with `spk` dropped before it goes in the paper.
-- Chuvash Voice is one speaker and supplies most of the tokens, so "within
-  speaker" normalisation is doing less work than the phrase suggests.
-- Aperture is indexed by F1 alone. F1 is the standard proxy but it is not the
-  same thing as sonority, and no articulatory data is available here.
+It rehabilitates the result in `sonority_rule_tests.csv` rather than changing
+the numbers. On the conflict subset (61,630 polysyllabic word tokens, 145,077
+vowels, 9,725 word types, utterance edge and vowel identity controlled):
+
+| hierarchy | duration β | % | ΔAIC |
+|---|---|---|---|
+| **SON** = the de Lacy hierarchy | +0.0453 | **+4.64** | 330 |
+| height alone | −0.0009 | −0.09 | 758 |
+| F1/aperture ranking alone | −0.0057 | −0.57 | 753 |
+| duration-derived (circular) | +0.0637 | +6.58 | 0 |
+
+v1 read "height alone predicts nothing" as evidence against a sonority
+account. The correct reading is the opposite: **height alone is not the
+hierarchy.** One dimension of a two-dimensional scale should not be expected to
+work, and it doesn't. The two-dimensional hierarchy does, at +4.64% — and it is
+now grounded in a measurement that never sees stress.
+
+The one comparison still to make is against B5 on this same subset, since SON
+and B5 differ on 17.7–18.8% of word tokens. From `rule_conflict_models.csv`,
+SON led on duration there too (+2.61% against B5's +0.56%, ΔAIC 80). What the
+peripherality result adds is a reason to prefer SON's *formulation*: its tiers
+are independently motivated, whereas B5's full/reduced partition is stipulated.
+
+## 5. Limits
+
+- **9 speakers.** Only nine have all eight vowels at n ≥ 20, and one of them is
+  Chuvash Voice's single dominant voice supplying most tokens. The aggregate
+  separation is clean; the per-speaker replication is not — hull membership
+  separates the two classes with no overlap in only **3 of 9** speakers. The
+  aggregate result is what the table reports and it should be presented as
+  such, not as a within-speaker universal.
+- **/y/ is the weak point**, on the hull in 66.7% of speakers against 100% for
+  /a i u/. With 2,998 tokens it is also the rarest peripheral vowel. If /y/
+  were reclassified as central the hierarchy would change, and this corpus
+  cannot rule that out firmly.
+- **The hull is computed on eight points in two dimensions**, where typical
+  hulls have 4–6 vertices. "On the hull" is therefore a minority status by
+  construction, which is what makes 11.1% for the central vowels unsurprising
+  and 66.7–100% for the peripheral ones meaningful — but it also means the
+  measure is coarse, and a continuous version (distance to the hull boundary)
+  would be a better instrument.
+- **F3 is ignored.** Rounding lives partly in F3 and ⟨ӳ⟩/⟨ӗ⟩ are rounded, so a
+  three-dimensional hull might classify differently.
+- The de Lacy classes were assigned by me from the standard descriptions, not
+  derived. The test is whether the *measurements* recover those classes, which
+  they do — but the class labels are an input.
+
+## 6. What I would put in the paper
+
+1. State the hierarchy with its citations, note that it maps onto the Chuvash
+   inventory to give exactly five tiers, and say that this is a prediction
+   rather than a stipulation.
+2. Report the hull measurement as the phonetic grounding, with the 9-speaker
+   and 3-of-9 caveats stated plainly. This is the part reviewers will press on,
+   and it is better to bound it yourself.
+3. Report that height recovers 8 of 8 and that the full tier structure recovers
+   at ρ = 1.00.
+4. Keep the SON-versus-B5 comparison on the conflict subset as the empirical
+   test, and present SON's advantage as being about *formulation* — independently
+   motivated tiers versus a stipulated partition — as much as about fit.

@@ -3,6 +3,22 @@
 # Derive a sonority hierarchy for the eight Chuvash vowels WITHOUT using
 # stress, then test whether it predicts stress.
 #
+# ⚠ THE CENTRAL CONCLUSION OF THIS SCRIPT IS WITHDRAWN. Read
+#   analyses/sonority_peripherality.R and output/sonority_note.md instead.
+#
+# This script claimed SON's tiers are "a height hierarchy refined by
+# reducedness" and that the refinement is circular. The departures from height
+# are in fact PERIPHERALITY, the second dimension of the standard vocalic
+# sonority hierarchy (de Lacy 2002/2004/2006; Kenstowicz 1997), which has
+# nothing to do with stress. SON is that published hierarchy applied to this
+# inventory. Peripherality is measurable here as convex-hull membership in the
+# speaker's own F1 x F2 space, and with height from F1 it reconstructs all five
+# tiers for all eight vowels (Spearman rho = 1.00).
+#
+# The rule-comparison numbers below are still valid; only the interpretation
+# changed. "Height alone predicts nothing" is not evidence against a sonority
+# account -- height alone is one dimension of a two-dimensional scale.
+#
 # THE CIRCULARITY PROBLEM, AND WHERE IT ACTUALLY SITS
 # ---------------------------------------------------
 # The obvious way to rank vowels by sonority is to measure their intensity or

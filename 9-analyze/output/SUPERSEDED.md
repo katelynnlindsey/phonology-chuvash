@@ -146,3 +146,33 @@ The headline result is unchanged and marginally stronger: of the 173 wordlist
 CFCR/CRCR types ending in a reduced vowel, **66 have a stem-final reduced vowel
 and all 66 geminate; none do not.** (The Python run gave 63 of 173, likewise
 with none failing to geminate.)
+
+## 2026-09-28 — "SON is circular" was wrong
+
+`sonority_hierarchy.R` and v1 of `sonority_note.md` concluded that rule SON's
+tiers were a height hierarchy refined by reducedness, and that the refinement
+was circular because full-versus-reduced is established in this project from
+stress behaviour. **Withdrawn.** SON's departures from pure height are the
+PERIPHERAL/CENTRAL distinction — the second dimension of the standard vocalic
+sonority hierarchy (low peripheral > mid peripheral > high peripheral > mid
+central > high central; de Lacy 2002/2004/2006, Kenstowicz 1997, Gordon 2006) —
+which is independent of stress. Mapped onto the Chuvash inventory that
+hierarchy gives exactly SON's five tiers.
+
+`analyses/sonority_peripherality.R` then measures both dimensions on the
+rule-neutral unstressed set: peripherality as convex-hull membership in the
+speaker's own F1 × F2 space, height as F1. Both recover the de Lacy classes 8
+of 8, and the full tier structure reconstructs at Spearman ρ = +1.000 with no
+reference to stress, duration, intensity or f0.
+
+Two subsidiary readings also change. Centroid distance and backness deviation
+do NOT recover the classes (they misclassify /e/ and /ɵ/, swapping them), so the
+operationalisation of "peripheral" is load-bearing and must be stated. And
+"height alone predicts nothing" (−0.09%, ΔAIC 758) is not evidence against a
+sonority account: height is one dimension of a two-dimensional scale, and the
+two-dimensional version predicts duration at +4.64%.
+
+Caveat that survives: only 9 speakers have all eight vowels at n ≥ 20, and hull
+membership separates the classes with no overlap in only 3 of those 9. The
+aggregate separation is clean (66.7–100% vs 11.1%); the within-speaker
+replication is weak.
