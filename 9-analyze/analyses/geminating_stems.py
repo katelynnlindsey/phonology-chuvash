@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""Identify the geminating-stem class: nouns of the shape C V C Ṙ whose stem
+"""SUPERSEDED by analyses/geminating_stems.R -- use that one.
+
+This version reads /tmp/mono_all_types.csv, a scratch export that does not
+survive a reboot, and applies a hand-written homoglyph map instead of the
+config's normalise_orthography(). The R port reads mono_clean.rds through the
+pipeline, so it sees 406,973 usable types against this script's 412,484 raw
+rows and confirms 66 stem-final geminating types against this script's 63.
+The two agree on all 62 stems this one finds; the R version additionally finds
+кача, тара and сӳле. Kept only for reference.
+
+Identify the geminating-stem class: nouns of the shape C V C Ṙ whose stem
 surfaces with a long consonant before a vowel-initial suffix.
 
 пулӑ 'fish' ~ пулли '(its) fish'; ҫӗнӗ 'new' ~ ҫӗнни 'the new one'.
