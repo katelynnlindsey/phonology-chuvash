@@ -1,7 +1,14 @@
 # Loading the current data in R
 
-Everything below was run against the files on disk on 27 Sep 2026 and the
-numbers are what you should see. If yours differ, see §3.
+Every number below was read off the files on disk on 27 Sep 2026, and the code
+blocks in §1, §3, §4(a), §4(c), §6 and §9 were executed as written on that
+date — those are what you should see. If yours differ, see §3.
+
+**Not executed:** the `run_pipeline()` calls in §8, whose stated runtimes come
+from earlier runs, and the one-liners in §4(b) and §5, which are illustrative
+rather than checked. The stage-4 re-run that would add `stress_rule_SON` to
+`data/leveled/` has not been done — that is exactly why §6 computes SON in
+your session instead.
 
 ## 1. Quick start
 
@@ -152,9 +159,14 @@ the grouping variable for Chuvash Voice and `speaker_id` for Common Voice.
 Random effects throughout this project are
 `(1 | speaker_id) + (1 | file_name) + (1 | word_label)`.
 
-Chuvash Voice's gender metadata is wrong — the dominant voice has median f0
-225.7 Hz and is labelled `male_masculine` — so don't use gender as a
-cross-corpus predictor.
+**Open question, not a settled finding:** Chuvash Voice's dominant voice has
+median f0 225.7 Hz but is labelled `male_masculine`, covering 193,978 vowels.
+For comparison, Common Voice's own speakers separate cleanly at 125.5 Hz male
+and 223.6 Hz female. Either the metadata is wrong or this speaker has an
+unusually high voice for the label — **that has not been resolved and needs
+your answer**, since only you know who recorded it. Until it is, treat gender
+as unusable for cross-corpus comparison rather than concluding the metadata is
+wrong.
 
 ## 8. Re-running the pipeline
 
