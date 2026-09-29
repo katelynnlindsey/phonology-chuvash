@@ -195,3 +195,60 @@ The earlier four-cell monosyllable test (`monosyllable_default_test.csv`,
 +9.45%) used `sN` correctly but did not require `word_complete` and used a
 different reference cell; its sign and rough magnitude stand, and the
 restricted-set figure of +13.88% supersedes it for the SON-A/SON-B comparison.
+
+## 2026-09-28 — stress-rule targets were computed from the surviving syllables
+
+**Every rule-comparison result computed before this entry is superseded.**
+`apply_stress_rule()` ran each rule over the vowels that survived cleaning
+rather than over the whole word, which was wrong in two independent ways.
+
+1. **Wrong syllable chosen.** A three-syllable /i.e.a/ word with only
+   syllables 1 and 2 measured has its rightmost full vowel in syllable 3. Run
+   on the surviving pair, a rightmost-full rule picked /e/ in syllable 2. The
+   correct labelling is that both measured syllables are unstressed and the
+   word contributes no stressed row.
+2. **Index/sidx mismatch.** `assign_stress()` returns a position in the vector
+   it is handed; the caller compared that against `sidx`. Those coincide only
+   when the surviving syllables run 1..n with no gaps, so a word with surviving
+   sidx {1, 3} and a target of 2 matched nothing and silently lost its stressed
+   row.
+
+Fixed by `full_vowel_sequence()` + `assign_stress_full()` in the config, which
+read `word_label_IPA_syllabified` (recovers `sN` for 100.000% of 303,139 word
+tokens). `analyses/stress_rules_full_word.R` re-runs everything.
+
+**Scale of the change.** 38.9% of word tokens are missing at least one
+syllable. The predicted stressed syllable moves for **29.0–32.6% of all word
+tokens** and for **74.4–83.8% of incomplete ones**. The share of words
+contributing a stressed row rises (A6 80.1% → 91.4%), because the mismatch had
+been discarding them.
+
+**New ranking, all 499,357 model rows, controlling vowel identity.** Duration
+now favours the B default outright, and the effects are an order of magnitude
+larger than the corrupted-label versions (which ran at 0.1–2.6%):
+
+| rule | duration | ΔAIC | | rule | intensity | ΔAIC |
+|---|---|---|---|---|---|---|
+| **B5** | **+10.03 ms** | 0 | | A6 | +0.523 dB | 0 |
+| B4 | +9.99 ms | 71 | | A5 | +0.508 | 21 |
+| B6 | +9.63 ms | 209 | | A4 | +0.494 | 41 |
+| SON-B | +8.74 ms | 272 | | B6 | +0.512 | 97 |
+| A4 | +8.09 ms | 678 | | B5 | +0.506 | 116 |
+
+B5 is first and is the **only** rule clearing the 10 ms duration JND. On
+intensity the A rules still lead but every effect is 0.05–0.52 dB against a
+3 dB JND, so the Dobrovolsky asymmetry survives the fix.
+
+On the conflict subset (56,762 word tokens, 18.7%) duration ranks SON-A
+(+6.00 ms) and SON-B (+8.70 ms) first, 6.5 AIC apart — effectively tied.
+
+**Also retired: the control-set instability.** The previous run reported the
+duration ranking as fragile to using `vowel_label` versus `vowel_height`
+(Spearman ρ = +0.217). With correct labels ρ = **+1.000** in all four
+subset × DV combinations. The fragility was an artefact of the corrupted
+predictor, not a methodological ambiguity.
+
+Superseded files: `master_rule_comparison.csv`, `rule_conflict_models.csv`,
+`rule_conflict_robustness.csv`, `rule_conflict_extended.csv`,
+`intensity_rule_models.csv`. `son_default_test.csv` is NOT affected — it
+filters on `word_complete`, where the surviving and full sequences coincide.

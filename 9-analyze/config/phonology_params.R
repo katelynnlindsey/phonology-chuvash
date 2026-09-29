@@ -471,23 +471,88 @@ assign_stress <- function(vowel_labels, rule = ACTIVE_RULE) {
   NA_integer_
 }
 
-# Apply one rule across a whole dataframe.
-# df must have columns: word_id, sidx (1-based), vowel_label (IPA).
+# ── The full word's vowel sequence ──────────────────────────────────────
+# Stress is a property of the WORD, so a rule has to see every syllable the
+# word has — not only the syllables that survived cleaning. Two distinct bugs
+# follow from using the surviving rows instead, and both are fixed here.
 #
-# A NA target yields "Unstressed" for every syllable of that word
-# rather than NA, so rule-B columns carry the same number of usable
-# rows as rule-A columns and model fits stay comparable.
+#   (1) WRONG SYLLABLE CHOSEN. For a three-syllable /i.e.a/ word with only
+#       syllables 1 and 2 measured, a rightmost-full rule run on the surviving
+#       pair picks /e/ in syllable 2. The word's actual rightmost full vowel is
+#       /a/ in syllable 3, which is unmeasured — so the correct labelling is
+#       that syllables 1 and 2 are both UNSTRESSED and the word contributes no
+#       stressed row at all.
+#
+#   (2) INDEX/SIDX MISMATCH. assign_stress() returns a position in the vector
+#       it was handed. apply_stress_rule() then compared that position against
+#       `sidx`. Those coincide only when the surviving syllables are
+#       1, 2, ... n with no gaps. For a word with surviving sidx {1, 3} a
+#       target of 2 means "the second surviving vowel", i.e. sidx 3 — but the
+#       comparison `sidx == 2` matches nothing, so the word silently lost its
+#       stressed row.
+#
+# word_label_IPA_syllabified carries the whole word, dot-separated, and is
+# present on the vowels, syllables and words tables. Extracting one vowel per
+# syllable from it reproduces sN exactly (checked on 40,000 word tokens: 100%,
+# no unparsable syllables), so it is a sound basis for the full sequence.
+full_vowel_sequence <- function(syllabified) {
+  vapply(strsplit(as.character(syllabified), ".", fixed = TRUE), function(sy) {
+    if (!length(sy) || anyNA(sy)) return(NA_character_)
+    v <- vapply(sy, function(s) {
+      ch <- tokenize_ipa(s)
+      hit <- ch[ch %in% TARGET_VOWELS_IPA]
+      if (length(hit) >= 1L) hit[1] else NA_character_
+    }, character(1), USE.NAMES = FALSE)
+    paste(v, collapse = "-")
+  }, character(1))
+}
+
+# Target SYLLABLE INDEX (1..sN) for one rule, from the full sequence. Because
+# the sequence is in syllable order, the index it returns IS an sidx and can be
+# compared to the data's sidx directly.
+assign_stress_full <- function(full_seq, rule = ACTIVE_RULE) {
+  vapply(strsplit(as.character(full_seq), "-", fixed = TRUE), function(vs) {
+    if (!length(vs) || all(is.na(vs))) return(NA_integer_)
+    s <- assign_stress(vs, rule)
+    if (length(s) && !is.na(s)) as.integer(s) else NA_integer_
+  }, integer(1))
+}
+
+# Apply one rule across a whole dataframe.
+# df must have: word_id, sidx (1-based), vowel_label, and — for the full-word
+# behaviour — word_label_IPA_syllabified. Falls back to the surviving-rows
+# behaviour with a warning if that column is absent.
+#
+# A NA target yields "Unstressed" for every syllable of that word rather than
+# NA, so rule-B columns carry the same number of usable rows as rule-A columns
+# and model fits stay comparable. A target pointing at an UNMEASURED syllable
+# likewise yields "Unstressed" everywhere, which is the correct labelling: the
+# word's stressed syllable is simply not in the data.
 apply_stress_rule <- function(df, rule = ACTIVE_RULE) {
   col <- paste0("stress_rule_", rule)
+  if (!"word_label_IPA_syllabified" %in% names(df)) {
+    warning("apply_stress_rule(): word_label_IPA_syllabified absent, ",
+            "falling back to the surviving-rows behaviour. Targets will be ",
+            "wrong for incomplete words. See full_vowel_sequence().",
+            call. = FALSE)
+    return(df %>%
+      dplyr::group_by(word_id) %>%
+      dplyr::mutate(
+        .target = assign_stress(vowel_label[order(sidx)], rule),
+        !!col   := dplyr::if_else(!is.na(.target) & sidx == .target,
+                                  "Stressed", "Unstressed")) %>%
+      dplyr::ungroup() %>% dplyr::select(-.target))
+  }
   df %>%
     dplyr::group_by(word_id) %>%
     dplyr::mutate(
-      .target = assign_stress(vowel_label[order(sidx)], rule),
+      .full   = full_vowel_sequence(word_label_IPA_syllabified[1]),
+      .target = assign_stress_full(.full, rule),
       !!col   := dplyr::if_else(!is.na(.target) & sidx == .target,
                                 "Stressed", "Unstressed")
     ) %>%
     dplyr::ungroup() %>%
-    dplyr::select(-.target)
+    dplyr::select(-.target, -.full)
 }
 
 # Adds stress_rule_A6, _A5, _A4, _B6, _B5, _B4.
