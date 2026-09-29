@@ -176,3 +176,22 @@ Caveat that survives: only 9 speakers have all eight vowels at n ≥ 20, and hul
 membership separates the classes with no overlap in only 3 of those 9. The
 aggregate separation is clean (66.7–100% vs 11.1%); the within-speaker
 replication is weak.
+
+## 2026-09-28 — word_complete and sN matter in the monosyllable designs
+
+The first run of `son_default_test.R` counted a word's SURVIVING VOWEL ROWS as
+its syllable count, so a polysyllable that lost syllables to cleaning was
+treated as a monosyllable. That inverted the presence result (−3.81% instead of
++13.88%) and it never left the analysis session. Both halves of the test now
+require `word_complete == TRUE` and use the pipeline's `sN`.
+
+This is the same trap the README warns about in §4(b): a rule's target is
+computed from the vowel labels present, so in an incomplete word the rule may
+designate the wrong syllable. Any future design that conditions on word shape —
+syllable count, first vs last syllable, monosyllable vs polysyllable — must
+filter on `word_complete` first. Only 51.3% of word tokens qualify.
+
+The earlier four-cell monosyllable test (`monosyllable_default_test.csv`,
++9.45%) used `sN` correctly but did not require `word_complete` and used a
+different reference cell; its sign and rough magnitude stand, and the
+restricted-set figure of +13.88% supersedes it for the SON-A/SON-B comparison.
