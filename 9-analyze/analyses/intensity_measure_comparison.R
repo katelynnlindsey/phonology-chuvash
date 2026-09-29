@@ -76,7 +76,10 @@ suppressPackageStartupMessages({
 OUT_DIR <- here::here("9-analyze", "output")
 dir.create(OUT_DIR, recursive = TRUE, showWarnings = FALSE)
 
-RULES <- c("A6", "A5", "A4", "B6", "B5", "B4", "final", "initial", "weight")
+# Derived from config so the three sonority rules are picked up automatically.
+# "SON" is a back-compatible alias of "SON_F" and is dropped to avoid fitting
+# the same model twice.
+RULES <- c(setdiff(RULE_NAMES, "SON"), "final", "initial", "weight")
 IMEAS <- c("int_point", "int_midpoint", "int_mean_valid", "int_peak", "int_total")
 DVS   <- c(IMEAS, "log_duration")
 
@@ -168,38 +171,63 @@ stopifnot(
 
 vowels <- vowels %>% left_join(vowel_cat_lookup, by = "vowel_label")
 
-predict_A <- function(is_full, sidx) if (any(is_full)) max(sidx[is_full]) else min(sidx)
-predict_B <- function(is_full, sidx) if (any(is_full)) max(sidx[is_full]) else NA_integer_
-
+# ⚠ THE RULE-RANKING SECTION OF THIS SCRIPT IS REDUNDANT AS OF 2026-09-29.
+# Its reason for existing was to establish WHICH INTENSITY MEASURE to use, and
+# that is settled: int_midpoint (peak_intensity is extreme-value biased,
+# total_intensity correlates with duration at r = 0.909). Those diagnostics
+# live in output/intensity_measure_diagnostics.csv and
+# intensity_step_bias.csv, neither of which uses a stress label.
+#
+# The rule ranking it also produces — output/intensity_rule_models.csv — is
+# now covered by analyses/stress_rules_full_word.R, which fits the same
+# intensity ranking under two control sets and on the conflict subset. Fitting
+# 72 models at ~200 s each here costs about four hours to reproduce a table we
+# already have, computed better, so intensity_rule_models.csv has been left at
+# its 2026-09-27 state rather than regenerated. Quote
+# full_word_rule_models.csv (dv == "int_midpoint") instead. The label fixes
+# below are in place so that a future run is correct if one is wanted.
+#
+# NAMED RULES: read the pipeline's labels, do not re-derive them.
+# This script used to run each rule over the vowels that survived cleaning
+# (predict_A/predict_B taking max(sidx[is_full])). Stress is a property of the
+# word, so for the 38.9% of word tokens missing a syllable that picked the
+# wrong syllable and, where the target syllable was itself unmeasured, quietly
+# gave the word a stressed row it should not have had. Stage 4 now writes
+# full-word labels; see analyses/stress_rules_full_word.R.
+#
+# BASELINES: still derived here, because they are not stress rules, but now
+# against sN and syllable 1 rather than the last and first surviving rows.
 stress_preds <- vowels %>%
-  distinct(word_id, sidx, sN, syllable_coda,
-           vowel_cat_6, vowel_cat_5, vowel_cat_4) %>%
+  distinct(word_id, sidx, sN, syllable_coda) %>%
   group_by(word_id) %>%
   arrange(sidx, .by_group = TRUE) %>%
   summarise(
-    pred_final   = max(sidx),
-    pred_initial = min(sidx),
+    pred_final   = sN[1],
+    pred_initial = 1L,
     pred_weight  = if (any(syllable_coda == "closed"))
-                     max(sidx[syllable_coda == "closed"]) else max(sidx),
-    pred_A6 = predict_A(vowel_cat_6 == "F", sidx),
-    pred_A5 = predict_A(vowel_cat_5 == "F", sidx),
-    pred_A4 = predict_A(vowel_cat_4 == "F", sidx),
-    pred_B6 = predict_B(vowel_cat_6 == "F", sidx),
-    pred_B5 = predict_B(vowel_cat_5 == "F", sidx),
-    pred_B4 = predict_B(vowel_cat_4 == "F", sidx),
+                     max(sidx[syllable_coda == "closed"]) else sN[1],
     .groups = "drop"
   )
 
-# !is.na(.x) & sidx == .x, not sidx == .x: under Rule B a word with no full
-# vowel has predicted_sidx = NA, meaning "nothing in this word is stressed".
-# Every syllable in it must read FALSE, not NA, or those rows drop out of the
-# Rule-B models and AIC stops being comparable across rules.
+# !is.na(.x) & sidx == .x, not sidx == .x: where the designated syllable was
+# not measured the word contributes no stressed row, and every surviving row
+# in it must read FALSE, not NA, or those rows drop out of the model and AIC
+# stops being comparable across rules. Under a B rule a word with no full
+# vowel likewise has every syllable Unstressed, which is what the stored
+# column already encodes.
+NAMED <- setdiff(RULES, c("final", "initial", "weight"))
+stopifnot("stage 4 must supply full-word stress labels" =
+            all(paste0("stress_rule_", NAMED) %in% names(vowels)))
 vowels <- vowels %>%
   left_join(stress_preds, by = "word_id") %>%
-  mutate(across(paste0("pred_", RULES),
+  mutate(across(paste0("pred_", c("final", "initial", "weight")),
                 ~ !is.na(.x) & sidx == .x,
-                .names = "is_stressed_{.col}")) %>%
+                .names = "is_stressed_{.col}"),
+         across(all_of(paste0("stress_rule_", NAMED)),
+                ~ .x == "Stressed", .names = "is_{.col}")) %>%
   rename_with(~ str_remove(., "pred_"), starts_with("is_stressed_pred_")) %>%
+  rename_with(~ str_replace(., "^is_stress_rule_", "is_stressed_"),
+              starts_with("is_stress_rule_")) %>%
   mutate(
     z_freq   = as.numeric(scale(log_corpus_freq_smoothed)),
     z_rate   = as.numeric(scale(log_speech_rate)),

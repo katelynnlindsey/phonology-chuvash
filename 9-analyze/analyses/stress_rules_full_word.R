@@ -115,8 +115,24 @@ cat(sprintf("\nconflict subset on full-word targets: %s of %s word tokens (%.1f%
             format(nrow(wd), big.mark = ","), 100 * mean(wd$conflict)))
 
 v <- merge(v, wd[, c("word_id", "conflict", tcols), with = FALSE], by = "word_id")
-for (r in RULES) v[, (paste0("is_stressed_", r)) :=
-                     !is.na(get(paste0("t_", r))) & sidx == get(paste0("t_", r))]
+
+# ── the labels the models use come from the PIPELINE, not from this script ──
+# Stage 4 (04_annotate.R) now writes stress_rule_<R> using the same
+# assign_stress_full() machinery. Read those columns rather than recomputing,
+# so that this comparison is a test of what the pipeline actually produced —
+# and assert that the two agree exactly, which is the end-to-end check that
+# the stage-4 re-run landed.
+for (r in RULES) {
+  sc <- paste0("stress_rule_", r)
+  stopifnot("stage 4 has not written this rule" = sc %in% names(v))
+  fresh <- !is.na(v[[paste0("t_", r)]]) & v$sidx == v[[paste0("t_", r)]]
+  agree <- mean((v[[sc]] == "Stressed") == fresh)
+  cat(sprintf("  stored %-18s == full-word recomputation: %.4f%%\n",
+              sc, 100 * agree))
+  stopifnot("stored stress labels disagree with full_vowel_sequence()" =
+              agree > 0.9999)
+  v[, (paste0("is_stressed_", r)) := get(sc) == "Stressed"]
+}
 HEIGHT <- c(a = "low", e = "mid", ø = "mid", ɵ = "mid",
             i = "high", y = "high", u = "high", ʉ = "high")
 v[, vowel_height := HEIGHT[vowel_label]]
@@ -173,9 +189,14 @@ out <- rbindlist(res)
 out[, dAIC := round(AIC - min(AIC), 1), by = .(subset, dv, controls)]
 out[, rank := frank(AIC, ties.method = "min"), by = .(subset, dv, controls)]
 fwrite(out, file.path(OUT, "full_word_rule_models.csv"))
-for (tag in unique(out$subset)) for (dv in unique(out$dv)) for (cn in names(CTRL)) {
-  cat(sprintf("\n-- %s | %s | controlling %s --\n", tag, dv, cn))
-  print(out[subset == tag & dv == get("dv") & controls == cn][order(rank),
+# `dv` would shadow the column of the same name inside out[...], making the
+# filter `dv == dv` — always TRUE — so both response variables were printed
+# into every table. The CSV was never affected (dAIC and rank are computed
+# by .(subset, dv, controls)), but the printed tables before 2026-09-29 were
+# duration and intensity rows interleaved. Use a non-colliding name.
+for (tag in unique(out$subset)) for (this_dv in unique(out$dv)) for (cn in names(CTRL)) {
+  cat(sprintf("\n-- %s | %s | controlling %s --\n", tag, this_dv, cn))
+  print(out[subset == tag & dv == this_dv & controls == cn][order(rank),
         .(rule, estimate = round(estimate, 5), t = round(t, 2),
           pct = round(pct, 2), effect_ms = round(effect_ms, 2),
           effect_dB = round(effect_dB, 3), dAIC)])

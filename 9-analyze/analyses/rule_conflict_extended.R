@@ -1,4 +1,18 @@
 # analyses/rule_conflict_extended.R
+#
+# ⚠⚠ SUPERSEDED IN FULL — DO NOT RUN, DO NOT QUOTE output/rule_conflict_extended.csv
+#
+# This script computes each rule's stress target from the vowels that SURVIVED
+# cleaning. Stress is a property of the word, so for the 38.9% of word tokens
+# with a missing syllable that is wrong twice over: it can pick the wrong
+# syllable, and the index it returns is a position in the surviving vector but
+# was compared against sidx, so some words silently lost their stressed row.
+# The predicted stressed syllable moves for 29.0–32.6% of all word tokens.
+#
+# REPLACEMENT: analyses/stress_rules_full_word.R, which covers exactly the
+# same ground (9 rules x 2 DVs x 2 control sets x {all words, conflict
+# subset}) using the pipeline's full-word labels. See its header and
+# output/full_word_label_changes.csv for what moved.
 # ================================================================
 # Extends analyses/rule_conflict_models.R with four things Kate asked for.
 #

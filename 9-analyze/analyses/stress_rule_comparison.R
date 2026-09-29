@@ -28,6 +28,21 @@
 #
 # Q1 inventory and the coda-attraction section are unaffected.
 #
+# ⚠ THIRD NOTICE, 2026-09-29 — FULL-WORD TARGETS. The stress_rule_* columns
+# this script reads are now computed from the whole word rather than from the
+# syllables that survived cleaning (stage 4 re-run; see
+# analyses/stress_rules_full_word.R and output/full_word_label_changes.csv).
+# The predicted stressed syllable moves for 29.0–32.6% of all word tokens and
+# 74.4–83.8% of the 38.9% that are incomplete, so every number this script
+# produced before 2026-09-29 is superseded. The three `final`/`initial`/
+# `weight` baselines were fixed here at the same time — they were derived from
+# max(sidx)/min(sidx) over the surviving rows and now use sN and 1.
+#
+# For the ranking itself prefer analyses/stress_rules_full_word.R, which fits
+# the same models under two control sets and on the conflict subset. This
+# script remains the home of the Q1 distributional evidence and the three
+# non-rule baselines.
+#
 # QUESTION: which candidate stress rule do the Chuvash corpora support?
 #
 # THE KEY RESTRUCTURE. A rule is two independent choices (see
@@ -89,7 +104,9 @@ suppressPackageStartupMessages({
 OUT_DIR <- here::here("9-analyze", "output")
 dir.create(OUT_DIR, recursive = TRUE, showWarnings = FALSE)
 
-RULES <- c(RULE_NAMES, "final", "initial", "weight")   # 6 named + 3 baselines
+# RULE_NAMES carries "SON" as a back-compatible alias of "SON_F"; fitting both
+# would duplicate a model and put two identical rows in the ranking.
+RULES <- c(setdiff(RULE_NAMES, "SON"), "final", "initial", "weight")
 INVENTORIES <- names(VOWEL_INVENTORIES)                # "6" "5" "4"
 
 # ---- 0. Load ----------------------------------------------------------------
@@ -245,12 +262,23 @@ print(as.data.frame(inventory_evidence), row.names = FALSE)
 
 rule_cols <- paste0("stress_rule_", RULE_NAMES)
 
+# The three baselines must target a position in the WHOLE word, exactly as the
+# named rules now do (see analyses/stress_rules_full_word.R). max(sidx) and
+# min(sidx) range over the syllables that survived cleaning, so in a word with
+# a missing final syllable `final` used to designate the last SURVIVING
+# syllable — a different, and always earlier, syllable than the word's last.
+# sN is the pipeline's syllable count for the word and is the right bound;
+# `initial` is syllable 1 by definition. `weight` keeps its own fallback but
+# falls back to sN rather than to the last surviving syllable. Where the target
+# syllable was not measured the word contributes no stressed row, which is the
+# same convention the named rules follow.
 derive_baselines <- function(df, id) {
+  stopifnot("derive_baselines needs the pipeline's sN" = "sN" %in% names(df))
   df %>% group_by(across(all_of(id))) %>% arrange(sidx, .by_group = TRUE) %>%
-    mutate(stress_rule_final   = if_else(sidx == max(sidx), "Stressed", "Unstressed"),
-           stress_rule_initial = if_else(sidx == min(sidx), "Stressed", "Unstressed"),
+    mutate(stress_rule_final   = if_else(sidx == sN, "Stressed", "Unstressed"),
+           stress_rule_initial = if_else(sidx == 1L, "Stressed", "Unstressed"),
            .wt = if (any(syllable_coda == "closed", na.rm = TRUE))
-                   max(sidx[syllable_coda == "closed"], na.rm = TRUE) else max(sidx),
+                   max(sidx[syllable_coda == "closed"], na.rm = TRUE) else sN[1],
            stress_rule_weight  = if_else(sidx == .wt, "Stressed", "Unstressed")) %>%
     ungroup() %>% select(-.wt)
 }
@@ -330,8 +358,29 @@ cat("(this is the ONLY place rules A and B differ; JND refs: 3 dB, 10 ms, 1 Hz)\
 print(as.data.frame(default_evidence), row.names = FALSE)
 
 # =============================================================================
-# 3. ACOUSTIC MODELS, all nine rules, full dataset
+# 3-5. ACOUSTIC MODELS, DETECTED STRESS, MASTER TABLE — OFF BY DEFAULT
 # =============================================================================
+# These three sections are superseded by analyses/stress_rules_full_word.R,
+# which fits the same ranking on the pipeline's full-word labels under two
+# control specifications and on the conflict subset, and reports the rank
+# correlation between them. The models here carry three random effects on
+# ~500k rows and take a few hours; re-running them reproduces a table we
+# already have, computed better, so they are gated.
+#
+# Sections 1a-1d (the Q1 distributional evidence from the written corpora) and
+# section 2 are NOT gated — nothing else produces them.
+#
+# To run them anyway: RUN_SUPERSEDED_ACOUSTICS=1 Rscript analyses/stress_rule_comparison.R
+# Note that section 5's master table depends on section 3, so all three go
+# together. output/rule_acoustic_models.csv, rule_detected_descriptive.csv and
+# master_rule_comparison.csv are left at their 2026-09-27 state otherwise, and
+# are listed as stale in output/script_currency_audit.md.
+if (!nzchar(Sys.getenv("RUN_SUPERSEDED_ACOUSTICS"))) {
+  cat("\n\n=== sections 3-5 SKIPPED (superseded by stress_rules_full_word.R) ===\n")
+  cat("set RUN_SUPERSEDED_ACOUSTICS=1 to fit them anyway\n")
+  cat("\n✓ stress_rule_comparison.R complete (Q1 + Q2)\n")
+  quit(save = "no", status = 0)
+}
 
 vowels <- vowels %>%
   derive_baselines("word_id") %>%

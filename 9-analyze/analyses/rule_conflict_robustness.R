@@ -1,6 +1,20 @@
 # ══════════════════════════════════════════════════════════════════════
 # rule_conflict_robustness.R
 #
+# ⚠⚠ SUPERSEDED IN FULL — DO NOT RUN, DO NOT QUOTE
+#    output/rule_conflict_robustness.csv, rule_conflict_singular.csv
+#
+# Same defect as rule_conflict_models.R: targets from the surviving vowels
+# rather than the whole word. Its headline finding — that the ranking flips
+# between the two control sets (rho = +0.217) — was an ARTEFACT of those
+# labels. With full-word labels the two control sets agree at rho = +1.000 in
+# all four subset x DV combinations, so the instability this script was
+# written to document does not exist.
+#
+# REPLACEMENT: analyses/stress_rules_full_word.R, which fits both control
+# sets and reports the rank correlation.
+# ══════════════════════════════════════════════════════════════════════
+#
 # Two checks on rule_conflict_models.R, both of which change what the
 # ranking means.
 #

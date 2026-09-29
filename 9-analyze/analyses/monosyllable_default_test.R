@@ -1,14 +1,39 @@
+# =============================================================================
+# monosyllable_default_test.R
+#
+# THE A-vs-B DEFAULT, TESTED ON MONOSYLLABLES.
+# A and B differ only in a word with no full vowel: A stresses the leftmost
+# reduced vowel, B leaves the word stressless. A monosyllable with a reduced
+# vowel is the cleanest case — under A it bears stress, under B it does not —
+# but its duration also carries whole-word and utterance-edge lengthening,
+# which is why every cell below is a WORD-FINAL syllable: final lengthening is
+# then equalised across cells rather than confounded with the contrast.
+#
+# Reference cell = reduced vowel in the final syllable of a polysyllable that
+# no A rule stresses. If the monosyllabic reduced vowel patterns with that
+# reference it supports B; if it patterns with the stressed full vowels it
+# supports A.
+#
+# LABELS COME FROM THE PIPELINE. Earlier this script recomputed each A rule
+# over the vowels that survived cleaning. That is wrong for the 38.9% of word
+# tokens with a missing syllable (see analyses/stress_rules_full_word.R): the
+# rule must target the rightmost full vowel of the WHOLE word, whether or not
+# that syllable was measured. Stage 4 now writes full-word labels, so this
+# script reads stress_rule_<R> instead of deriving anything. It bit only the
+# two polysyllabic cells — a monosyllable is complete by construction.
+#
+# Output: output/monosyllable_default_test.csv
+# =============================================================================
 source(here::here("9-analyze","analyses","00_session_setup.R"))
 library(data.table); library(broom.mixed)
 OUT <- PATHS$output_dir
 FULLV <- c("a","e","i","u","y"); REDV <- c("ø","ɵ","ʉ")
+ARULES <- c("A6","A5","A4")
 v <- as.data.table(vowels)[!is.na(vowel_label) & !is.na(sidx) & !is.na(word_id)]
-ord <- v[order(word_id, sidx)]
-tg <- ord[, as.list(setNames(lapply(c("A6","A5","A4"), function(r) assign_stress(vowel_label, r)),
-                             c("tA6","tA5","tA4"))), by=word_id]
-v <- merge(v, tg, by="word_id")
-for (r in c("A6","A5","A4")) v[, (paste0("s",r)) := !is.na(get(paste0("t",r))) & sidx==get(paste0("t",r))]
-v[, any_A := sA6 | sA5 | sA4]
+stopifnot("stage 4 must supply full-word stress labels" =
+            all(paste0("stress_rule_", ARULES) %in% names(v)))
+v[, any_A := Reduce(`|`, lapply(paste0("stress_rule_", ARULES),
+                                function(cn) get(cn) == "Stressed"))]
 v[, vclass := fifelse(vowel_label %in% FULLV,"full",
               fifelse(vowel_label %in% REDV,"reduced",NA_character_))]
 v[, syl_final := as.integer(sidx==sN)]

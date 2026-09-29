@@ -76,13 +76,22 @@ NOTES <- c(
   log_corpus_freq_smoothed = "log frequency in the monolingual corpus, smoothed for word types absent from it (see in_mono_corpus).",
   stress_rule_A6     = "Rightmost full vowel, else leftmost reduced; 6-vowel full inventory. The traditional description (Krueger 1961).",
   stress_rule_B5     = "Rightmost full vowel, else NO stress; 5-vowel full inventory. The draft's preferred rule (its 'Rule E').",
-  stressed_sidx_B6   = "NA means this rule assigns the word no stress at all, not missing data. Same for B5 and B4."
+  stress_rule_SON_F  = "Rightmost vowel of the most sonorous tier present in the word, always. Tiers follow the de Lacy/Kenstowicz hierarchy applied to this inventory: 1 /a/, 2 /e/, 3 /i y u/, 4 /ø ɵ/, 5 /ʉ/. Unlike A and B it does not partition the inventory into full and reduced.",
+  stress_rule_SON_A  = "As SON_F, except that when the most sonorous tier present is CENTRAL (tier 4 or 5) the LEFTMOST vowel of that tier is stressed rather than the rightmost.",
+  stress_rule_SON_B  = "As SON_F, except that when the most sonorous tier present is CENTRAL the word is stressless. The sonority analogue of the B default.",
+  stress_rule_SON    = "Back-compatible alias of stress_rule_SON_F. Identical column; do not fit both.",
+  stressed_sidx_B6   = "NA means this rule assigns the word no stress at all, not missing data. Same for B5, B4 and SON_B."
 )
 note_for <- function(col) {
   if (col %in% names(NOTES)) return(NOTES[[col]])
   if (grepl("^intensity_step", col))        return(NOTES[["intensity_step1"]])
   if (grepl("^(f0|word|phrase)_.*step", col)) return("One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are.")
-  if (grepl("^stress_rule_[AB][654]$", col))  return("Predicted stress under this rule. Never NA: under a B rule, a word with no full vowel has every syllable Unstressed.")
+  if (grepl("^stress_rule_", col))  return(paste(
+    "Predicted stress under this rule, computed from the WHOLE word (all sN",
+    "syllables, whether or not each was measured) and not from the rows that",
+    "survived cleaning. Never NA: where the designated syllable was not",
+    "measured, or a B/SON_B rule leaves the word stressless, every surviving",
+    "syllable reads Unstressed."))
   if (grepl("^stressed_sidx_B", col))         return(NOTES[["stressed_sidx_B6"]])
   if (grepl("^vowel_cat_[654]$", col))        return("F/R/L under the 6-, 5- or 4-full-vowel inventory. L = loan-only vowel, excluded.")
   if (grepl("^word_cat_[654]$", col))         return("Per-word F/R string under the given inventory, loan vowels dropped.")

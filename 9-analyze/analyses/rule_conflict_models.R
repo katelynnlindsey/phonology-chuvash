@@ -1,6 +1,20 @@
 # ══════════════════════════════════════════════════════════════════════
 # rule_conflict_models.R
 #
+# ⚠⚠ SUPERSEDED IN FULL — DO NOT RUN, DO NOT QUOTE
+#    output/rule_conflict_models.csv, rule_conflict_profile.csv,
+#    rule_conflict_pairwise.csv
+#
+# Targets are computed from the vowels that SURVIVED cleaning rather than from
+# the whole word, which is wrong for the 38.9% of word tokens with a missing
+# syllable (two separate bugs — wrong syllable chosen, and the returned index
+# is a position in the surviving vector but was compared against sidx).
+# The header note below about stress_rule_SON "not yet in data/leveled" is
+# also out of date: stage 4 now writes all ten rules.
+#
+# REPLACEMENT: analyses/stress_rules_full_word.R.
+# ══════════════════════════════════════════════════════════════════════
+#
 # Rank the candidate stress rules on the subset of words where they
 # actually disagree, and add SON — pure rightmost-to-sonority — to the
 # comparison.

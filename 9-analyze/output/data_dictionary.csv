@@ -1,230 +1,244 @@
 table,column,type,created_by,pct_missing,n_distinct,example,note
-vowels_spoken_annotated,file_name,character,01_load_raw,0,41337,utterance_000000,
+vowels_spoken_annotated,file_name,character,01_load_raw,0,46336,utterance_000000,
 vowels_spoken_annotated,corpus,character,01_load_raw,0,2,chuvash_voice,
-vowels_spoken_annotated,speaker_id,character,01_load_raw,6.34,106,177,Sparse. See speaker_coverage.csv before using it as a random effect or reporting a speaker count.
-vowels_spoken_annotated,word_id,character,02_clean,0,141097,utterance_000000_1,"file_name + dense_rank(word_start). Unique per word token. NOT built from widx, which collides on 1.25% of tokens."
-vowels_spoken_annotated,sentence,character,01_load_raw,0,30382,Вӑйӑн-шайӑн упӑшка мар.,
-vowels_spoken_annotated,gender,character,01_load_raw,10.82,3,male_masculine,
-vowels_spoken_annotated,age,character,01_load_raw,80.44,6,twenties,
-vowels_spoken_annotated,duration_seconds,numeric,01_load_raw,0,1745,1.98,
-vowels_spoken_annotated,speech_rate,numeric,03_build_levels,0,6409,0.5051,
-vowels_spoken_annotated,log_speech_rate,numeric,03_build_levels,0,6391,-0.6831,
-vowels_spoken_annotated,word_label,character,01_load_raw,0,15690,мар,
-vowels_spoken_annotated,word_label_IPA,character,03_build_levels,0,15688,mar,
-vowels_spoken_annotated,word_label_IPA_syllabified,character,03_build_levels,0,15688,mar,
-vowels_spoken_annotated,word_category,character,01_load_raw,0,88,F,
-vowels_spoken_annotated,widx,integer,03_build_levels,0,54,3,"Position of the word in the ORTHOGRAPHIC sentence, INFERRED by string-matching the aligner label against sentence tokens. Collides on 1,758 word tokens (1.25%). Do not use as an identifier; phrase_position and rel_phrase_position inherit its error rate."
+vowels_spoken_annotated,speaker_id,character,01_load_raw,13.06,111,177,Sparse. See speaker_coverage.csv before using it as a random effect or reporting a speaker count.
+vowels_spoken_annotated,word_id,character,02_clean,0,303139,utterance_000000_1,"file_name + dense_rank(word_start). Unique per word token. NOT built from widx, which collides on 1.25% of tokens."
+vowels_spoken_annotated,sentence,character,01_load_raw,0,33203,Вӑйӑн-шайӑн упӑшка мар.,
+vowels_spoken_annotated,gender,character,01_load_raw,17.49,3,male_masculine,
+vowels_spoken_annotated,age,character,01_load_raw,81.76,6,twenties,
+vowels_spoken_annotated,duration_seconds,numeric,01_load_raw,0,2017,1.98,
+vowels_spoken_annotated,speech_rate,numeric,03_build_levels,0,8079,3.03,
+vowels_spoken_annotated,log_speech_rate,numeric,03_build_levels,0,8018,1.109,
+vowels_spoken_annotated,word_label,character,01_load_raw,0,31103,вӑйӑн-шайӑн,
+vowels_spoken_annotated,word_label_IPA,character,03_build_levels,0,31100,ʋɵjɵn-ʃajɵn,
+vowels_spoken_annotated,word_label_IPA_syllabified,character,03_build_levels,0,31100,ʋɵ.jɵn-.ʃa.jɵn,
+vowels_spoken_annotated,word_category,character,01_load_raw,0,116,RRFR,
+vowels_spoken_annotated,widx,integer,03_build_levels,0,56,1,"Position of the word in the ORTHOGRAPHIC sentence, INFERRED by string-matching the aligner label against sentence tokens. Collides on 1,758 word tokens (1.25%). Do not use as an identifier; phrase_position and rel_phrase_position inherit its error rate."
 vowels_spoken_annotated,wN,integer,03_build_levels,0,52,3,
-vowels_spoken_annotated,phrase_position,factor,03_build_levels,0,3,final,
-vowels_spoken_annotated,word_token_idx,integer,03_build_levels,0,32,1,The word's 1-based position in time within its recording. Unique within file_name.
-vowels_spoken_annotated,sidx,integer,01_load_raw,0,7,1,
-vowels_spoken_annotated,sN,integer,01_load_raw,0,7,1,
-vowels_spoken_annotated,syllable_label,character,03_build_levels,0,1778,mar,
-vowels_spoken_annotated,syllable_coda,factor,04_annotate,0,2,closed,"open/closed. Depends on syllabification: exactly one consonant of each medial cluster goes to the following onset (NOT sonority-based onset maximisation, despite the docstring). /t-curl-c/ is treated as one segment as of 2026-09-25; before that it was split, mismarking 8,529 rows as closed."
-vowels_spoken_annotated,sidx_contour,integer,01_load_raw,0,7,1,"The contour extraction's own vowel index within the word, kept so its agreement with sidx stays inspectable (100% in the cleaned data; 98.21% at the join)."
-vowels_spoken_annotated,sN_contour,integer,01_load_raw,0,7,1,The contour extraction's own vowel count for the word. 100% agreement with sN in the cleaned data; 97.23% at the join.
-vowels_spoken_annotated,vowel_label,character,03_build_levels,0,8,a,
+vowels_spoken_annotated,phrase_position,factor,03_build_levels,0,3,initial,
+vowels_spoken_annotated,word_token_idx,integer,03_build_levels,0,53,1,The word's 1-based position in time within its recording. Unique within file_name.
+vowels_spoken_annotated,sidx,integer,01_load_raw,0,10,1,
+vowels_spoken_annotated,sN,integer,01_load_raw,0,10,4,
+vowels_spoken_annotated,syllable_label,character,03_build_levels,0,2116,ʋɵ,
+vowels_spoken_annotated,syllable_coda,factor,04_annotate,0,2,open,"open/closed. Depends on syllabification: exactly one consonant of each medial cluster goes to the following onset (NOT sonority-based onset maximisation, despite the docstring). /t-curl-c/ is treated as one segment as of 2026-09-25; before that it was split, mismarking 8,529 rows as closed."
+vowels_spoken_annotated,sidx_contour,integer,01_load_raw,0,10,1,"The contour extraction's own vowel index within the word, kept so its agreement with sidx stays inspectable (100% in the cleaned data; 98.21% at the join)."
+vowels_spoken_annotated,sN_contour,integer,01_load_raw,0,10,4,The contour extraction's own vowel count for the word. 100% agreement with sN in the cleaned data; 97.23% at the join.
+vowels_spoken_annotated,vowel_label,character,03_build_levels,0,8,ɵ,
 vowels_spoken_annotated,context,character,01_load_raw,0,4,internal,
-vowels_spoken_annotated,vowel_position,factor,04_annotate,0.12,4,internal,
-vowels_spoken_annotated,vowel_height,factor,04_annotate,0,3,low,
-vowels_spoken_annotated,vowel_backness,factor,04_annotate,0,3,central,
-vowels_spoken_annotated,vowel_rounding,factor,04_annotate,0,2,unrounded,
-vowels_spoken_annotated,vowel_class,factor,04_annotate,0,2,full,full/reduced under ACTIVE_RULE's inventory. Renamed from vowel_strength; values were strong/weak.
-vowels_spoken_annotated,pre_seg,character,01_load_raw,0,49,M,
-vowels_spoken_annotated,fol_seg,character,01_load_raw,0,61,R,
-vowels_spoken_annotated,abs_pre_seg,character,01_load_raw,1.19,92,M,
-vowels_spoken_annotated,abs_fol_seg,character,01_load_raw,1.76,191,R,
-vowels_spoken_annotated,stress_rule_A6,character,04_annotate,0,2,Stressed,"Rightmost full vowel, else leftmost reduced; 6-vowel full inventory. The traditional description (Krueger 1961)."
-vowels_spoken_annotated,stress_rule_A5,character,04_annotate,0,2,Stressed,"Predicted stress under this rule. Never NA: under a B rule, a word with no full vowel has every syllable Unstressed."
-vowels_spoken_annotated,stress_rule_A4,character,04_annotate,0,2,Stressed,"Predicted stress under this rule. Never NA: under a B rule, a word with no full vowel has every syllable Unstressed."
-vowels_spoken_annotated,stress_rule_B6,character,04_annotate,0,2,Stressed,"Predicted stress under this rule. Never NA: under a B rule, a word with no full vowel has every syllable Unstressed."
-vowels_spoken_annotated,stress_rule_B5,character,04_annotate,0,2,Stressed,"Rightmost full vowel, else NO stress; 5-vowel full inventory. The draft's preferred rule (its 'Rule E')."
-vowels_spoken_annotated,stress_rule_B4,character,04_annotate,0,2,Stressed,"Predicted stress under this rule. Never NA: under a B rule, a word with no full vowel has every syllable Unstressed."
-vowels_spoken_annotated,start,numeric,01_load_raw,0,2279,1.69,
-vowels_spoken_annotated,end,numeric,01_load_raw,0,2364,1.81,
-vowels_spoken_annotated,duration,numeric,01_load_raw,0,205,120,
-vowels_spoken_annotated,log_duration,numeric,03_build_levels,0,198,4.787,
-vowels_spoken_annotated,time,numeric,01_load_raw,0,12376,1.707,"The FAVE measurement time, in seconds. Together with file_name this is the vowel's unique key."
-vowels_spoken_annotated,F1,numeric,01_load_raw,0,280955,872.9,
-vowels_spoken_annotated,F2,numeric,01_load_raw,0,280955,1492,
-vowels_spoken_annotated,F3,numeric,01_load_raw,0,280955,2929,
-vowels_spoken_annotated,intensity,numeric,01_load_raw,0,280955,82.96,"new-FAVE single-point measurement, dB. Independent of the step series, but taken at ~13.8% of vowel duration (5th-95th pct 12.3-14.9%), i.e. on the onset ramp, not the steady state."
-vowels_spoken_annotated,int_midpoint,numeric,03_build_levels,0,280955,83.72,"ADOPTED intensity measure. Mean of intensity_step10 and step11, i.e. the vowel midpoint. Always exactly 2 samples at the same relative position, so no duration confound (r = -0.06 with duration). dB."
-vowels_spoken_annotated,n_valid_int_steps,numeric,03_build_levels,0,8,10,"How many of the 20 intensity steps were actually defined. Median 6, range 2-18; 42% of vowels have only 2. Correlates with duration at r = 0.93. Exposes the stage-7 extraction defect in the data."
-vowels_spoken_annotated,total_intensity,numeric,03_build_levels,0,280955,833,DO NOT USE. Sum of all 20 intensity steps including undefined-coded-as-zero cells; r = 0.909 with duration and 0.985 with n_valid_int_steps. It is a duration measure. Source of the '162 dB' figure in earlier drafts. Retained only to reproduce old results.
-vowels_spoken_annotated,peak_intensity,numeric,03_build_levels,0,280955,83.77,"DO NOT USE. Maximum over a VARIABLE number of samples, so biased upward for long vowels (peak minus midpoint grows 0 to 5.02 dB as valid steps go 2 to 16). Stressed vowels are longer, so it manufactures part of any stress effect."
+vowels_spoken_annotated,vowel_position,factor,04_annotate,0.1,4,internal,
+vowels_spoken_annotated,vowel_height,factor,04_annotate,0,3,mid,
+vowels_spoken_annotated,vowel_backness,factor,04_annotate,0,3,back,
+vowels_spoken_annotated,vowel_rounding,factor,04_annotate,0,2,rounded,
+vowels_spoken_annotated,vowel_class,factor,04_annotate,0,2,reduced,full/reduced under ACTIVE_RULE's inventory. Renamed from vowel_strength; values were strong/weak.
+vowels_spoken_annotated,pre_seg,character,01_load_raw,0,86,V,
+vowels_spoken_annotated,fol_seg,character,01_load_raw,0,113,J,
+vowels_spoken_annotated,abs_pre_seg,character,01_load_raw,1.14,139,V,
+vowels_spoken_annotated,abs_fol_seg,character,01_load_raw,2.17,258,J,
+vowels_spoken_annotated,iqr_outlier_duration,logical,02_clean,0,2,FALSE,
+vowels_spoken_annotated,iqr_outlier_F1,logical,02_clean,0,2,FALSE,
+vowels_spoken_annotated,iqr_outlier_F2,logical,02_clean,0,2,FALSE,
+vowels_spoken_annotated,iqr_outlier_any,logical,02_clean,0,2,FALSE,
+vowels_spoken_annotated,n_syl_present,integer,02_clean,0,9,3,
+vowels_spoken_annotated,word_complete,logical,02_clean,0,2,FALSE,
+vowels_spoken_annotated,smooth_error,numeric,01_load_raw,0,574344,2.998e-05,
+vowels_spoken_annotated,stress_rule_A6,character,04_annotate,0,2,Unstressed,"Rightmost full vowel, else leftmost reduced; 6-vowel full inventory. The traditional description (Krueger 1961)."
+vowels_spoken_annotated,stress_rule_A5,character,04_annotate,0,2,Unstressed,"Predicted stress under this rule, computed from the WHOLE word (all sN syllables, whether or not each was measured) and not from the rows that survived cleaning. Never NA: where the designated syllable was not measured, or a B/SON_B rule leaves the word stressless, every surviving syllable reads Unstressed."
+vowels_spoken_annotated,stress_rule_A4,character,04_annotate,0,2,Unstressed,"Predicted stress under this rule, computed from the WHOLE word (all sN syllables, whether or not each was measured) and not from the rows that survived cleaning. Never NA: where the designated syllable was not measured, or a B/SON_B rule leaves the word stressless, every surviving syllable reads Unstressed."
+vowels_spoken_annotated,stress_rule_B6,character,04_annotate,0,2,Unstressed,"Predicted stress under this rule, computed from the WHOLE word (all sN syllables, whether or not each was measured) and not from the rows that survived cleaning. Never NA: where the designated syllable was not measured, or a B/SON_B rule leaves the word stressless, every surviving syllable reads Unstressed."
+vowels_spoken_annotated,stress_rule_B5,character,04_annotate,0,2,Unstressed,"Rightmost full vowel, else NO stress; 5-vowel full inventory. The draft's preferred rule (its 'Rule E')."
+vowels_spoken_annotated,stress_rule_B4,character,04_annotate,0,2,Unstressed,"Predicted stress under this rule, computed from the WHOLE word (all sN syllables, whether or not each was measured) and not from the rows that survived cleaning. Never NA: where the designated syllable was not measured, or a B/SON_B rule leaves the word stressless, every surviving syllable reads Unstressed."
+vowels_spoken_annotated,stress_rule_SON_F,character,04_annotate,0,2,Unstressed,"Rightmost vowel of the most sonorous tier present in the word, always. Tiers follow the de Lacy/Kenstowicz hierarchy applied to this inventory: 1 /a/, 2 /e/, 3 /i y u/, 4 /ø ɵ/, 5 /ʉ/. Unlike A and B it does not partition the inventory into full and reduced."
+vowels_spoken_annotated,stress_rule_SON_A,character,04_annotate,0,2,Unstressed,"As SON_F, except that when the most sonorous tier present is CENTRAL (tier 4 or 5) the LEFTMOST vowel of that tier is stressed rather than the rightmost."
+vowels_spoken_annotated,stress_rule_SON_B,character,04_annotate,0,2,Unstressed,"As SON_F, except that when the most sonorous tier present is CENTRAL the word is stressless. The sonority analogue of the B default."
+vowels_spoken_annotated,stress_rule_SON,character,04_annotate,0,2,Unstressed,Back-compatible alias of stress_rule_SON_F. Identical column; do not fit both.
+vowels_spoken_annotated,start,numeric,01_load_raw,0,2494,0.53,
+vowels_spoken_annotated,end,numeric,01_load_raw,0,2845,0.59,
+vowels_spoken_annotated,duration,numeric,01_load_raw,0,768,60,
+vowels_spoken_annotated,log_duration,numeric,03_build_levels,0,721,4.094,
+vowels_spoken_annotated,time,numeric,01_load_raw,0,16478,0.5374,"The FAVE measurement time, in seconds. Together with file_name this is the vowel's unique key."
+vowels_spoken_annotated,F1,numeric,01_load_raw,0,574344,529.4,
+vowels_spoken_annotated,F2,numeric,01_load_raw,0,574344,1108,
+vowels_spoken_annotated,F3,numeric,01_load_raw,0,574344,2974,
+vowels_spoken_annotated,intensity,numeric,01_load_raw,0,574344,84.94,"new-FAVE single-point measurement, dB. Independent of the step series, but taken at ~13.8% of vowel duration (5th-95th pct 12.3-14.9%), i.e. on the onset ramp, not the steady state."
+vowels_spoken_annotated,int_midpoint,numeric,03_build_levels,0,574344,85.11,"ADOPTED intensity measure. Mean of intensity_step10 and step11, i.e. the vowel midpoint. Always exactly 2 samples at the same relative position, so no duration confound (r = -0.06 with duration). dB."
+vowels_spoken_annotated,n_valid_int_steps,numeric,03_build_levels,0,11,2,"How many of the 20 intensity steps were actually defined. Median 6, range 2-18; 42% of vowels have only 2. Correlates with duration at r = 0.93. Exposes the stage-7 extraction defect in the data."
+vowels_spoken_annotated,total_intensity,numeric,03_build_levels,0,574344,170.2,DO NOT USE. Sum of all 20 intensity steps including undefined-coded-as-zero cells; r = 0.909 with duration and 0.985 with n_valid_int_steps. It is a duration measure. Source of the '162 dB' figure in earlier drafts. Retained only to reproduce old results.
+vowels_spoken_annotated,peak_intensity,numeric,03_build_levels,0,574344,85.11,"DO NOT USE. Maximum over a VARIABLE number of samples, so biased upward for long vowels (peak minus midpoint grows 0 to 5.02 dB as valid steps go 2 to 16). Stressed vowels are longer, so it manufactures part of any stress effect."
 vowels_spoken_annotated,intensity_step1,numeric,01_load_raw,0,1,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step2,numeric,01_load_raw,0,1,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step3,numeric,01_load_raw,0,314,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step4,numeric,01_load_raw,0,5452,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step5,numeric,01_load_raw,0,25333,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step6,numeric,01_load_raw,0,58160,83.13,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step7,numeric,01_load_raw,0,119942,83.19,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step8,numeric,01_load_raw,0,163125,83.33,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step9,numeric,01_load_raw,0,163132,83.67,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step10,numeric,01_load_raw,0,280955,83.77,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step11,numeric,01_load_raw,0,280955,83.67,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step12,numeric,01_load_raw,0,163132,83.4,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step13,numeric,01_load_raw,0,163125,83.13,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step14,numeric,01_load_raw,0,119942,82.92,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step15,numeric,01_load_raw,0,58160,82.78,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step16,numeric,01_load_raw,0,25333,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step17,numeric,01_load_raw,0,5452,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step18,numeric,01_load_raw,0,314,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,intensity_step19,numeric,01_load_raw,0,1,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step2,numeric,01_load_raw,0,2281,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step3,numeric,01_load_raw,0,18968,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step4,numeric,01_load_raw,0,40241,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step5,numeric,01_load_raw,0,81508,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step6,numeric,01_load_raw,0,145329,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step7,numeric,01_load_raw,0,263699,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step8,numeric,01_load_raw,0,347231,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step9,numeric,01_load_raw,0,347248,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step10,numeric,01_load_raw,0,574344,85.11,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step11,numeric,01_load_raw,0,574344,85.11,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step12,numeric,01_load_raw,0,347248,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step13,numeric,01_load_raw,0,347231,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step14,numeric,01_load_raw,0,263699,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step15,numeric,01_load_raw,0,145329,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step16,numeric,01_load_raw,0,81508,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step17,numeric,01_load_raw,0,40242,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step18,numeric,01_load_raw,0,18968,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
+vowels_spoken_annotated,intensity_step19,numeric,01_load_raw,0,2279,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
 vowels_spoken_annotated,intensity_step20,numeric,01_load_raw,0,1,0,"One of 20 nominal readings across the vowel. 71% of cells across all 20 are literal 0.0 = Praat 'undefined', already 0 in the stage-7 CSV. Steps 1, 2, 19, 20 are 0 for EVERY vowel; only 10 and 11 are never 0. Treat 0 as missing."
-vowels_spoken_annotated,f0_mean,numeric,01_load_raw,0.12,280619,195.3,
-vowels_spoken_annotated,f0_slope,numeric,03_build_levels,1.13,276808,19.86,
-vowels_spoken_annotated,slope_type,factor,03_build_levels,1.13,4,Rising,
-vowels_spoken_annotated,f0_step1,numeric,01_load_raw,1.13,277779,185.9,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step2,numeric,01_load_raw,1.13,277779,185.9,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step3,numeric,01_load_raw,1.13,277779,186.4,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step4,numeric,01_load_raw,1.13,277779,187.7,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step5,numeric,01_load_raw,1.13,277779,188.9,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step6,numeric,01_load_raw,1.13,277779,190.2,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step7,numeric,01_load_raw,1.13,277779,191.4,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step8,numeric,01_load_raw,1.13,277779,192.7,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step9,numeric,01_load_raw,1.13,277779,194,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step10,numeric,01_load_raw,1.13,277779,195.2,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step11,numeric,01_load_raw,1.13,277779,196.5,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step12,numeric,01_load_raw,1.13,277779,197.7,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step13,numeric,01_load_raw,1.13,277779,199,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step14,numeric,01_load_raw,1.13,277779,200.3,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step15,numeric,01_load_raw,1.13,277779,201.5,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step16,numeric,01_load_raw,1.13,277779,202.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step17,numeric,01_load_raw,1.13,277779,204,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step18,numeric,01_load_raw,1.13,277779,205.3,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step19,numeric,01_load_raw,1.13,277779,205.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,f0_step20,numeric,01_load_raw,1.13,277779,205.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_start,numeric,01_load_raw,0,2010,1.61,
-vowels_spoken_annotated,word_end,numeric,01_load_raw,0,2309,1.98,
-vowels_spoken_annotated,word_f0_step1,numeric,01_load_raw,0.16,140768,189.7,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step2,numeric,01_load_raw,0.16,140768,189.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step3,numeric,01_load_raw,0.16,140768,189.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step4,numeric,01_load_raw,0.16,140768,189.9,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step5,numeric,01_load_raw,0.16,140768,189.9,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step6,numeric,01_load_raw,0.16,140768,190,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step7,numeric,01_load_raw,0.16,140768,190,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step8,numeric,01_load_raw,0.16,140768,195.4,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step9,numeric,01_load_raw,0.16,140768,204,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step10,numeric,01_load_raw,0.16,140768,212.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step11,numeric,01_load_raw,0.16,140768,221.2,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step12,numeric,01_load_raw,0.16,140768,229.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step13,numeric,01_load_raw,0.16,140768,238.4,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step14,numeric,01_load_raw,0.16,140768,247,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step15,numeric,01_load_raw,0.16,140768,248.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step16,numeric,01_load_raw,0.16,140768,248.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step17,numeric,01_load_raw,0.16,140768,248.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step18,numeric,01_load_raw,0.16,140768,248.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step19,numeric,01_load_raw,0.16,140768,248.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_f0_step20,numeric,01_load_raw,0.16,140768,248.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step1,numeric,01_load_raw,0,11950,0,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step2,numeric,01_load_raw,0,91715,72.2,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step3,numeric,01_load_raw,0,126302,72.91,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step4,numeric,01_load_raw,0,133685,79.32,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step5,numeric,01_load_raw,0,138495,82.82,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step6,numeric,01_load_raw,0,140583,83.51,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step7,numeric,01_load_raw,0,140984,83.21,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step8,numeric,01_load_raw,0,141035,83.72,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step9,numeric,01_load_raw,0,141035,82.97,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step10,numeric,01_load_raw,0,141097,82.39,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step11,numeric,01_load_raw,0,141097,81.76,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step12,numeric,01_load_raw,0,141036,78.23,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step13,numeric,01_load_raw,0,141036,65.97,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step14,numeric,01_load_raw,0,140985,68.92,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step15,numeric,01_load_raw,0,140583,59.46,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step16,numeric,01_load_raw,0,138495,53.46,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step17,numeric,01_load_raw,0,133685,50.28,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step18,numeric,01_load_raw,0,126302,43.55,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step19,numeric,01_load_raw,0,91715,34.62,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,word_intensity_step20,numeric,01_load_raw,0,11949,0,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_label,character,01_load_raw,0,41337,utterance_000000,
-vowels_spoken_annotated,phrase_start,numeric,01_load_raw,0,200,0,
-vowels_spoken_annotated,phrase_end,numeric,01_load_raw,0,2044,1.98,
-vowels_spoken_annotated,phrase_f0_step1,numeric,01_load_raw,0,41337,197.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step2,numeric,01_load_raw,0,41337,197.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step3,numeric,01_load_raw,0,41337,197.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step4,numeric,01_load_raw,0,41337,197.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step5,numeric,01_load_raw,0,41337,197.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step6,numeric,01_load_raw,0,41337,226.5,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step7,numeric,01_load_raw,0,41337,230.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step8,numeric,01_load_raw,0,41337,226.9,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step9,numeric,01_load_raw,0,41337,223.3,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step10,numeric,01_load_raw,0,41337,219.7,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step11,numeric,01_load_raw,0,41337,216,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step12,numeric,01_load_raw,0,41337,212.4,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step13,numeric,01_load_raw,0,41337,208.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step14,numeric,01_load_raw,0,41337,205.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step15,numeric,01_load_raw,0,41337,201.5,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step16,numeric,01_load_raw,0,41337,197.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step17,numeric,01_load_raw,0,41337,194.2,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step18,numeric,01_load_raw,0,41337,190.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step19,numeric,01_load_raw,0,41337,215.9,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_f0_step20,numeric,01_load_raw,0,41337,246.2,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step1,numeric,01_load_raw,0,41252,22.19,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step2,numeric,01_load_raw,0,41327,23.97,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step3,numeric,01_load_raw,0,41329,25.59,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step4,numeric,01_load_raw,0,41331,22.77,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step5,numeric,01_load_raw,0,41329,64.86,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step6,numeric,01_load_raw,0,41336,85,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step7,numeric,01_load_raw,0,41334,83.14,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step8,numeric,01_load_raw,0,41336,81.47,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step9,numeric,01_load_raw,0,41329,80.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step10,numeric,01_load_raw,0,41330,83.32,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step11,numeric,01_load_raw,0,41332,78.76,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step12,numeric,01_load_raw,0,41328,78.12,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step13,numeric,01_load_raw,0,41333,80.11,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step14,numeric,01_load_raw,0,41331,68.06,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step15,numeric,01_load_raw,0,41329,73.82,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step16,numeric,01_load_raw,0,41328,74.84,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step17,numeric,01_load_raw,0,41334,81.55,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step18,numeric,01_load_raw,0,41334,82.76,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step19,numeric,01_load_raw,0,41330,82.26,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,phrase_intensity_step20,numeric,01_load_raw,0,41260,54.23,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
-vowels_spoken_annotated,corpus_freq,integer,02_clean,1.46,3133,119096,
-vowels_spoken_annotated,log_corpus_freq,numeric,02_clean,1.46,3133,11.69,
-vowels_spoken_annotated,log_corpus_freq_smoothed,numeric,04_annotate,0,3132,11.69,"log frequency in the monolingual corpus, smoothed for word types absent from it (see in_mono_corpus)."
-vowels_spoken_annotated,in_mono_corpus,logical,04_annotate,0,2,TRUE,
-words_spoken_annotated,word_id,character,02_clean,0,141097,common_voice_cv_17333693_1,"file_name + dense_rank(word_start). Unique per word token. NOT built from widx, which collides on 1.25% of tokens."
-words_spoken_annotated,file_name,character,01_load_raw,0,41337,common_voice_cv_17333693,
+vowels_spoken_annotated,f0_mean,numeric,01_load_raw,0.15,573480,224.5,
+vowels_spoken_annotated,f0_slope,numeric,03_build_levels,1.28,564787,3.406,
+vowels_spoken_annotated,slope_type,factor,03_build_levels,1.28,4,Rising,
+vowels_spoken_annotated,f0_step1,numeric,01_load_raw,1.28,567010,219.4,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step2,numeric,01_load_raw,1.28,567010,219.4,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step3,numeric,01_load_raw,1.28,567010,219.4,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step4,numeric,01_load_raw,1.28,567010,219.4,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step5,numeric,01_load_raw,1.28,567010,219.4,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step6,numeric,01_load_raw,1.28,567010,219.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step7,numeric,01_load_raw,1.28,567010,220,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step8,numeric,01_load_raw,1.28,567010,220.3,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step9,numeric,01_load_raw,1.28,567010,220.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step10,numeric,01_load_raw,1.28,567010,220.9,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step11,numeric,01_load_raw,1.28,567010,221.3,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step12,numeric,01_load_raw,1.28,567010,221.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step13,numeric,01_load_raw,1.28,567010,221.9,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step14,numeric,01_load_raw,1.28,567010,222.2,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step15,numeric,01_load_raw,1.28,567010,222.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step16,numeric,01_load_raw,1.28,567010,222.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step17,numeric,01_load_raw,1.28,567010,222.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step18,numeric,01_load_raw,1.28,567010,222.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step19,numeric,01_load_raw,1.28,567010,222.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,f0_step20,numeric,01_load_raw,1.28,567010,222.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_start,numeric,01_load_raw,0,2209,0.41,
+vowels_spoken_annotated,word_end,numeric,01_load_raw,0,2948,1.2,
+vowels_spoken_annotated,word_f0_step1,numeric,01_load_raw,0.14,302575,197.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step2,numeric,01_load_raw,0.14,302575,197.2,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step3,numeric,01_load_raw,0.14,302575,210.9,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step4,numeric,01_load_raw,0.14,302575,224.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step5,numeric,01_load_raw,0.14,302575,233.3,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step6,numeric,01_load_raw,0.14,302575,233,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step7,numeric,01_load_raw,0.14,302575,232.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step8,numeric,01_load_raw,0.14,302575,232.2,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step9,numeric,01_load_raw,0.14,302575,231.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step10,numeric,01_load_raw,0.14,302575,231.4,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step11,numeric,01_load_raw,0.14,302575,231,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step12,numeric,01_load_raw,0.14,302575,230.7,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step13,numeric,01_load_raw,0.14,302575,230.3,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step14,numeric,01_load_raw,0.14,302575,229.9,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step15,numeric,01_load_raw,0.14,302575,229.5,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step16,numeric,01_load_raw,0.14,302575,229.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step17,numeric,01_load_raw,0.14,302575,228.7,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step18,numeric,01_load_raw,0.14,302575,228.4,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step19,numeric,01_load_raw,0.14,302575,228,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_f0_step20,numeric,01_load_raw,0.14,302575,227.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step1,numeric,01_load_raw,0,51248,38.93,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step2,numeric,01_load_raw,0,231928,69.85,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step3,numeric,01_load_raw,0,286429,80.96,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step4,numeric,01_load_raw,0,295054,85.13,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step5,numeric,01_load_raw,0,300256,82.89,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step6,numeric,01_load_raw,0,302525,80.02,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step7,numeric,01_load_raw,0,303002,85.54,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step8,numeric,01_load_raw,0,303068,85.13,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step9,numeric,01_load_raw,0,303068,81.35,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step10,numeric,01_load_raw,0,303139,84.22,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step11,numeric,01_load_raw,0,303139,80.95,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step12,numeric,01_load_raw,0,303069,81.24,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step13,numeric,01_load_raw,0,303069,75.73,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step14,numeric,01_load_raw,0,303005,83.61,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step15,numeric,01_load_raw,0,302528,82.33,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step16,numeric,01_load_raw,0,300259,80.98,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step17,numeric,01_load_raw,0,295054,79.07,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step18,numeric,01_load_raw,0,286430,81.09,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step19,numeric,01_load_raw,0,231928,79.26,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,word_intensity_step20,numeric,01_load_raw,0,51246,79.49,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_label,character,01_load_raw,0,46336,utterance_000000,
+vowels_spoken_annotated,phrase_start,numeric,01_load_raw,0,207,0,
+vowels_spoken_annotated,phrase_end,numeric,01_load_raw,0,2315,1.98,
+vowels_spoken_annotated,phrase_f0_step1,numeric,01_load_raw,0,46335,197.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step2,numeric,01_load_raw,0,46335,197.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step3,numeric,01_load_raw,0,46335,197.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step4,numeric,01_load_raw,0,46335,197.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step5,numeric,01_load_raw,0,46335,197.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step6,numeric,01_load_raw,0,46335,226.5,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step7,numeric,01_load_raw,0,46335,230.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step8,numeric,01_load_raw,0,46335,226.9,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step9,numeric,01_load_raw,0,46335,223.3,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step10,numeric,01_load_raw,0,46335,219.7,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step11,numeric,01_load_raw,0,46335,216,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step12,numeric,01_load_raw,0,46335,212.4,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step13,numeric,01_load_raw,0,46335,208.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step14,numeric,01_load_raw,0,46335,205.1,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step15,numeric,01_load_raw,0,46335,201.5,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step16,numeric,01_load_raw,0,46335,197.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step17,numeric,01_load_raw,0,46335,194.2,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step18,numeric,01_load_raw,0,46335,190.6,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step19,numeric,01_load_raw,0,46335,215.9,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_f0_step20,numeric,01_load_raw,0,46335,246.2,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step1,numeric,01_load_raw,0,46157,22.19,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step2,numeric,01_load_raw,0,46321,23.97,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step3,numeric,01_load_raw,0,46324,25.59,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step4,numeric,01_load_raw,0,46329,22.77,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step5,numeric,01_load_raw,0,46327,64.86,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step6,numeric,01_load_raw,0,46334,85,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step7,numeric,01_load_raw,0,46332,83.14,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step8,numeric,01_load_raw,0,46335,81.47,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step9,numeric,01_load_raw,0,46328,80.8,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step10,numeric,01_load_raw,0,46328,83.32,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step11,numeric,01_load_raw,0,46331,78.76,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step12,numeric,01_load_raw,0,46327,78.12,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step13,numeric,01_load_raw,0,46330,80.11,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step14,numeric,01_load_raw,0,46329,68.06,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step15,numeric,01_load_raw,0,46327,73.82,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step16,numeric,01_load_raw,0,46327,74.84,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step17,numeric,01_load_raw,0,46332,81.55,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step18,numeric,01_load_raw,0,46330,82.76,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step19,numeric,01_load_raw,0,46325,82.26,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,phrase_intensity_step20,numeric,01_load_raw,0,46169,54.23,"One of 20 readings across the interval. f0 steps are NOT affected by the zero-coding defect (0.00% zeros, 1.14% NA); the *_intensity_step series are."
+vowels_spoken_annotated,corpus_freq,integer,02_clean,2.19,3220,1962,
+vowels_spoken_annotated,log_corpus_freq,numeric,02_clean,2.19,3220,7.582,
+vowels_spoken_annotated,log_corpus_freq_smoothed,numeric,04_annotate,0,3219,0,"log frequency in the monolingual corpus, smoothed for word types absent from it (see in_mono_corpus)."
+vowels_spoken_annotated,in_mono_corpus,logical,04_annotate,0,2,FALSE,
+words_spoken_annotated,word_id,character,02_clean,0,303139,common_voice_cv_17333693_1,"file_name + dense_rank(word_start). Unique per word token. NOT built from widx, which collides on 1.25% of tokens."
+words_spoken_annotated,file_name,character,01_load_raw,0,46336,common_voice_cv_17333693,
 words_spoken_annotated,corpus,character,01_load_raw,0,2,common_voice_chuvash,
-words_spoken_annotated,speaker_id,character,01_load_raw,6.77,106,44,Sparse. See speaker_coverage.csv before using it as a random effect or reporting a speaker count.
-words_spoken_annotated,word_label,character,01_load_raw,0,15690,ӑна,
-words_spoken_annotated,word_label_IPA,character,03_build_levels,0,15688,ɵna,
-words_spoken_annotated,word_label_IPA_syllabified,character,03_build_levels,0,15688,ɵ.na,
-words_spoken_annotated,sN,integer,01_load_raw,0,7,2,
-words_spoken_annotated,word_category,character,01_load_raw,0,88,RF,
-words_spoken_annotated,word_cat_6,character,04_annotate,0,89,RF,"Per-word F/R string under the given inventory, loan vowels dropped."
-words_spoken_annotated,word_cat_5,character,04_annotate,0,88,RF,"Per-word F/R string under the given inventory, loan vowels dropped."
-words_spoken_annotated,word_cat_4,character,04_annotate,0,88,RF,"Per-word F/R string under the given inventory, loan vowels dropped."
-words_spoken_annotated,widx,integer,03_build_levels,0,54,3,"Position of the word in the ORTHOGRAPHIC sentence, INFERRED by string-matching the aligner label against sentence tokens. Collides on 1,758 word tokens (1.25%). Do not use as an identifier; phrase_position and rel_phrase_position inherit its error rate."
+words_spoken_annotated,speaker_id,character,01_load_raw,13.71,111,44,Sparse. See speaker_coverage.csv before using it as a random effect or reporting a speaker count.
+words_spoken_annotated,word_label,character,01_load_raw,0,31103,шупашкар,
+words_spoken_annotated,word_label_IPA,character,03_build_levels,0,31100,ʃupaʃkar,
+words_spoken_annotated,word_label_IPA_syllabified,character,03_build_levels,0,31100,ʃu.paʃ.kar,
+words_spoken_annotated,sN,integer,01_load_raw,0,10,3,
+words_spoken_annotated,word_category,character,01_load_raw,0,116,FFF,
+words_spoken_annotated,word_cat_6,character,04_annotate,0,104,F,"Per-word F/R string under the given inventory, loan vowels dropped."
+words_spoken_annotated,word_cat_5,character,04_annotate,0,105,F,"Per-word F/R string under the given inventory, loan vowels dropped."
+words_spoken_annotated,word_cat_4,character,04_annotate,0,105,F,"Per-word F/R string under the given inventory, loan vowels dropped."
+words_spoken_annotated,widx,integer,03_build_levels,0,56,1,"Position of the word in the ORTHOGRAPHIC sentence, INFERRED by string-matching the aligner label against sentence tokens. Collides on 1,758 word tokens (1.25%). Do not use as an identifier; phrase_position and rel_phrase_position inherit its error rate."
 words_spoken_annotated,wN,integer,03_build_levels,0,52,6,
-words_spoken_annotated,phrase_position,character,03_build_levels,0,3,medial,
-words_spoken_annotated,vowel_sequence,character,03_build_levels,0,958,ɵ-a,
-words_spoken_annotated,syllable_sequence,character,03_build_levels,0,15688,ɵ-na,
-words_spoken_annotated,stressed_sidx_A6,integer,04_annotate,0,7,2,
-words_spoken_annotated,stressed_sidx_A5,integer,04_annotate,0,7,2,
-words_spoken_annotated,stressed_sidx_A4,integer,04_annotate,0,7,2,
-words_spoken_annotated,stressed_sidx_B6,integer,04_annotate,9.77,8,2,"NA means this rule assigns the word no stress at all, not missing data. Same for B5 and B4."
-words_spoken_annotated,stressed_sidx_B5,integer,04_annotate,11.66,8,2,"NA means this rule assigns the word no stress at all, not missing data. Same for B5 and B4."
-words_spoken_annotated,stressed_sidx_B4,integer,04_annotate,12.1,8,2,"NA means this rule assigns the word no stress at all, not missing data. Same for B5 and B4."
+words_spoken_annotated,phrase_position,character,03_build_levels,0,3,initial,
+words_spoken_annotated,vowel_sequence,character,03_build_levels,0,1352,a,
+words_spoken_annotated,syllable_sequence,character,03_build_levels,0,35373,kar,
+words_spoken_annotated,stressed_sidx_A6,integer,04_annotate,8.6,11,3,
+words_spoken_annotated,stressed_sidx_A5,integer,04_annotate,8.54,11,3,
+words_spoken_annotated,stressed_sidx_A4,integer,04_annotate,8.54,11,3,
+words_spoken_annotated,stressed_sidx_B6,integer,04_annotate,15.05,11,3,"NA means this rule assigns the word no stress at all, not missing data. Same for B5, B4 and SON_B."
+words_spoken_annotated,stressed_sidx_B5,integer,04_annotate,16.54,11,3,"NA means this rule assigns the word no stress at all, not missing data. Same for B5, B4 and SON_B."
+words_spoken_annotated,stressed_sidx_B4,integer,04_annotate,16.87,11,3,"NA means this rule assigns the word no stress at all, not missing data. Same for B5, B4 and SON_B."
 words_spoken_annotated,stressed_position,factor,04_annotate,0,5,final,
-words_spoken_annotated,stressed_slope,factor,04_annotate,0.91,4,Falling,
-words_spoken_annotated,total_duration,numeric,03_build_levels,0,1620,110,
-words_spoken_annotated,dur_ratio_v1,numeric,03_build_levels,0,7013,0.4545,
-words_spoken_annotated,longest_sidx,integer,03_build_levels,0,7,2,
-words_spoken_annotated,log_duration_mean,numeric,03_build_levels,0,5348,4.003,
-words_spoken_annotated,dur_per_syl,list,03_build_levels,0,20310,<list>,
-words_spoken_annotated,slope_pattern,character,03_build_levels,0,504,Stable-Falling,
-words_spoken_annotated,f0_slope_mean,numeric,03_build_levels,0.43,140325,-0.7354,
-words_spoken_annotated,loudest_sidx,integer,03_build_levels,0,6,1,
-words_spoken_annotated,intensity_per_syl,list,03_build_levels,0,141097,<list>,
-words_spoken_annotated,log_speech_rate,numeric,03_build_levels,0,6391,0.6463,
-words_spoken_annotated,corpus_freq,integer,02_clean,0.89,3133,103017,
-words_spoken_annotated,log_corpus_freq,numeric,02_clean,0.89,3133,11.54,
-words_spoken_annotated,log_corpus_freq_smoothed,numeric,04_annotate,0,3132,11.54,"log frequency in the monolingual corpus, smoothed for word types absent from it (see in_mono_corpus)."
+words_spoken_annotated,stressed_slope,factor,04_annotate,9.47,4,Falling,
+words_spoken_annotated,total_duration,numeric,03_build_levels,0,2716,60,
+words_spoken_annotated,dur_ratio_v1,numeric,03_build_levels,23.03,11894,0.4545,
+words_spoken_annotated,longest_sidx,integer,03_build_levels,0,10,3,
+words_spoken_annotated,log_duration_mean,numeric,03_build_levels,0,10674,4.094,
+words_spoken_annotated,dur_per_syl,list,03_build_levels,0,53323,<list>,
+words_spoken_annotated,slope_pattern,character,03_build_levels,0,647,Falling,
+words_spoken_annotated,f0_slope_mean,numeric,03_build_levels,0.66,300580,-2.644,
+words_spoken_annotated,loudest_sidx,integer,03_build_levels,0,7,3,
+words_spoken_annotated,intensity_per_syl,list,03_build_levels,0,303139,<list>,
+words_spoken_annotated,log_speech_rate,numeric,03_build_levels,0,8018,1.052,
+words_spoken_annotated,n_syl_present,integer,02_clean,0,9,1,
+words_spoken_annotated,word_complete,logical,02_clean,0,2,FALSE,
+words_spoken_annotated,n_iqr_outliers,integer,03_build_levels,0,6,0,
+words_spoken_annotated,corpus_freq,integer,02_clean,1.42,3220,15156,
+words_spoken_annotated,log_corpus_freq,numeric,02_clean,1.42,3220,9.626,
+words_spoken_annotated,log_corpus_freq_smoothed,numeric,04_annotate,0,3219,9.626,"log frequency in the monolingual corpus, smoothed for word types absent from it (see in_mono_corpus)."
 words_spoken_annotated,in_mono_corpus,logical,04_annotate,0,2,TRUE,
-zheltov_annotated,word_label,character,01_load_raw,0,18985,а,
+zheltov_annotated,word_label,character,01_load_raw,0,18984,а,
 zheltov_annotated,word_label_IPA,character,03_build_levels,0,18984,a,
 zheltov_annotated,word_label_IPA_syllabified,character,03_build_levels,0,18984,a,
 zheltov_annotated,word_cat_6,character,04_annotate,0,94,F,"Per-word F/R string under the given inventory, loan vowels dropped."
@@ -241,22 +255,23 @@ zheltov_annotated,vowel_cat,character,04_annotate,0,2,F,
 zheltov_annotated,vowel_cat_6,character,04_annotate,0,2,F,"F/R/L under the 6-, 5- or 4-full-vowel inventory. L = loan-only vowel, excluded."
 zheltov_annotated,vowel_cat_5,character,04_annotate,0,2,F,"F/R/L under the 6-, 5- or 4-full-vowel inventory. L = loan-only vowel, excluded."
 zheltov_annotated,vowel_cat_4,character,04_annotate,0,2,F,"F/R/L under the 6-, 5- or 4-full-vowel inventory. L = loan-only vowel, excluded."
-zheltov_annotated,corpus_freq,integer,02_clean,80.2,1087,19789,
-zheltov_annotated,log_corpus_freq,numeric,02_clean,80.2,1087,9.893,
-zheltov_annotated,log_corpus_freq_smoothed,numeric,04_annotate,0,1086,9.893,"log frequency in the monolingual corpus, smoothed for word types absent from it (see in_mono_corpus)."
+zheltov_annotated,corpus_freq,integer,02_clean,35.3,1918,18689,
+zheltov_annotated,log_corpus_freq,numeric,02_clean,35.3,1918,9.836,
+zheltov_annotated,log_corpus_freq_smoothed,numeric,04_annotate,0,1917,9.836,"log frequency in the monolingual corpus, smoothed for word types absent from it (see in_mono_corpus)."
 zheltov_annotated,in_mono_corpus,logical,04_annotate,0,2,TRUE,
-mono_annotated,word_label,character,01_load_raw,0,412484,a,
-mono_annotated,word_label_IPA,character,03_build_levels,0,408505,a,
-mono_annotated,word_label_IPA_syllabified,character,03_build_levels,0,408505,a,
+mono_annotated,word_label,character,01_load_raw,0,430008,a,
+mono_annotated,word_label_IPA,character,03_build_levels,0,426085,a,
+mono_annotated,word_label_IPA_syllabified,character,03_build_levels,0,426085,a,
 mono_annotated,corpus,character,01_load_raw,0,1,mono,
-mono_annotated,corpus_freq,integer,02_clean,0,3300,13858,
-mono_annotated,log_corpus_freq,numeric,02_clean,0,3300,9.537,
-mono_annotated,word_cat_6,character,04_annotate,0,488,F,"Per-word F/R string under the given inventory, loan vowels dropped."
-mono_annotated,word_cat_5,character,04_annotate,0,496,F,"Per-word F/R string under the given inventory, loan vowels dropped."
-mono_annotated,word_cat_4,character,04_annotate,0,507,F,"Per-word F/R string under the given inventory, loan vowels dropped."
+mono_annotated,corpus_freq,integer,02_clean,0,3251,13858,
+mono_annotated,log_corpus_freq,numeric,02_clean,0,3251,9.537,
+mono_annotated,in_wordlist,logical,02_clean,0,2,FALSE,
+mono_annotated,word_cat_6,character,04_annotate,0,530,F,"Per-word F/R string under the given inventory, loan vowels dropped."
+mono_annotated,word_cat_5,character,04_annotate,0,537,F,"Per-word F/R string under the given inventory, loan vowels dropped."
+mono_annotated,word_cat_4,character,04_annotate,0,548,F,"Per-word F/R string under the given inventory, loan vowels dropped."
 mono_annotated,sidx,integer,01_load_raw,0,36,1,
 mono_annotated,sN,integer,01_load_raw,0,20,1,
-mono_annotated,syllable_label,character,03_build_levels,0,13837,a,
+mono_annotated,syllable_label,character,03_build_levels,0,13899,a,
 mono_annotated,syllable_coda,factor,04_annotate,0,2,open,"open/closed. Depends on syllabification: exactly one consonant of each medial cluster goes to the following onset (NOT sonority-based onset maximisation, despite the docstring). /t-curl-c/ is treated as one segment as of 2026-09-25; before that it was split, mismarking 8,529 rows as closed."
 mono_annotated,syl_position,factor,03_build_levels,0,4,only,
 mono_annotated,vowel_label,character,03_build_levels,0,8,a,

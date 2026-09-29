@@ -87,7 +87,11 @@ v <- as.data.table(vowels)[vowel_label %in% V8]
 w <- as.data.table(words)
 
 # ── 1. the rule-neutral unstressed set ──────────────────────────────────
-rule_cols <- paste0("stress_rule_", c("A6", "A5", "A4", "B6", "B5", "B4"))
+# Intersect over every candidate in config, not a hardcoded six: a set meant
+# to be free of stress-driven variation must exclude vowels that a sonority
+# rule stresses too. "SON" is an alias of "SON_F".
+rule_cols <- paste0("stress_rule_", setdiff(RULE_NAMES, "SON"))
+stopifnot("stage 4 must supply every rule column" = all(rule_cols %in% names(v)))
 v[, n_rules_stressed := rowSums(.SD == "Stressed", na.rm = TRUE),
   .SDcols = rule_cols]
 neutral <- v[n_rules_stressed == 0]
