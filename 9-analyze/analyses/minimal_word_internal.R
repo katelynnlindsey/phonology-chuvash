@@ -23,12 +23,19 @@
 #
 # The decisive measure turns out NOT to be sentence-initial position, which on
 # its own gives precision of only 0.19 against Zheltov and does not recover the
-# minimal-word asymmetry at all. It is BREADTH OF LEFT CONTEXT: a free word
-# combines with many different preceding words, while a stranded suffix attaches
-# to a restricted set of stems. Requiring both — a type must reach a fraction of
-# the base rate for sentence-initial position AND appear after at least 200
-# distinct preceding types (the count is capped at 500, so this is not
-# saturated) — gives precision 0.875.
+# minimal-word asymmetry at all. Adding BREADTH OF LEFT CONTEXT helps — a free
+# word combines with many different preceding words, while a stranded suffix
+# attaches to a restricted set of stems. Requiring both — a fraction of the base
+# rate for sentence-initial position AND at least 200 distinct preceding types
+# (count capped at 500, so this is not saturated) — gives precision 0.538 and
+# recall 0.457 on the 1,411 open-monosyllable candidates, printed by the sweep
+# below and saved to wordhood_thresholds.csv.
+#
+# That is a modest filter, not a good one: nearly half the types it keeps (18 of
+# 39) are absent from Zheltov. Do not quote the figure of 0.875 that an earlier
+# version of this header carried — it came from a grid run over ALL monosyllabic
+# types, open and closed, and closed monosyllables are overwhelmingly real
+# words, so that population is much easier than the one at issue here.
 #
 # HONEST LIMITATION ON INDEPENDENCE. The CRITERIA are corpus-internal and were
 # chosen on linguistic grounds. The THRESHOLDS were picked by looking at

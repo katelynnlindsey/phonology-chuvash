@@ -265,11 +265,17 @@ monolingual corpus alone.
 **What works and what does not.** Sentence-initial position alone — the
 obvious criterion, since a stranded suffix cannot begin a sentence — gives
 precision of only **0.19** against Zheltov and does **not** recover the
-minimal-word asymmetry. The load-bearing measure is **breadth of left
-context**: a free word combines with many different preceding words, a suffix
-with a restricted set of stems. Requiring ≥200 distinct preceding types (cap
-500) together with the sentence-initial criterion gives precision **0.875**,
-recall 0.278.
+minimal-word asymmetry. Adding **breadth of left context** (≥200 distinct
+preceding types, sampling cap 500) raises precision to **0.538** with recall
+**0.457**, on the 1,411 open-monosyllable candidates — the population that is
+actually ambiguous between word and suffix fragment. Nearly half the types the
+filter keeps (18 of 39) are absent from Zheltov.
+
+*A precision of 0.875 was quoted for this filter in an earlier version of this
+entry. That figure came from a threshold grid run over ALL monosyllabic types,
+open and closed. Closed monosyllables are overwhelmingly real words, so that
+population is far easier and the number does not describe the deployed filter.
+The authoritative validation is `wordhood_thresholds.csv`: 0.538 / 0.457.*
 
 **The grouped contrast is recovered, and is larger than Zheltov's:**
 
@@ -279,7 +285,7 @@ recall 0.278.
 | **internal** | **5.93%** | **16.37%** | **+10.44** |
 | Zheltov | 0.39% | 9.11% | +8.73 |
 
-**But the per-vowel ordering is not**: Spearman ρ against the Zheltov ordering
+**The per-vowel ordering is not recovered**: Spearman ρ against the Zheltov ordering
 is +0.228, because the filter leaves only 7–81 types per vowel. /y/ has 7 types
 (0.00% open here, 18.18% in Zheltov) and /ʉ/ has 15. Since the inventory
 question (6 vs 5 vs 4 full vowels) turns precisely on whether /y/ and /ʉ/
