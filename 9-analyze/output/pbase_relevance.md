@@ -177,8 +177,15 @@ without shortening its neighbours beyond what word length explains.
    types. PBase's Turkic entries are categorical; Chuvash's corpus is not.
 3. **The Mari parallel for the reduced vowels** (P6) gives the reduced-vowel
    analysis an external anchor, and frames it as a candidate areal feature of
-   the Volga-Kama zone rather than an inherited Turkic one. Róna-Tas (1997) and
-   Savelyev (2020) are already in the bibliography for the contact history.
+   the Volga-Kama zone rather than an inherited Turkic one. Savelyev (2020) is
+   already in your bibliography for the contact history. I also wrote
+   "Róna-Tas (1997)" here, but that year is **mine, not sourced** — Róna-Tas
+   appears in this session only as an uncited authority on vowel quality, and
+   no bibtex key or year for him exists in the draft. Check the citation before
+   using it. The same caution applies to my attributing PBase to "Mielke 2008"
+   anywhere in these notes: the distributed `readme.txt` gives only "PBase data
+   as of October 2, 2022" with no author-year, so the 2008 is an inference from
+   the literature and not from the data release.
 4. **The negative sonority-reduction result** (§4) belongs in the section that
    argues the sonority sensitivity is a stress-placement property. It rules out
    the obvious segmental alternative.

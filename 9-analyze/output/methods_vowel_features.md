@@ -43,16 +43,36 @@ figures must not be reused.*
 > fuller treatment; numbers here come from `rounding_contrasts.csv` and
 > `back_series_placement.csv`.
 
-Rounding lowers F3, but F3 also varies with backness, so the comparison is made
-within a harmony series against an unrounded anchor: /i/ for the front vowels,
-/a/ for the back.
+Rounding lowers F3, but F3 also varies with backness **and with height**, so the
+comparison is only identified within a pair matched on both, differing in
+rounding alone.
 
-**The back-series test fails its positive control, so it cannot be run.** /u/ is
-certainly rounded, yet against /a/ its ΔF3z is **+0.0435** — the wrong sign. F3
-lowering is a *front*-rounding cue; on back vowels the acoustic consequence of
-rounding lands in F2, where backness also lands, so the two cannot be separated
-with these three formants. Every back-series row is therefore marked
-`test_has_power = FALSE` and carries no verdict.
+**Correction, 2026-09-29 — the control was mis-specified, and the reason the
+back-series test cannot be run is different from what this note used to say.**
+The earlier text anchored the back series on **/a/** and reported /u/ vs /a/ at
+ΔF3z **+0.0435**, the wrong sign, concluding that F3 lowering is a front-rounding
+cue with no back-series power at all. But /u/ and /a/ are not height-matched —
+high against low — so that contrast confounds rounding with height and is not a
+valid control in either direction.
+
+The height-matched control is **/u/ vs /ʉ/ ⟨ы⟩**: both high, differing in
+rounding, which is the pair `analyses/vowel_space.R` actually uses. It gives
+ΔF3z **−0.091 (z = −5.1)** and ΔF2z **−0.144 (z = −7.9)** — both the sign
+rounding predicts. **So the back-series F3 test does have power**, modest but
+real, and the blanket claim that it does not is withdrawn.
+
+That does not rescue the ⟨ӑ⟩ verdict, because the same defect applies to it.
+⟨ӑ⟩ /ɵ/ is mid; the only back unrounded vowel available to anchor it is /a/,
+which is low. Its measured ΔF3z against /a/ is **+0.107 (z = +11.2)** —
+significantly the *wrong* sign for rounding, and significantly non-zero — but
+so was the discredited /u/-vs-/a/ figure, and for the same structural reason.
+Chuvash has no mid back unrounded vowel, so **no height-matched anchor for ⟨ӑ⟩
+exists in this inventory and its rounding is not determinable from F3.** The
+back-series rows keep `test_has_power = FALSE` and carry no verdict; what
+changes is that this is now a fact about the *inventory* rather than about F3.
+
+A designed elicitation with lip video, or a articulatory measure, is the way to
+settle ⟨ӑ⟩. The corpus cannot.
 
 | vowel | series | ΔF3z vs anchor | z | verdict |
 |---|---|---|---|---|

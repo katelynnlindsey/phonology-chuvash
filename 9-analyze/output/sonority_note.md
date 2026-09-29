@@ -186,9 +186,14 @@ the 10 ms duration JND on the full data (+10.03 ms with vowel identity
 controlled, +13.62 ms with vowel height). SON leads in exactly one cell — the
 conflict subset under `vowel_label` — and that is also the one ranking that is
 unstable between control sets (the two orderings correlate at ρ = +0.083; see
-`script_currency_audit.md`). On intensity A6 is first in all four, every SON
-rule is last or near-last, and SON-F's coefficient on the conflict subset is
-*negative* (−0.55 dB): its designated syllable is quieter, not louder.
+`script_currency_audit.md`). On intensity A6 is first in all four. The SON
+rules occupy the bottom three places in three of the four specifications; the
+exception is the conflict subset under `vowel_height`, where SON-A is 6th of 9
+(Δ106), ahead of B6, SON-F and SON-B. And SON-F's coefficient on the conflict
+subset is *negative* under both control sets (−0.55 dB): its designated
+syllable is quieter, not louder. Every intensity effect in the table, for every
+rule, is far below the 3 dB JND, so the intensity ranking discriminates
+formulations without any of them predicting an audible difference.
 
 **So SON's case cannot be made on fit.** It has to be made on formulation: its
 tiers are independently motivated and measurable in this corpus, whereas B5's

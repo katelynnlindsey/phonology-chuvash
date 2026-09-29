@@ -3,8 +3,15 @@
 # The пулӑ ~ пулли class: nouns of the shape C F C Ṙ whose stem surfaces with
 # a long consonant before a vowel-initial suffix.
 #
-# R port of analyses/geminating_stems.py, same logic and same outputs. Run
-# either; they agree. This one needs no Python.
+# R port of analyses/geminating_stems.py, same logic. This one needs no Python
+# and is the version to use; the .py is marked SUPERSEDED.
+#
+# THEY DO NOT AGREE EXACTLY, and an earlier version of this header wrongly said
+# they did — the claim was written before either had been run against the
+# other. Confirmed geminating stems: **R finds 65, Python 62.** The three R
+# adds are качӑ, тӑрӑ and ҫӳлӗ; the difference is a character-encoding one, not
+# a logic one (ҫ is U+04AB, and the Python normalisation missed it). R is
+# correct here.
 #
 #   source(here::here("9-analyze", "analyses", "geminating_stems.R"))
 #

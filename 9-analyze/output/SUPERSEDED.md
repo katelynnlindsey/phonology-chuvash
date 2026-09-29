@@ -189,7 +189,13 @@ This is the same trap the README warns about in §4(b): a rule's target is
 computed from the vowel labels present, so in an incomplete word the rule may
 designate the wrong syllable. Any future design that conditions on word shape —
 syllable count, first vs last syllable, monosyllable vs polysyllable — must
-filter on `word_complete` first. Only 51.3% of word tokens qualify.
+filter on `word_complete` first. Only **49.7%** of word tokens qualify
+(150,704 of 303,139). Do not use 51.3% here: that is the share of VOWEL ROWS
+(of 574,344) whose word is complete, a row-level statistic, and the two must
+not be conflated. A third figure, 61.1% (185,087 word tokens), is the share
+with `n_syl_present == sN` — every syllable measured but IQR outliers still
+allowed — and it is the one relevant to the full-word stress fix. See the
+header of `analyses/stress_rules_full_word.R`.
 
 The earlier four-cell monosyllable test (`monosyllable_default_test.csv`,
 +9.45%) used `sN` correctly but did not require `word_complete` and used a

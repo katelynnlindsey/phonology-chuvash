@@ -51,7 +51,9 @@ TIER <- setNames(rep(seq_along(SONORITY_TIERS), lengths(SONORITY_TIERS)),
 ord <- v[order(word_id, sidx)]
 # WORD COMPLETENESS IS LOAD-BEARING HERE. A rule's target is computed from the
 # vowel labels present, so in a word that lost syllables to cleaning (only
-# 51.3% of word tokens are complete) SON-A may designate the wrong syllable,
+# 49.7% of word tokens are word_complete — 150,704 of 303,139; do NOT write
+# 51.3% here, that is the share of vowel ROWS whose word is complete)
+# SON-A may designate the wrong syllable,
 # and a truncated polysyllable with one surviving vowel would be indistinguishable
 # from a genuine monosyllable. `sN` is the pipeline's syllable count and is the
 # only correct basis for "is this a monosyllable"; the number of surviving vowel
