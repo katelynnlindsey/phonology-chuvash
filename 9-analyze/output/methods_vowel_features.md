@@ -33,15 +33,27 @@ outlier-filtered estimates this document originally carried (0.672 and 0.690 for
 the two crowded pairs), because the readmitted rows are noisier. The filtered
 figures must not be reused.*
 
-## Rounding, tested within harmony series — front row only
+## Rounding, tested within height-matched pairs
 
-> **Revised 27 Sep 2026.** An earlier version of this section, computed on the
-> outlier-filtered data, reported ⟨ӑ⟩ as **unrounded** and recommended dropping
-> it from `VOWEL_ROUND`. **Both statements are withdrawn.** The test does not
-> have the power to decide the back series, and the recommendation must not be
-> acted on. This section now agrees with `methods_vowel_space.md`, which is the
-> fuller treatment; numbers here come from `rounding_contrasts.csv` and
-> `back_series_placement.csv`.
+> **Revised 27 Sep 2026, corrected again 29 Sep 2026.** An earlier version of
+> this section, computed on the outlier-filtered data, reported ⟨ӑ⟩ as
+> **unrounded** and recommended dropping it from `VOWEL_ROUND`. **Both
+> statements remain withdrawn** and the recommendation must not be acted on.
+>
+> What the 29 Sep pass changed is the *reason*. The 27 Sep version said the
+> test has no power on the back series at all. That rested on a mis-specified
+> control (/u/ against /a/, which is not height-matched); with the correct
+> control the back-series test does have power, and it is the absence of a
+> height-matched anchor for ⟨ӑ⟩ — not a limitation of F3 — that leaves ⟨ӑ⟩
+> undecided. Every number in the table now comes from
+> **`rounding_contrasts.csv`** alone, the height-matched pairs computed by
+> `analyses/vowel_space.R`. `back_series_placement.csv` sourced the previous
+> table's back-series column as each-vowel-minus-/a/ and is no longer used
+> here; it remains valid for what it is, a description of where ⟨ӑ⟩ and ⟨ы⟩ sit
+> relative to /u/, which is not a rounding test.
+>
+> This section agrees with `methods_vowel_space.md`, the fuller treatment,
+> which needs the same anchor correction applied to it.
 
 Rounding lowers F3, but F3 also varies with backness **and with height**, so the
 comparison is only identified within a pair matched on both, differing in
@@ -67,26 +79,46 @@ which is low. Its measured ΔF3z against /a/ is **+0.107 (z = +11.2)** —
 significantly the *wrong* sign for rounding, and significantly non-zero — but
 so was the discredited /u/-vs-/a/ figure, and for the same structural reason.
 Chuvash has no mid back unrounded vowel, so **no height-matched anchor for ⟨ӑ⟩
-exists in this inventory and its rounding is not determinable from F3.** The
-back-series rows keep `test_has_power = FALSE` and carry no verdict; what
-changes is that this is now a fact about the *inventory* rather than about F3.
+exists in this inventory and its rounding is not determinable from F3.** What
+changes is that this is now a fact about the *inventory* rather than about F3:
+the ⟨ӑ⟩ row carries no verdict because no valid anchor exists for it, not
+because F3 is blind to back rounding. `test_has_power = FALSE` should be read
+as attaching to the **⟨ӑ⟩-vs-/a/ comparison specifically**, not to the back
+series as a whole — /u/ vs /ʉ/ is a back-series comparison and it has power.
 
 A designed elicitation with lip video, or a articulatory measure, is the way to
 settle ⟨ӑ⟩. The corpus cannot.
 
-| vowel | series | ΔF3z vs anchor | z | verdict |
-|---|---|---|---|---|
-| /y/ ⟨ӳ⟩ | front | **−0.567** | −37.2 | rounded |
-| /ø/ ⟨ӗ⟩ | front | **−0.396** | −66.0 | rounded |
-| /e/ ⟨е⟩ | front | −0.030 | −5.5 | unrounded |
-| /u/ ⟨у⟩ | back | +0.044 | +5.1 | *positive control fails* |
-| /ɵ/ ⟨ӑ⟩ | back | +0.118 | +21.2 | not determinable |
-| /ʉ/ ⟨ы⟩ | back | +0.234 | +18.5 | not determinable |
+**The table below was replaced on 2026-09-29 and the previous one should not be
+quoted.** It listed one row per vowel against a single anchor per harmony
+series — /i/ for the front vowels, /a/ for the back — and so carried the same
+height confound throughout, not only in the /u/ control: it compared mid ⟨ӗ⟩
+against high /i/ and mid ⟨ӑ⟩ against low /a/. It also predated the re-run, so
+its numbers (/y/ −0.567, /ø/ −0.396, ⟨ӑ⟩ +0.118, ⟨ы⟩ +0.234) are stale as well
+as mis-anchored. The replacement is the set of **height-matched pairs** that
+`analyses/vowel_space.R` computes, read from `rounding_contrasts.csv`.
 
-**What the front row establishes.** ⟨ӳ⟩ is front rounded and ⟨ӗ⟩ is front
-rounded, both against an /i/ anchor on large samples. ⟨е⟩ is unrounded; its
-−0.030 is significant only because n = 90,673 and is an order of magnitude
-below the two rounded vowels. Krueger's (1961) front column is confirmed.
+| pair | ΔF2z | z | ΔF3z | z | reading |
+|---|---|---|---|---|---|
+| /y/ ⟨ӳ⟩ vs /i/ ⟨и⟩ | **−0.457** | −21.4 | **−0.483** | −21.2 | ⟨ӳ⟩ rounded |
+| /ø/ ⟨ӗ⟩ vs /e/ ⟨е⟩ | **−0.537** | −36.5 | **−0.334** | −32.5 | ⟨ӗ⟩ rounded |
+| /u/ ⟨у⟩ vs /ʉ/ ⟨ы⟩ | **−0.144** | −7.9 | **−0.091** | −5.1 | positive control **passes** |
+| /ɵ/ ⟨ӑ⟩ vs /a/ ⟨а⟩ | −0.134 | −9.3 | **+0.107** | +11.2 | not determinable |
+
+Because each pair is height-matched, the unrounded member *is* the anchor, so
+/e/ and /ʉ/ have no rows of their own — /e/ anchors ⟨ӗ⟩ and /ʉ/ anchors /u/.
+The earlier table's separate "/e/ ⟨е⟩ unrounded, −0.030" row is therefore gone
+by construction, not by retraction.
+
+**What the front rows establish.** ⟨ӳ⟩ and ⟨ӗ⟩ are both rounded, each against
+its own height-matched unrounded partner, on large samples and with F2 and F3
+agreeing in sign. Krueger's (1961) front column is confirmed.
+
+**What the /u/ row establishes.** The positive control passes, so F3 does carry
+back-series rounding information in this corpus. The effect is small (−0.091
+against −0.334 and −0.483 for the front pairs), which is the expected pattern —
+F3 lowering is a stronger cue to front rounding than to back rounding — but it
+is present and in the right direction, not absent.
 
 **What cannot be decided.** Whether ⟨ӑ⟩ and ⟨ы⟩ are rounded. Krueger's ŏ and
 Róna-Tas's ɤ̆ differ precisely on this point, and these formants do not

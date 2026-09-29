@@ -181,19 +181,34 @@ computed from surviving-row stress labels and now retired. From
 | conflict subset | vowel_label | **SON-A 0** · SON-B 6 · A4 182 · B4 206 · B5 206 · A5 222 · A6 268 · B6 299 · SON-F 305 |
 | conflict subset | vowel_height | **B5 0** · B6 54 · B4 119 · SON-B 156 · A4 301 · A5 341 · A6 434 · SON-A 806 · SON-F 979 |
 
-B5 is first in three of the four, and it is the only rule whose effect clears
-the 10 ms duration JND on the full data (+10.03 ms with vowel identity
-controlled, +13.62 ms with vowel height). SON leads in exactly one cell — the
-conflict subset under `vowel_label` — and that is also the one ranking that is
-unstable between control sets (the two orderings correlate at ρ = +0.083; see
-`script_currency_audit.md`). On intensity A6 is first in all four. The SON
-rules occupy the bottom three places in three of the four specifications; the
-exception is the conflict subset under `vowel_height`, where SON-A is 6th of 9
-(Δ106), ahead of B6, SON-F and SON-B. And SON-F's coefficient on the conflict
-subset is *negative* under both control sets (−0.55 dB): its designated
-syllable is quieter, not louder. Every intensity effect in the table, for every
-rule, is far below the 3 dB JND, so the intensity ranking discriminates
-formulations without any of them predicting an audible difference.
+**The four tables above are all `log_duration`.** B5 is first in three of the
+four, and it is the only rule whose effect clears the 10 ms duration JND on the
+full data (+10.03 ms with vowel identity controlled, +13.62 ms with vowel
+height). SON leads in exactly one cell — the conflict subset under
+`vowel_label` — and that is also the one ranking that is unstable between
+control sets (the two orderings correlate at ρ = +0.083; see
+`script_currency_audit.md`).
+
+Intensity is a separate set of four rankings, and they must not be read off the
+duration tables — the rule names and the ΔAIC scale are the same, so the two
+are easy to confuse:
+
+| subset | controls | intensity ranking (ΔAIC) |
+|---|---|---|
+| all words | vowel_label | **A6 0** · A5 21 · A4 41 · B6 97 · B5 116 · B4 128 · SON-A 350 · SON-B 398 · SON-F 410 |
+| all words | vowel_height | **A6 0** · A5 34 · B5 43 · B4 50 · A4 65 · B6 69 · SON-A 874 · SON-B 993 · SON-F 1161 |
+| conflict subset | vowel_label | **A6 0** · A5 38 · A4 63 · B6 84 · B5 152 · B4 159 · SON-A 197 · SON-F 207 · SON-B 287 |
+| conflict subset | vowel_height | **A6 0** · A5 21 · A4 33 · B4 84 · B5 101 · SON-A 106 · B6 153 · SON-F 163 · SON-B 249 |
+
+A6 is first in all four. The SON rules take the bottom three places in three of
+them; the exception is the last row, where **SON-A is 6th of 9 (ΔAIC 105.7),
+ahead of B6, SON-F and SON-B**. SON-F's coefficient on the conflict subset is
+*negative* under both control sets (−0.55 dB): its designated syllable is
+quieter, not louder. And every intensity effect in the whole table, for every
+rule, is far below the 3 dB JND — the largest anywhere in the 36 intensity
+models is B6 at **1.335 dB** (conflict subset, `vowel_label`) — so the
+intensity ranking discriminates formulations without any of them predicting an
+audible difference.
 
 **So SON's case cannot be made on fit.** It has to be made on formulation: its
 tiers are independently motivated and measurable in this corpus, whereas B5's
