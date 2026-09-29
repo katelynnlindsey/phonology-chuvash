@@ -41,9 +41,10 @@
 # chosen on linguistic grounds. The THRESHOLDS were picked by looking at
 # precision against Zheltov, so the filter is not fully blind to the wordlist.
 # What remains independent is the table it produces: every number in it is
-# computed from monolingual text, over a vocabulary that is not Zheltov's
-# (precision 0.875 means an eighth of the kept types are absent from it, and
-# recall 0.278 means most Zheltov monosyllables are excluded).
+# computed from monolingual text, over a vocabulary that is not Zheltov's —
+# precision 0.538 means nearly half the kept types are absent from it, and
+# recall 0.457 means over half of Zheltov's own open monosyllables are
+# excluded. The two vocabularies overlap on 21 types.
 #
 # Outputs
 #   output/minimal_word_internal.csv    the revised table, by vowel
