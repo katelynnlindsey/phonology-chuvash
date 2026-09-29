@@ -252,3 +252,44 @@ Superseded files: `master_rule_comparison.csv`, `rule_conflict_models.csv`,
 `rule_conflict_robustness.csv`, `rule_conflict_extended.csv`,
 `intensity_rule_models.csv`. `son_default_test.csv` is NOT affected — it
 filters on `word_complete`, where the surviving and full sequences coincide.
+
+## 2026-09-28 — the monolingual minimal-word filter no longer uses Zheltov
+
+Filtering monolingual types to those attested in Zheltov removed the word
+fragments but destroyed the independence of the two corpora: once the
+monolingual list is Zheltov's vocabulary, agreement between them is guaranteed
+rather than evidence. `analyses/wordhood_internal.py` +
+`analyses/minimal_word_internal.R` replace that filter with one built from the
+monolingual corpus alone.
+
+**What works and what does not.** Sentence-initial position alone — the
+obvious criterion, since a stranded suffix cannot begin a sentence — gives
+precision of only **0.19** against Zheltov and does **not** recover the
+minimal-word asymmetry. The load-bearing measure is **breadth of left
+context**: a free word combines with many different preceding words, a suffix
+with a restricted set of stems. Requiring ≥200 distinct preceding types (cap
+500) together with the sentence-initial criterion gives precision **0.875**,
+recall 0.278.
+
+**The grouped contrast is recovered, and is larger than Zheltov's:**
+
+| filter | reduced /ø ɵ ʉ/ | full /a e i u y/ | gap |
+|---|---|---|---|
+| none | 16.60% | 17.36% | +0.76 |
+| **internal** | **5.93%** | **16.37%** | **+10.44** |
+| Zheltov | 0.39% | 9.11% | +8.73 |
+
+**But the per-vowel ordering is not**: Spearman ρ against the Zheltov ordering
+is +0.228, because the filter leaves only 7–81 types per vowel. /y/ has 7 types
+(0.00% open here, 18.18% in Zheltov) and /ʉ/ has 15. Since the inventory
+question (6 vs 5 vs 4 full vowels) turns precisely on whether /y/ and /ʉ/
+pattern with the full or the reduced vowels, **the monolingual corpus can
+independently support the reduced-versus-full generalisation but cannot settle
+the inventory.** Zheltov still has to carry that, as
+`minimal_word_diagnosis.md` already concluded — but now for a measured reason.
+
+Honest limitation: the criteria are corpus-internal and chosen on linguistic
+grounds, but the thresholds were picked by looking at precision against
+Zheltov, so the filter is not fully blind to the wordlist. The table it
+produces is computed entirely from monolingual text over a vocabulary that is
+not Zheltov's.

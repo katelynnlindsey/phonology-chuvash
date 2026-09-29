@@ -437,13 +437,14 @@ vowels_ann <- vowels_ann %>%
     any_of(c("iqr_outlier_duration", "iqr_outlier_F1", "iqr_outlier_F2",
              "iqr_outlier_any", "n_syl_present", "word_complete",
              "smooth_error")),
-    # STRESS — predicted under each of the six rules. There is no
+    # STRESS — predicted under every rule in RULE_NAMES. Listed from
+    # RULE_NAMES rather than hardcoded: the hardcoded six silently dropped
+    # SON_F/SON_A/SON_B when they were added to the config. There is no
     # "observed stress" column: phon_stress came from the aligner
     # dictionary and was ~98% identical to stress_rule_A6, and
     # stress_cat was that column renamed. Neither was independent
     # evidence, so both were removed.
-    any_of(c("stress_rule_A6", "stress_rule_A5", "stress_rule_A4",
-             "stress_rule_B6", "stress_rule_B5", "stress_rule_B4")),
+    any_of(paste0("stress_rule_", RULE_NAMES)),
     # TIMING
     any_of(c("start", "end", "duration", "log_duration", "time")),
     # FORMANTS
@@ -488,8 +489,7 @@ words_ann <- words_ann %>%
     # VOWEL/SYLLABLE SEQUENCES (what vowels / syllables make up the word)
     any_of(c("vowel_sequence", "syllable_sequence")),
     # PREDICTED STRESS under each rule
-    any_of(c("stressed_sidx_A6", "stressed_sidx_A5", "stressed_sidx_A4",
-             "stressed_sidx_B6", "stressed_sidx_B5", "stressed_sidx_B4",
+    any_of(c(paste0("stressed_sidx_", RULE_NAMES),
              "stressed_position", "stressed_slope")),
     # DOES THE ACOUSTIC WINNER MATCH PREDICTED STRESS?
     # DURATION
