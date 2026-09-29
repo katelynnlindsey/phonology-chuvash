@@ -114,11 +114,28 @@ by construction, not by retraction.
 its own height-matched unrounded partner, on large samples and with F2 and F3
 agreeing in sign. Krueger's (1961) front column is confirmed.
 
-**What the /u/ row establishes.** The positive control passes, so F3 does carry
-back-series rounding information in this corpus. The effect is small (−0.091
-against −0.334 and −0.483 for the front pairs), which is the expected pattern —
-F3 lowering is a stronger cue to front rounding than to back rounding — but it
-is present and in the right direction, not absent.
+**What the /u/ row establishes — and what it does not.** The positive control
+passes, so F3 does carry back-series rounding information in this corpus. The
+effect is small (−0.091 against −0.334 and −0.483 for the front pairs), which
+is the expected pattern: F3 lowering is a stronger cue to front rounding than
+to back rounding.
+
+But that row is a **control, not a result.** It presupposes the standard
+description of the two high back vowels — /u/ ⟨у⟩ rounded, /ʉ/ ⟨ы⟩ unrounded
+(Krueger's ɯ/u pair) — and asks only whether F3 detects a difference the
+literature already asserts. **It cannot be cited as evidence that ⟨ы⟩ is
+unrounded or that ⟨у⟩ is rounded.** That would be circular, and a much earlier
+version of this note did exactly that: it reported "Krueger's high row is
+confirmed exactly" on the strength of a ΔF3 computed against a mis-specified
+anchor on outlier-filtered data, and the claim was withdrawn when the filter
+came off.
+
+There is also an ambiguity the control cannot resolve. A small effect is
+consistent with *either* "F3 is a weak cue to back rounding" *or* "these two
+vowels differ less in rounding than the descriptions say". Nothing here
+distinguishes them. So the corpus establishes rounding for the two **front**
+vowels and for neither **back** one — ⟨ӑ⟩ because no valid anchor exists for
+it, ⟨ы⟩ because it *is* the anchor.
 
 **What cannot be decided.** Whether ⟨ӑ⟩ and ⟨ы⟩ are rounded. Krueger's ŏ and
 Róna-Tas's ɤ̆ differ precisely on this point, and these formants do not
