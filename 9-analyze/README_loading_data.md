@@ -68,7 +68,12 @@ not want:
 ```r
 vowels %>% filter(word_complete, !iqr_outlier_any)   # 289,002 rows
 ```
-`iqr_outlier_any` is TRUE for 11.1% of rows and `word_complete` for only 51.3%.
+`iqr_outlier_any` is TRUE for 11.1% of rows and `word_complete` for only 51.3%
+**of rows** — i.e. 51.3% of the 574,344 vowel rows belong to a complete word.
+The word-token figure is different and lower: **49.7%**, 150,704 of 303,139
+word tokens. (A third figure, 61.1%, is the share of word tokens with
+`n_syl_present == sN`.) These three must never be interchanged; quote the one
+whose unit matches your design.
 Reproducing the old behaviour is that one filter. **Do not filter by default** —
 the flagged rows are disproportionately stressed vowels, which is why the
 deletion was wrong.
