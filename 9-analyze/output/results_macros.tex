@@ -1,5 +1,5 @@
 % results_macros.tex -- GENERATED, do not edit by hand.
-% Written by 9-analyze/analyses/make_macros.R on 2026-09-27 05:21:00 EDT.
+% Written by 9-analyze/analyses/make_macros.R on 2026-10-01 16:08:49 EDT.
 % Every value is computed from data/leveled/ or read from output/*.csv.
 % Regenerate after any pipeline run:  source('analyses/make_macros.R')
 
@@ -15,22 +15,22 @@
 \newcommand{\NvowelsCommonVoice}{133,576}   % vowels, Common Voice
 \newcommand{\NvowelsExtracted}{615,634}   % vowels entering cleaning (after the interval join)
 \newcommand{\PctVowelsKept}{93.3\%}   % share surviving cleaning
-\newcommand{\Nspeakers}{105}   % talkers with a speaker id
-\newcommand{\PctVowelsWithSpeaker}{45.8\%}   % vowels carrying a speaker id
-\newcommand{\PctVowelsTopSpeaker}{33.8\%}   % share of all vowels from the single largest talker
-\newcommand{\NspeakersHalfData}{5}   % talkers needed to cover 90% of speaker-labelled vowels
-\newcommand{\MedianVowelsPerSpeaker}{51}   % median vowels per talker
+\newcommand{\Nspeakers}{110}   % talkers with a speaker id
+\newcommand{\PctVowelsWithSpeaker}{86.9\%}   % vowels carrying a speaker id
+\newcommand{\PctVowelsTopSpeaker}{63.7\%}   % share of all vowels from the single largest talker
+\newcommand{\NspeakersHalfData}{6}   % talkers needed to cover 90% of speaker-labelled vowels
+\newcommand{\MedianVowelsPerSpeaker}{96}   % median vowels per talker
 \newcommand{\BestRuleIntensity}{A6}   % rule with lowest AIC on midpoint intensity
-\newcommand{\BestRuleDuration}{final}   % rule with lowest AIC on log duration
-\newcommand{\IntensityEffectBest}{0.50~dB}   % stress effect on midpoint intensity, best-fitting rule
-\newcommand{\IntensityEffectBestSE}{0.015}
-\newcommand{\DurationEffectBest}{16.1\%}   % stress effect on duration, best-fitting rule, as a percentage
-\newcommand{\DurationEffectBestLog}{0.150}
+\newcommand{\BestRuleDuration}{B5}   % rule with lowest AIC on log duration
+\newcommand{\IntensityEffectBest}{0.52~dB}   % stress effect on midpoint intensity, best-fitting rule
+\newcommand{\IntensityEffectBestSE}{0.026}
+\newcommand{\DurationEffectBest}{12.5\%}   % stress effect on duration, best-fitting rule, as a percentage
+\newcommand{\DurationEffectBestLog}{0.118}
 \newcommand{\ArguedRule}{B5}   % the rule the paper argues for
-\newcommand{\ArguedRuleIntensity}{0.40~dB}
-\newcommand{\ArguedRuleDuration}{6.8\%}
-\newcommand{\ArguedRuleDurationLog}{0.066}
-\newcommand{\DeltaAICdurationArguedVsA}{961}   % AIC penalty for A5 over B5 on duration
+\newcommand{\ArguedRuleIntensity}{0.51~dB}
+\newcommand{\ArguedRuleDuration}{12.5\%}
+\newcommand{\ArguedRuleDurationLog}{0.118}
+\newcommand{\DeltaAICdurationArguedVsA}{695}   % AIC penalty for A5 over B5 on duration
 \newcommand{\NmodelRows}{499,357}   % rows entering the acoustic models
 \newcommand{\NallReducedWords}{12,212}   % polysyllabic all-reduced word tokens, inventory 5
 \newcommand{\NallReducedVowels}{25,813}   % their vowel tokens
@@ -78,23 +78,25 @@
 \newcommand{\PctCVorCVCSpoken}{92.4\%}   % syllables that are CV or CVC
 \newcommand{\PctChuvashVoiceOneSpeaker}{93.4\%}   % Chuvash Voice recordings assigned to the dominant voice
 \newcommand{\NChuvashVoiceVoices}{11}   % acoustic voice clusters in Chuvash Voice
-\newcommand{\RoundYFThreeZ}{-0.567}   % F3 of /y/ minus /i/ (z): front rounded
-\newcommand{\RoundOeFThreeZ}{-0.396}   % F3 of the front reduced vowel minus /i/ (z): front rounded
-\newcommand{\RoundEFThreeZ}{-0.030}   % F3 of /e/ minus /i/ (z): front unrounded
-\newcommand{\RoundControlUFThreeZ}{0.043}   % F3 of /u/ minus /a/ (z): the positive control, which the back series fails
+\newcommand{\RoundYvsIFThreeZ}{-0.483}   % F3 of /y/ minus height-matched /i/ (z): front rounded
+\newcommand{\RoundYvsIZ}{-21.2}
+\newcommand{\RoundOeVsEFThreeZ}{-0.334}   % F3 of ⟨ӗ⟩ minus height-matched /e/ (z): front rounded
+\newcommand{\RoundOeVsEZ}{-32.5}
+\newcommand{\RoundControlUvsYbarFThreeZ}{-0.091}   % F3 of /u/ minus /ʉ/ (z): the POSITIVE CONTROL, which passes. Not a result.
+\newcommand{\RoundSchwaVsAFThreeZ}{0.107}   % F3 of ⟨ӑ⟩ minus /a/ (z): NOT height-matched, so not determinable
 \newcommand{\SepYBarSchwaBarQda}{0.518}   % pairwise separability, quadratic discriminant, chance = 0.500
 \newcommand{\SepYBarSchwaBarBoosting}{0.626}   % pairwise separability, gradient boosting, same sample
 \newcommand{\SepIYQda}{0.503}   % pairwise separability, quadratic discriminant, chance = 0.500
 \newcommand{\SepIYBoosting}{0.579}   % pairwise separability, gradient boosting, same sample
 \newcommand{\OddsCodaLongest}{0.653}   % odds of a coda on the most-prominent syllable, intrinsic duration removed
 \newcommand{\OddsCodaLongestStrict}{0.757}   % the same on the strict subset
-\newcommand{\OddsCodaRuleBFive}{0.932}   % odds of a coda on the syllable rule B5 stresses
+\newcommand{\OddsCodaRuleBFive}{0.848}   % odds of a coda on the syllable rule B5 stresses
 \newcommand{\OddsLowVowelLongest}{1.348}   % odds of /a/ on the most-prominent syllable, intrinsic duration removed
 \newcommand{\OddsLowVowelLongestRaw}{2.071}   % the same before the intrinsic control
 \newcommand{\OddsLowVowelLoudest}{1.119}   % odds of /a/ on the loudest syllable, intrinsic intensity removed
 \newcommand{\OddsNonHighLongest}{1.166}   % odds of a non-high vowel on the most-prominent syllable, intrinsic removed
-\newcommand{\PctLongerStressed}{4.4\%}   % duration change for a stressed vowel, vowel quality held constant
-\newcommand{\PctLongerUttFinal}{69.0\%}   % duration change for the final syllable of an utterance-final word
+\newcommand{\PctLongerStressed}{10.5\%}   % duration change for a stressed vowel, vowel quality held constant
+\newcommand{\PctLongerUttFinal}{63.0\%}   % duration change for the final syllable of an utterance-final word
 \newcommand{\AdjInitialDuration}{0.59}   % initial minus non-initial in all-reduced polysyllables, edges controlled
 \newcommand{\RawInitialDuration}{-19.56}   % the same contrast without the edge controls
 \newcommand{\AdjInitialIntensity}{-0.20}   % initial minus non-initial in all-reduced polysyllables, edges controlled
@@ -104,9 +106,9 @@
 \newcommand{\GeminateRatioLow}{1.11}   % smallest long-to-singleton duration ratio across measurable places
 \newcommand{\GeminateRatioHigh}{1.71}   % largest long-to-singleton duration ratio
 \newcommand{\GeminateRatioMedian}{1.32}   % median long-to-singleton duration ratio
-\newcommand{\WeightLongCFullV}{19.4\%}   % adjusted final-rhyme duration vs short C + full vowel
-\newcommand{\WeightShortCReducedV}{-12.1\%}   % the same
-\newcommand{\WeightLongCReducedV}{4.6\%}   % the same
+\newcommand{\WeightLongCFullV}{19.3\%}   % adjusted final-rhyme duration vs short C + full vowel
+\newcommand{\WeightShortCReducedV}{-7.1\%}   % the same
+\newcommand{\WeightLongCReducedV}{11.2\%}   % the same
 \newcommand{\EndFZeroCliticQuestion}{2.70}   % end-of-utterance f0 in semitones re speaker median, clitic-marked question
 \newcommand{\EndFZeroWhQuestion}{-3.38}   % wh-question
 \newcommand{\EndFZeroStatement}{-4.28}   % statement
@@ -114,3 +116,32 @@
 \newcommand{\PctInitialU}{89.6\%}   % share of this vowel's polysyllabic tokens standing in syllable 1
 \newcommand{\PctInitialYRound}{80.9\%}   % share of this vowel's polysyllabic tokens standing in syllable 1
 \newcommand{\PctInitialE}{12.3\%}   % share of this vowel's polysyllabic tokens standing in syllable 1
+\newcommand{\FzeroPctUsable}{98.1\%}   % vowels usable on f0 after screening
+\newcommand{\FzeroOctaveOutliers}{3,518}   % rows removed as octave-tracking errors (|semitones from speaker median| > 12)
+\newcommand{\BestRuleFzero}{B6}   % rule with lowest AIC on f0
+\newcommand{\BestRuleFzeroHz}{6.61~Hz}
+\newcommand{\BestRuleFzeroSt}{0.517}
+\newcommand{\ArguedRuleFzeroHz}{6.67~Hz}   % f0 effect of the argued rule, net of nonparametric position
+\newcommand{\FinalSyllableFzeroHz}{6.11~Hz}   % word-final syllable f0 relative to the declination trend, pooled
+\newcommand{\FinalSyllableFzeroWordInternalHz}{10.82~Hz}   % same, utterance-medial words only
+\newcommand{\FinalSyllableFzeroUttFinalHz}{-21.41~Hz}   % same, utterance-final words: the SIGN REVERSES, which is a boundary tone
+\newcommand{\StepUpDurationMs}{21.32~ms}   % duration step UP into the designated syllable, same vowel / position / word length
+\newcommand{\StepUpDurationT}{17.2}
+\newcommand{\StepDownDurationMs}{-13.58~ms}   % duration step out of the designated syllable
+\newcommand{\StepUpIntensityDb}{-0.14~dB}   % intensity step into the designated syllable: NULL
+\newcommand{\StepUpIntensityT}{-1.13}
+\newcommand{\StepUpFzeroSt}{0.361}   % f0 step into the designated syllable, semitones
+\newcommand{\NstepStrata}{15}   % within-vowel strata with designation variation; the structural ceiling on this design
+\newcommand{\NstepsDuration}{30,562}
+\newcommand{\MorphCutStems}{500}   % stem-count floor at which induction F1 peaks
+\newcommand{\MorphRecall}{0.817}   % recall against the reference suffix list
+\newcommand{\MorphPrecision}{0.561}   % precision counting listed suffixes and segmentable combinations as correct
+\newcommand{\MorphNaccepted}{111}   % suffixes in the accepted inventory
+\newcommand{\StepUpDurationMonomorphemicMs}{19.12~ms}   % duration step up into the designated syllable, words with no suffix parsed
+\newcommand{\StepUpDurationMonomorphemicT}{11.3}
+\newcommand{\NstepsMonomorphemic}{10,049}
+\newcommand{\StemSuffixInteractionMs}{-0.65~ms}   % designation x suffixal-status interaction on duration: NULL
+\newcommand{\StemSuffixInteractionT}{-0.27}
+\newcommand{\SuffixalSyllableMs}{6.73~ms}   % a suffixal syllable vs a stem syllable, same vowel and position, independent of stress
+\newcommand{\SuffixalSyllableDb}{-0.70~dB}
+\newcommand{\DesigIsLastStemSylPenult}{92.0\%}   % how often the designated syllable is the last stem syllable, penultimate class
