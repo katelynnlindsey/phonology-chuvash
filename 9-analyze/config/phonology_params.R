@@ -6,6 +6,147 @@
 # A change here propagates everywhere without touching analysis code.
 # ================================================================
 
+# ════════════════════════════════════════════════════════════════
+# FINDINGS AND STANDING HYPOTHESES                     rev. 2026-10-01
+#
+# A register of what the project has established, what it has withdrawn, and
+# the traps that have cost real results. Every entry names the canonical output
+# so nothing here has to be taken on trust. Nothing in this block is executed.
+#
+# ── THE THREE CUES, AND WHAT EACH ONE TRACKS ────────────────────
+# Kate's criterion: stress correlates with LONGER duration, HIGHER intensity
+# and HIGHER pitch. A trend the other way may show a syllable behaving
+# idiosyncratically but must not be called stress.
+#   DURATION tracks the RULE.    Best-identified result in the project.
+#   INTENSITY tracks POSITION.   Peaks on syllable 2 in 13 of 14 class x length
+#                                cells; null for designation under the strict
+#                                specification. No effect anywhere in 36 models
+#                                reaches the 3 dB JND (Moore 2007); the largest
+#                                is B6 at 1.335 dB.
+#   f0 tracks WORD-INITIAL position and BOUNDARIES. Peaks on syllable 1 at
+#                                every word length; no syllable-2 peak.
+#   -> output/step_vowel_stratified.csv, position_cell_means.csv,
+#      f0_position_cell_means.csv, full_word_rule_models.csv
+#
+# ── THE HEADLINE DURATION RESULT ────────────────────────────────
+# With strata = (word length x syllable index x TARGET VOWEL), the within-word
+# duration step UP INTO the rule's designated syllable is +21.32 ms (t 17.2)
+# and the step out of it −13.58 ms (t −5.9). Non-circular: designation depends
+# on vowels to the RIGHT of the step, which are in neither the step nor the
+# strata. Clears Hirsh's (1959) 10 ms JND. Survives restriction to words with
+# no suffix parsed: +19.12 ms (t 11.3).
+#   -> output/step_vowel_stratified.csv, morph_stress_test.csv
+#
+# ── WHICH DEFAULT: A OR B ───────────────────────────────────────
+# Two of three cues favour B (stressless when no full vowel):
+#   duration  B5 first   (full_word_rule_models.csv)
+#   f0        B6/B5/B4 first, both control sets  (f0_rule_models.csv)
+#   intensity A6 first   (full_word_rule_models.csv)
+# Independent supports for B: default_adjudication.R (inventory-5 f0 −2.524 Hz,
+# t −4.17) and monosyllable_default_test.R.
+#
+# ── WITHDRAWN, AND MUST NOT BE REINSTATED ───────────────────────
+#  * total_intensity and peak_intensity as prominence measures. Use
+#    int_midpoint (mean of intensity steps 10 and 11). A 161.90 "dB" effect in
+#    an early draft was a sum over 20 steps.
+#  * The mora / zero-vs-one-mora conclusion. Needs designed elicitation.
+#  * The claim that F3 confirms Krueger's high back row — circular, see the
+#    VOWEL_ROUND block below.
+#  * Three scripts superseded in full, with ⚠⚠ headers: rule_conflict_models.R,
+#    rule_conflict_robustness.R, rule_conflict_extended.R.
+#   -> output/SUPERSEDED.md, script_currency_audit.md
+#
+# ── IDENTIFICATION: WHAT CANNOT BE TESTED, AND WHY ──────────────
+#  * `final` is UNTESTABLE against a linear position trend: 1{sidx == sN} is
+#    IDENTICAL to syl_final on all 574,344 rows (phi = 1.0000). It becomes
+#    identified only when position is entered NONPARAMETRICALLY, because the
+#    predicate is then a deterministic but NONLINEAR function of position.
+#  * `initial` is NOT IDENTIFIED under nonparametric position at all —
+#    1{sidx == 1} is the complement of the factor(sidx) dummies (rank 14 of 15).
+#    lmer drops collinear columns SILENTLY; rank-check before trusting any fit.
+#  * The within-cell designation test is IMPOSSIBLE for the A/B family in
+#    word-final position: a final syllable is designated iff its own vowel is
+#    full, so stratifying on vowel leaves zero variation. Only a sonority rule
+#    can be tested there.
+#   -> output/rule_final_collinearity.csv, final_prominence_rule_ranking.csv
+#
+# ── CONTROLS THAT DESTROY WHAT THEY ARE MEANT TO TEST ───────────
+#  * Any model with vowel_label as an ADDITIVE covariate cannot test an A/B
+#    rule, because designation is DEFINED on vowel fullness. The shape-class
+#    "controlled" model has this property, which is why its failure to
+#    reproduce the leftward duration walk is not evidence against the rule.
+#    STRATIFY on the vowel instead of adjusting for it.
+#  * Word-final position: the f0 elevation (+6.11 Hz) REVERSES SIGN at the
+#    utterance edge (+10.82 Hz word-internal, −21.41 Hz utterance-final). That
+#    is a boundary tone; lexical stress cannot flip sign with utterance
+#    position. Duration's +11.70 ms is boundary lengthening for the same
+#    reason.
+#   -> output/f0_endpoint_test.csv, shape_peak_match.csv
+#
+# ── THREE COMPLETENESS FIGURES THAT MUST NEVER BE CONFLATED ─────
+#   61.1%  (185,087 of 303,139) word tokens with n_syl_present == sN
+#   49.7%  (150,704 of 303,139) word tokens with word_complete == TRUE
+#   51.3%  share of VOWEL ROWS (of 574,344) whose word is complete
+# Any design conditioning on word shape must filter on word_complete and use
+# the pipeline's sN, never a count of surviving rows.
+#
+# ── MEASUREMENT GRANULARITY ─────────────────────────────────────
+# Vowel duration is quantised at 10 ms by the extraction grid, which happens to
+# equal Hirsh's duration JND. A short word can therefore have every syllable at
+# an identical duration, making "first syllable above the word's own mean"
+# undefined for 5.5-9.7% of disyllabic tokens. which.max() breaks ties
+# LEFTWARD, which biases any per-token peak statistic toward the designated
+# syllable — count strict maxima only.
+#
+# ── f0 ──────────────────────────────────────────────────────────
+# f0_mid = mean of f0_step10 and f0_step11 (the exact analogue of
+# int_midpoint), in semitones relative to the SPEAKER's own median. 98.1% of
+# vowels usable; 3,518 octave outliers (|st| > 12) removed. Within-speaker
+# normalisation makes the open question about the Chuvash Voice dominant
+# speaker's sex MOOT downstream. Gandour's (1978) 1 Hz JND is 0.079 semitones
+# at this corpus's 217.9 Hz median.
+#   -> output/f0_measure_diagnostics.csv
+#
+# ── MORPHOLOGY ──────────────────────────────────────────────────
+# No corpus carries morphological annotation; the parse is INDUCED from string
+# recurrence over 430,008 monolingual types, on the PHONEMIC form and using NO
+# vowel-quality information (which would make it circular with the shape
+# classes). Only suffixes of >= 2 phonemes are parsed, because string
+# recurrence cannot distinguish a single-phoneme suffix from a stem-final
+# phoneme; the monomorphemic class is therefore really "no confident parse".
+# The reference suffix list in analyses/morph_validation.R HAS NOT BEEN CHECKED
+# BY A SPECIALIST and needs Kate's review.
+#   -> output/methods_morphology.md
+#
+# ── SHAPE CLASSES ───────────────────────────────────────────────
+# Defined by from_end = sN − (position of the rightmost full vowel), NOT by
+# strict F/R strings, and computed under both the 5-full and 6-full
+# inventories. Adding /ʉ/ ⟨ы⟩ to the full set moves 2.1% of word tokens, almost
+# all of them disyllables leaving the stressless class for the
+# initially-stressed one.
+#   -> output/shape_class_counts.csv
+#
+# ── THE SONORITY RULES ──────────────────────────────────────────
+# SON's case rests on FORMULATION, not fit: B5 leads three of four
+# subset x control combinations and SON ranks below the A/B family on all three
+# cues. The de Lacy/Kenstowicz hierarchy is recovered from the spoken data
+# threshold-free (peripherality class 8/8, whole hierarchy rho = +0.970), which
+# is what makes the rule non-circular — not its model fit.
+#   -> output/sonority_note.md, sonority_peripherality.csv
+#
+# ── RULE_NAMES CONTAINS AN ALIAS ────────────────────────────────
+# Ten entries, nine distinct rules: SON is an alias of SON_F. Any script
+# fitting one model per rule must use setdiff(RULE_NAMES, "SON") or it fits a
+# duplicate and mis-states its own n.
+#
+# ── STILL OPEN ──────────────────────────────────────────────────
+#  * The mora hypothesis — designed elicitation only.
+#  * ⟨ӑ⟩'s rounding — lip video or another articulatory measure only.
+#  * hand_check_sample.csv (250 vowels) needs Kate's ears.
+#  * Is the Chuvash Voice dominant speaker male (225.7 Hz) or is the metadata
+#    wrong? Moot for the analyses, not for reporting an absolute f0.
+# ════════════════════════════════════════════════════════════════
+
 library(stringr)
 
 # ── 0. ENCODING GUARD ───────────────────────────────────────────
@@ -210,19 +351,32 @@ VOWEL_BACKNESS <- list(
 )
 
 # Rounding follows Krueger (1961) and is LEFT AS HE HAS IT for the back
-# series, deliberately. The corpus cannot adjudicate there:
-# analyses/vowel_features.py tests rounding as a within-series F3 difference
-# against an unrounded anchor, and that test fails its own positive control on
-# the back row — /u/, which is rounded in every description of Chuvash, shows
-# dF3z = +0.04 against /a/. F3 lowering is a *front*-rounding cue; on back
-# vowels the rounding gesture lands in F2, where backness also lands, so the
-# two cannot be separated with these measurements.
+# series, deliberately. The corpus establishes rounding for the two FRONT
+# vowels and for NEITHER back one.
 #
-# The front row IS confirmed by that test: /y/ −0.57 and /ø/ −0.40 against
-# /i/, with /e/ at −0.03. Do not drop "ɵ" from this vector on the strength of
-# its positive dF3z — a positive value there means the test has no power, not
-# that the vowel is unrounded. See output/rounding_contrasts.csv, column
-# `test_has_power`.
+# The numbers below replace an earlier set that used ONE anchor per harmony
+# series (/i/ front, /a/ back), which compared mid ⟨ӗ⟩ against high /i/ and
+# mid ⟨ӑ⟩ against low /a/ and so confounded rounding with height. The current
+# test uses HEIGHT-MATCHED pairs (output/rounding_contrasts.csv):
+#
+#   pair                         n        dF3z    z       dF2z     reading
+#   /y/ ⟨ӳ⟩  vs /i/ ⟨и⟩      42,478    −0.483  −21.2   −0.457   rounded
+#   /ø/ ⟨ӗ⟩  vs /e/ ⟨е⟩     138,558    −0.334  −32.5   −0.537   rounded
+#   /u/ ⟨у⟩  vs /ʉ/ ⟨ы⟩      43,065    −0.091   −5.1   −0.144   CONTROL
+#   /ɵ/ ⟨ӑ⟩  vs /a/ ⟨а⟩     223,618    +0.107  +11.2   −0.134   undecidable
+#
+# THE /u/~/ʉ/ ROW IS A POSITIVE CONTROL, NOT A RESULT. It presupposes
+# Krueger's description of that pair and therefore CANNOT be cited as evidence
+# that ⟨ы⟩ is unrounded or ⟨у⟩ rounded. An early draft committed exactly that
+# circularity ("Krueger's high row is confirmed exactly") and it was withdrawn.
+# The control's small effect is itself ambiguous between "F3 is a weak cue to
+# back rounding" and "these two vowels differ less in rounding than described".
+#
+# ⟨ӑ⟩ /ɵ/ is undecidable for a structural reason, not a power problem: the
+# inventory contains no mid back UNROUNDED vowel to serve as its height-matched
+# anchor. Do NOT drop "ɵ" from this vector on the strength of its positive
+# dF3z — that sign means there is no valid comparison, not that the vowel is
+# unrounded. Settling it needs lip video or another articulatory measure.
 VOWEL_ROUND  <- c("y", "ø", "u", "ɵ")
 VOWEL_UNROUND <- setdiff(TARGET_VOWELS_IPA, VOWEL_ROUND)
 
@@ -668,7 +822,7 @@ CORPORA <- list(
   ),
   zheltov = list(
     type   = "written",
-    source = "Zheltov (1875) wordlist",
+    source = "Zheltov (2008) wordlist",
     aligner = "none — lexical data only"
   ),
   mono = list(
