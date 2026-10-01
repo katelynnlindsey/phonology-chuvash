@@ -1,0 +1,19 @@
+test,term,n_steps,n_strata,estimate,se,t,spec
+d_dur_prev | all words,is_desigTRUE,30878,27,21.3705579391898,1.23828893206816,17.2581353073206,(a) restriction
+d_dur_prev | no suffix parsed,is_desigTRUE,10049,19,19.1198729766586,1.69187481088491,11.3009974814024,(a) restriction
+d_dur_prev | suffix parsed,is_desigTRUE,20543,23,22.3945428632358,1.65238301142717,13.5528764870885,(a) restriction
+d_int_prev | all words,is_desigTRUE,30878,27,-0.109414200858524,0.127120793232039,-0.860710494929068,(a) restriction
+d_int_prev | no suffix parsed,is_desigTRUE,10049,19,-0.131421673587261,0.178918218137699,-0.734534889488536,(a) restriction
+d_int_prev | suffix parsed,is_desigTRUE,20543,23,-0.108490471189164,0.163203337732094,-0.664756448592099,(a) restriction
+d_f0_prev | all words,is_desigTRUE,30878,27,0.360151409802212,0.0495790678754217,7.26418275364054,(a) restriction
+d_f0_prev | no suffix parsed,is_desigTRUE,10049,19,0.39037954074596,0.082236653276611,4.74702611538532,(a) restriction
+d_f0_prev | suffix parsed,is_desigTRUE,20543,23,0.34197187393418,0.0635338972920819,5.38251057324637,(a) restriction
+"d_dur_prev | designation, stem syllable",is_desigTRUE,29605,18,22.1689250844735,1.43953870379357,15.4000201773334,(b) interaction
+"d_dur_prev | suffixal, not designated",is_suffixalTRUE,29605,18,6.72759204918056,1.68014193403369,4.00418078550598,(b) interaction
+d_dur_prev | interaction,is_desigTRUE:is_suffixalTRUE,29605,18,-0.64885609127907,2.41062738168395,-0.26916482248941,(b) interaction
+"d_int_prev | designation, stem syllable",is_desigTRUE,29605,18,-0.0905119246904169,0.144276903250221,-0.627348679181455,(b) interaction
+"d_int_prev | suffixal, not designated",is_suffixalTRUE,29605,18,-0.704861927186867,0.174103381361874,-4.048525201942,(b) interaction
+d_int_prev | interaction,is_desigTRUE:is_suffixalTRUE,29605,18,-0.11266958743197,0.262265413608066,-0.429601394564155,(b) interaction
+"d_f0_prev | designation, stem syllable",is_desigTRUE,29605,18,0.299477530013139,0.0547018240466562,5.47472657872815,(b) interaction
+"d_f0_prev | suffixal, not designated",is_suffixalTRUE,29605,18,-0.118260449233598,0.0661027639857098,-1.78903940021576,(b) interaction
+d_f0_prev | interaction,is_desigTRUE:is_suffixalTRUE,29605,18,0.0769014988615783,0.107356281236239,0.716320442325636,(b) interaction
