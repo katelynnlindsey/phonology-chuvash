@@ -99,7 +99,13 @@ def load(out):
     D["clu"] = g("clustering_comparison.csv")
     D["cr"] = g("separability_with_context.csv")
     D["sep"] = g("separability_classifier_comparison.csv")
-    D["rnd"] = g("rounding_contrasts.csv").set_index("vowel")
+    # rounding_contrasts.csv was reshaped 2026-10-01: one row per (pair, dv)
+    # with HEIGHT-MATCHED pairs. The old shape had one anchor per harmony
+    # series, which compared mid against high and so confounded rounding with
+    # height. Indexed on `pair` now, and the F3 rows pulled out separately.
+    D["rnd"] = g("rounding_contrasts.csv")
+    D["rndF3"] = D["rnd"][D["rnd"].dv == "F3z"].set_index("pair")
+    D["rndF2"] = D["rnd"][D["rnd"].dv == "F2z"].set_index("pair")
     D["rst"] = g("rounding_by_stress.csv").set_index("vowel")
     D["bp"] = g("back_series_placement.csv").set_index("vowel")
     D["pos"] = g("positional_restrictions.csv", ).set_index(
@@ -113,7 +119,28 @@ def load(out):
     D["shapes"] = g("phonotactics_syllable_shapes.csv")
     D["spk"] = g("speaker_structure_validation.csv")
     D["mr"] = g("master_rule_comparison.csv")
-    D["ram"] = g("rule_acoustic_models.csv")
+    # rule_acoustic_models.csv is SUPERSEDED (pre-whole-word-fix, recomputed
+    # labels over surviving rows). full_word_rule_models.csv replaces it.
+    D["fw"] = g("full_word_rule_models.csv")
+    D["f0d"] = g("f0_measure_diagnostics.csv")
+    D["f0r"] = g("f0_rule_models.csv")
+    D["f0e"] = g("f0_endpoint_test.csv")
+    D["f0p"] = g("f0_position_cell_means.csv")
+    D["svs"] = g("step_vowel_stratified.csv")
+    D["cst"] = g("contour_steps.csv")
+    D["csm"] = g("contour_step_means.csv")
+    D["spm"] = g("shape_peak_match.csv")
+    D["scc"] = g("shape_class_counts.csv")
+    D["mvp"] = g("matched_vowel_prominence.csv")
+    D["cfp"] = g("carrier_frame_prominence.csv")
+    D["fpt"] = g("final_prominence_test.csv")
+    D["fpr"] = g("final_prominence_rule_ranking.csv")
+    D["pcm"] = g("position_cell_means.csv")
+    D["mva"] = g("morph_validation.csv")
+    D["mac"] = g("morph_accepted.csv")
+    D["mst"] = g("morph_stress_test.csv")
+    D["mal"] = g("morph_alignment.csv")
+    D["sph"] = g("sonority_peripherality.csv")
     return D
 
 
@@ -266,6 +293,17 @@ def main():
                - sorted(mr.loc[named, "dAIC_log_duration"])[0])
     int_gap = (sorted(mr.loc[named, "dAIC_int_midpoint"])[3]
                - sorted(mr.loc[named, "dAIC_int_midpoint"])[0])
+    HI2 = ' class="hi"'
+    def _rr(r):
+        cls = HI2 if r in (dur_best, int_best) else ""
+        f0v = mr.loc[r, "estimate_f0_st"] if "estimate_f0_st" in mr.columns else float("nan")
+        return (f'<tr{cls}><td>{r}</td>'
+                f'<td class="num">{mr.loc[r, "dAIC_log_duration"] - mr.loc[dur_best, "dAIC_log_duration"]:,.0f}</td>'
+                f'<td class="num">{mr.loc[r, "estimate_log_duration"]:+.4f}</td>'
+                f'<td class="num">{mr.loc[r, "dAIC_int_midpoint"] - mr.loc[int_best, "dAIC_int_midpoint"]:,.0f}</td>'
+                f'<td class="num">{mr.loc[r, "estimate_int_midpoint"]:+.3f}</td>'
+                f'<td class="num">{f0v:+.3f}</td></tr>')
+    ranking_rows = "".join(_rr(r) for r in named)
     S.append(f"""
   <h2>Duration ranks B first, intensity ranks A first — Dobrovolsky's asymmetry</h2>
   <p class="sub">Mixed models over the whole dataset, one per rule per
@@ -273,31 +311,31 @@ def main():
   frequency controlled and
   <code>(1|speaker) + (1|file_name) + (1|word_label)</code>.</p>
   <table>
-    <tr><th>Rule</th><th class="num">Δ AIC, duration</th><th class="num">β duration</th><th class="num">Δ AIC, intensity</th><th class="num">β intensity (dB)</th><th class="num">accuracy</th></tr>
-    {''.join(f'<tr{" class=hi" if r in (dur_best, int_best) else ""}><td>{r}</td><td class="num">{mr.loc[r, "dAIC_log_duration"] - mr.loc[dur_best, "dAIC_log_duration"]:,.0f}</td><td class="num">{mr.loc[r, "estimate_log_duration"]:+.4f}</td><td class="num">{mr.loc[r, "dAIC_int_midpoint"] - mr.loc[int_best, "dAIC_int_midpoint"]:,.0f}</td><td class="num">{mr.loc[r, "estimate_int_midpoint"]:+.3f}</td><td class="num">{mr.loc[r, "detected_accuracy_DESCRIPTIVE"]:.4f}</td></tr>' for r in named)}
+    <tr><th>Rule</th><th class="num">Δ AIC, duration</th><th class="num">β duration</th><th class="num">Δ AIC, intensity</th><th class="num">β intensity (dB)</th><th class="num">β f0 (st)</th></tr>
+    {ranking_rows}
   </table>
   <p>Duration puts <strong>{dur_best}</strong> first by
   {mr.loc['A5', 'dAIC_log_duration'] - mr.loc[dur_best, 'dAIC_log_duration']:,.0f}
   AIC over the best A rule; intensity puts <strong>{int_best}</strong> first by
   {mr.loc['B6', 'dAIC_int_midpoint'] - mr.loc[int_best, 'dAIC_int_midpoint']:,.0f}
   over the best B rule. This is the asymmetry Dobrovolsky (1999) reported on 80
-  vowels, reproduced on {int(D['ram'].n_obs.iloc[0]):,}.</p>
+  vowels, reproduced on {int(D['fw'].n_obs.max()):,}.</p>
   <div class="note"><strong>Three reasons not to read this table as the
   answer.</strong> (1) The intensity coefficients are
   {mr.loc[named, 'estimate_int_midpoint'].min():.2f}–{mr.loc[named, 'estimate_int_midpoint'].max():.2f} dB
   against a 3 dB JND — six to seven times too small to hear. Statistically
-  overwhelming, perceptually nothing. (2) Overall accuracy does not discriminate at all —
-  all six named rules fall in
-  {mr.loc[named, 'detected_accuracy_DESCRIPTIVE'].min():.4f}–{mr.loc[named, 'detected_accuracy_DESCRIPTIVE'].max():.4f},
-  and it is not independent of the AIC columns anyway. (3) The ranking is
-  dominated by the ~90% of words where all six rules agree.</div>
-  <p class="cap">The <code>final</code> baseline beats every named rule on
-  duration by ΔAIC {mr.loc[dur_best, 'dAIC_log_duration'] - mr.loc['final', 'dAIC_log_duration']:,.0f}
-  and on intensity while carrying a <em>negative</em> coefficient
-  ({mr.loc['final', 'estimate_int_midpoint']:+.2f} dB). Its predictor is
-  &ldquo;word-final syllable&rdquo;, which is the final-lengthening and
-  declination confound itself, so that row measures the edge, not stress. It
-  is excluded from the comparison rather than reported as a winner.</p>""")
+  overwhelming, perceptually nothing. (2) The three cues DISAGREE about which
+  rule wins — duration and f0 rank B first, intensity ranks A first — so no
+  single column settles it, and that disagreement is itself a finding rather
+  than noise to be averaged away. (3) The ranking is dominated by the ~90% of
+  words where all six rules agree; see the conflict-subset slide.</div>
+  <p class="cap">The <code>final</code> baseline is deliberately NOT in this
+  table. Its predictor 1{{sidx == sN}} is <em>identical</em> to syl_final on
+  all 574,344 rows (&phi; = 1.0000), so against a linear position trend it is
+  unidentified: omit the control and it absorbs the whole edge effect, include
+  it and no residual variation is left. It becomes testable only with position
+  entered nonparametrically, and when it is, its intensity coefficient is
+  <em>negative</em> &mdash; quieter than trend. See the word-edge slide.</p>""")
 
     # ── 4 final lengthening ───────────────────────────────────────────
     S.append(f"""
@@ -348,7 +386,7 @@ def main():
 
     # ── 6 weight trade-off ────────────────────────────────────────────
     S.append(f"""
-  <h2><span class="tag new">new</span>Word-finally, a long consonant and a reduced vowel trade off</h2>
+  <h2><span class="tag fix">retracted</span>Word-finally, a long consonant and a reduced vowel trade off</h2>
   <p class="sub">Your question: does a final geminate plus a reduced vowel
   differ from a singleton plus a full vowel? 2 × 2 with the consonant's
   identity, word length, utterance edge and pause controlled.</p>
@@ -372,9 +410,14 @@ def main():
       {pct(gwa['Cː+reduced']):+.1f}% against short&nbsp;C&nbsp;+&nbsp;full&nbsp;V
       — about 7&nbsp;ms on a 160&nbsp;ms rhyme, <em>under</em> the 10&nbsp;ms
       JND.</p>
-      <p>Word-finally the two are the same length. That is what a shared
-      timing budget looks like, and it is the positive weight evidence in
-      this dataset.</p>
+      <p class="warn"><strong>RETRACTED.</strong> This was presented as
+      positive weight evidence &mdash; a shared timing budget, i.e. a mora.
+      It is not. Two additive effects of similar size landing on the same
+      total is <em>consistent with</em> a shared budget but does not
+      distinguish it from two independent adjustments that happen to be
+      comparable; and the net difference sits under the 10&nbsp;ms JND, so
+      the configuration a mora predicts is also the configuration no
+      difference predicts. Only designed elicitation can separate them.</p>
     </div>
   </div>
   {img("fig_gemination_mora.png",
@@ -448,13 +491,21 @@ def main():
   <p>Coda odds are <em>below</em> 1 on duration and flat on intensity — and
   under a rule-based definition of stress they are
   {OR('has_coda','rule_B5'):.3f} (B5) and {OR('has_coda','rule_A6'):.3f} (A6).
-  Sonority survives intrinsic correction in duration at
-  {OR('is_a','prom_dur_adj'):.2f}, and vanishes in intensity.</p>
+  The two sonority predictors must be read separately, because they do not
+  behave alike: <strong>/a/</strong> survives intrinsic correction on duration
+  at {OR('is_a','prom_dur_adj'):.3f} and still carries
+  {OR('is_a','prom_int_midpoint'):.3f} on intensity, while <strong>non-high</strong>
+  gives {OR('is_nonhigh','prom_dur_adj'):.3f} on duration and
+  {OR('is_nonhigh','prom_int_midpoint'):.3f} — i.e. null — on intensity. Only
+  the non-high row vanishes in intensity.</p>
   {img("fig_coda_sonority.png",
        "Left: odds of being the most prominent syllable in the word. Right: duration and intensity by distance from the primary-stressed syllable.")}
-  <p class="cap">Sonority-sensitivity holds at an odds ratio near
-  {OR('is_a','prom_dur_adj'):.1f}, not the 2–3 the raw measures suggest — a
-  real effect, a modest one, and only in the duration dimension.</p>""")
+  <p class="cap">Sonority-sensitivity holds at an odds ratio of
+  {OR('is_a','prom_dur_adj'):.2f} for /a/ on duration, not the 2–3 the raw
+  measures suggest — a real effect and a modest one. Whether it reaches
+  intensity depends on which predictor you ask: /a/ yes
+  ({OR('is_a','prom_int_midpoint'):.2f}), non-high no
+  ({OR('is_nonhigh','prom_int_midpoint'):.2f}).</p>""")
 
     # ── 10 secondary stress ───────────────────────────────────────────
     S.append(f"""
@@ -489,46 +540,41 @@ def main():
        "Per-vowel coefficients. Filled = p<0.05. No evidence of change in progress; a real but small gender residual.")}""")
 
     # ── 11 rounding ───────────────────────────────────────────────────
-    rnd, bp = D["rnd"], D["bp"]
+    r3, r2 = D["rndF3"], D["rndF2"]
     S.append(f"""
-  <h2><span class="tag fix">revised</span>Rounding: the front row is confirmed, the back row is undecidable</h2>
-  <p class="sub">Within-series F3 against an unrounded anchor — /i/ for the
-  front series, /a/ for the back. Rounding lowers F3.</p>
+  <h2><span class="tag fix">revised</span>Rounding: established for the two front vowels, for neither back one</h2>
+  <p class="sub">HEIGHT-MATCHED pairs. The previous version used one anchor per
+  harmony series — /i/ front, /a/ back — which compared mid &#10216;&#1253;&#10217; against high
+  /i/ and mid &#10216;&#1241;&#10217; against low /a/, confounding rounding with height.</p>
   <div class="cols">
     <div>
       <table>
-        <tr><th>Contrast</th><th class="num">ΔF3 (z)</th><th>Reading</th></tr>
-        <tr><td>/y/ vs /i/</td><td class="num">{rnd.loc['y','dF3z']:+.3f}</td><td>rounded</td></tr>
-        <tr><td>/ø/ vs /i/</td><td class="num">{rnd.loc['ø','dF3z']:+.3f}</td><td>rounded</td></tr>
-        <tr><td>/e/ vs /i/</td><td class="num">{rnd.loc['e','dF3z']:+.3f}</td><td>unrounded</td></tr>
-        <tr class="hi"><td>/u/ vs /a/ <em>(control)</em></td><td class="num">{rnd.loc['u','dF3z']:+.3f}</td><td>rounded — yet no F3 drop</td></tr>
-        <tr><td>/ɵ/ vs /a/</td><td class="num">{rnd.loc['ɵ','dF3z']:+.3f}</td><td>not determinable</td></tr>
-        <tr><td>/ʉ/ vs /a/</td><td class="num">{rnd.loc['ʉ','dF3z']:+.3f}</td><td>not determinable</td></tr>
+        <tr><th>Height-matched pair</th><th class="num">&Delta;F3 (z)</th><th class="num">z</th><th class="num">&Delta;F2 (z)</th><th>Reading</th></tr>
+        <tr><td>/y/ &#10216;&#1267;&#10217; vs /i/ &#10216;&#1080;&#10217;</td><td class="num">{r3.loc['y vs i','difference']:+.3f}</td><td class="num">{r3.loc['y vs i','z']:+.1f}</td><td class="num">{r2.loc['y vs i','difference']:+.3f}</td><td><strong>rounded</strong></td></tr>
+        <tr><td>/&oslash;/ &#10216;&#1253;&#10217; vs /e/ &#10216;&#1077;&#10217;</td><td class="num">{r3.loc['ø vs e','difference']:+.3f}</td><td class="num">{r3.loc['ø vs e','z']:+.1f}</td><td class="num">{r2.loc['ø vs e','difference']:+.3f}</td><td><strong>rounded</strong></td></tr>
+        <tr class="hi"><td>/u/ &#10216;&#1091;&#10217; vs /&#596;/ &#10216;&#1099;&#10217;</td><td class="num">{r3.loc['u vs ʉ','difference']:+.3f}</td><td class="num">{r3.loc['u vs ʉ','z']:+.1f}</td><td class="num">{r2.loc['u vs ʉ','difference']:+.3f}</td><td>POSITIVE CONTROL &mdash; passes</td></tr>
+        <tr><td>/&#629;/ &#10216;&#1241;&#10217; vs /a/ &#10216;&#1072;&#10217;</td><td class="num">{r3.loc['ɵ vs a','difference']:+.3f}</td><td class="num">{r3.loc['ɵ vs a','z']:+.1f}</td><td class="num">{r2.loc['ɵ vs a','difference']:+.3f}</td><td>not determinable</td></tr>
       </table>
     </div>
     <div class="panel">
-      <h3>Why the back row fails</h3>
-      <p>/u/ is rounded in every description of Chuvash and every Turkic
-      language. Its F3 is not lower than /a/'s, so <strong>F3 has no
-      sensitivity on the back series</strong> and a positive ΔF3 for ⟨ӑ⟩ or
-      ⟨ы⟩ is not evidence of unrounding.</p>
-      <p>F3 lowering is a <em>front</em>-rounding cue. On back vowels the
-      rounding gesture lands in F2, which is also where backness lands. No
-      amount of data separates them.</p>
+      <h3>The control is not a result</h3>
+      <p>The /u/~/&#596;/ row <strong>presupposes</strong> Krueger's description of
+      that pair. It cannot be cited as evidence that &#10216;&#1099;&#10217; is unrounded or
+      &#10216;&#1091;&#10217; rounded. An earlier version of this deck said
+      &ldquo;Krueger's high row is confirmed exactly&rdquo; &mdash; that was
+      circular and is withdrawn.</p>
+      <p>A small control effect is also ambiguous between &ldquo;F3 is a weak
+      cue to back rounding&rdquo; and &ldquo;these two vowels differ less in
+      rounding than described&rdquo;.</p>
+      <h3>Why &#10216;&#1241;&#10217; is undecidable</h3>
+      <p>Structural, not a power problem: the inventory contains <em>no mid
+      back unrounded vowel</em> to serve as its height-matched anchor. Settling
+      it needs lip video or another articulatory measure.</p>
     </div>
   </div>
-  <p>What the data does carry: placed against /u/, ⟨ы⟩ /ʉ/ is at the same
-  height (ΔF1 {bp.loc['ʉ','dF1z_vs_u']:+.2f}) but
-  {bp.loc['ʉ','dF2z_vs_u']:+.2f} fronter in F2; ⟨ӑ⟩ /ɵ/ is lower
-  ({bp.loc['ɵ','dF1z_vs_u']:+.2f}) and {bp.loc['ɵ','dF2z_vs_u']:+.2f} fronter.
-  <strong>Both sit between /u/ and /a/ in F2</strong> — fronter than a plain
-  rounded back vowel, which is the measurable part of the intuition.</p>
   {img("fig_rounding_revised.png",
-       "Left: the F3 test with its positive control. Right: the eight vowel means, with ⟨ы⟩ and ⟨ӑ⟩ joined to /u/.")}
-  <p class="cap">Also revised: the grammars' &ldquo;reduced vowels round under
-  stress&rdquo; is refuted for ⟨ӗ⟩ (ΔF3 {D['rst'].loc['ø','dF3z']:+.3f}) and
-  untestable for ⟨ӑ⟩ and ⟨ы⟩. What is solid is lower F2 under stress for
-  ⟨ӗ⟩ and ⟨ӑ⟩.</p>""")
+       "The F3 test with its positive control, and the eight vowel means.")}"""
+)
 
     # ── 12 clustering ─────────────────────────────────────────────────
     S.append(f"""
@@ -760,7 +806,7 @@ def main():
     <tr><td>vowel tokens</td><td class="num">280,955</td><td class="num">574,344</td><td>—</td></tr>
     <tr><td>A-vs-B sample (word tokens)</td><td class="num">7,411</td><td class="num">{int(ad5.loc['duration','word_tokens']):,}</td><td>the weakest point in the draft, fixed</td></tr>
     <tr class="hi"><td>/ø/ F3 change under stress</td><td class="num">−0.270</td><td class="num">{D['rst'].loc['ø','dF3z']:+.3f}</td><td>&ldquo;rounds under stress&rdquo; withdrawn</td></tr>
-    <tr><td>/u/ vs /a/ ΔF3 (control)</td><td class="num">−0.392</td><td class="num">{rnd.loc['u','dF3z']:+.3f}</td><td>back-series rounding test invalidated</td></tr>
+    <tr><td>rounding anchors</td><td class="num">one per series</td><td class="num">height-matched</td><td>⟨ӑ⟩ now undecidable for a structural reason, not a power one</td></tr>
     <tr><td>clustering peak</td><td class="num">k = 6</td><td class="num">k = {kbest}</td><td>same conclusion, cleaner reading</td></tr>
     <tr><td>coda odds (duration, adjusted)</td><td class="num">0.782</td><td class="num">{OR('has_coda','prom_dur_adj'):.3f}</td><td>null holds</td></tr>
   </table>
@@ -772,6 +818,263 @@ def main():
   are computed within vowel × <em>speaker</em>. Every analysis reports the
   full sample, and the coda and sonority tests report the strict subset
   alongside so the reader can see the nulls do not depend on the choice.</div>""")
+
+    # ══ NEW 2026-10-01: f0, the step design, shapes, morphology ═══════
+
+    # ── A  the headline: the within-word step design ──────────────────
+    svs = D["svs"][D["svs"].spec == "vowel-stratified"].set_index(["cue","direction"])
+    sv = lambda c, d, col="estimate": svs.loc[(c, d), col]
+    S.append(f"""
+  <h2><span class="tag new">new</span>The best-identified result: duration steps up into the stressed syllable</h2>
+  <p class="sub">Within-word steps between adjacent syllables, stratified on
+  (word length &times; syllable index &times; <strong>target vowel</strong>).
+  A within-word difference cancels the word, recording and speaker levels
+  exactly, so no declination baseline has to be specified.</p>
+  <table>
+    <tr><th>Cue</th><th class="num">step INTO the stressed syllable</th><th class="num">t</th><th class="num">step OUT of it</th><th class="num">t</th><th>JND</th></tr>
+    <tr class="hi"><td>duration</td><td class="num"><strong>{sv('dur','step into syllable'):+.2f} ms</strong></td><td class="num">{sv('dur','step into syllable','t'):.1f}</td><td class="num">{sv('dur','step out of syllable'):+.2f} ms</td><td class="num">{sv('dur','step out of syllable','t'):.1f}</td><td>10 ms (Hirsh 1959) &mdash; cleared</td></tr>
+    <tr><td>intensity</td><td class="num">{sv('int','step into syllable'):+.2f} dB</td><td class="num">{sv('int','step into syllable','t'):.2f}</td><td class="num">{sv('int','step out of syllable'):+.2f} dB</td><td class="num">{sv('int','step out of syllable','t'):.2f}</td><td>3 dB (Moore 2007) &mdash; null</td></tr>
+    <tr><td>f0</td><td class="num">{sv('f0','step into syllable'):+.3f} st</td><td class="num">{sv('f0','step into syllable','t'):.1f}</td><td class="num">{sv('f0','step out of syllable'):+.3f} st</td><td class="num">{sv('f0','step out of syllable','t'):.1f}</td><td>both steps UP, so no peak</td></tr>
+  </table>
+  <div class="cols">
+    <div class="panel">
+      <h3>Why it is not circular</h3>
+      <p>Designation at syllable <em>i</em> depends on whether anything to the
+      <strong>right</strong> of <em>i</em> holds a full vowel. That information
+      is in neither the step nor the strata. This is the only specification
+      that holds local vowel quality fixed and still recovers the rule.</p>
+      <p>Stratifying matters: with the vowel as an <em>additive covariate</em>
+      the estimate is +17.95 ms, and at word-final position designation is a
+      <em>deterministic</em> function of the target's own vowel, so part of
+      that figure is a full-versus-reduced comparison in disguise.</p>
+    </div>
+    <div class="panel">
+      <h3>The ceiling on this design</h3>
+      <p>Only <strong>{int(sv('dur','step into syllable','n_strata'))}</strong>
+      strata contain the same vowel at the same position in words of the same
+      length on <em>both</em> sides of the designation contrast. That is the
+      structural limit, not a sampling accident: it is the same ceiling the
+      matched-vowel design hit.</p>
+    </div>
+  </div>
+  {img("fig_contour_steps.png",
+       "Steps by shape class. Rings mark the rule's stressed syllable. Top: intensity step to the next syllable. Bottom: duration step from the previous one.")}
+  <p class="cap">Descriptively the largest duration step up in the word lands
+  on the designated syllable in <strong>9 of 9</strong> testable cells, at +20
+  to +36 ms, with pre-tonic syllables carrying negative steps.</p>""")
+
+    # ── B  two hypotheses, one survives ───────────────────────────────
+    S.append(f"""
+  <h2><span class="tag null">null</span>The post-tonic intensity drop is position, not stress</h2>
+  <p class="sub">Two hypotheses about contour shape. The duration one holds;
+  the intensity one does not survive its own control.</p>
+  <div class="cols">
+    <div>
+      <h3>Held: the stressed syllable is the first to lengthen</h3>
+      <p>&ldquo;Leftmost syllable above the word's own mean duration&rdquo;
+      identifies the designated syllable where stress is left of the edge
+      (pre-antepenultimate 0.843 against 0.250 chance; antepenultimate 0.708
+      against 0.333), and the mirror statistic does not. Where stress is final
+      it reverses.</p>
+    </div>
+    <div>
+      <h3>Failed: a drop after the stressed syllable</h3>
+      <p>Raw, the designation effect on the following intensity step is
+      &minus;1.735 dB. With <em>both</em> vowels controlled it is
+      &minus;0.315 dB (t &minus;1.19), and the mirror control vanishes
+      symmetrically. The step out of the designated syllable is a
+      <strong>rise</strong> in all five cells where that syllable is syllable 1
+      and a fall in all four where it is syllable 2 or later &mdash; which just
+      restates the syllable-2 intensity peak.</p>
+    </div>
+  </div>
+  <p>The class that separates the two anchorings settles it: in 3-syllable
+  antepenultimate words (1,773 tokens) the step out of the designated first
+  syllable is <strong>+0.43 dB</strong>, and the drop arrives at the word edge
+  instead. In the penultimate class the post-tonic syllable <em>is</em> the
+  word-final one, so that class cannot distinguish them at all.</p>
+  <p class="cap">Worth keeping, though: a drop can be an informative
+  <em>perceptual</em> cue without being an independent correlate. It is
+  audible and it does co-locate with stress in the penultimate class. That is a
+  claim about perception this corpus cannot test &mdash; and it is a different
+  claim from the one the numbers reject.</p>""")
+
+    # ── C  f0 ─────────────────────────────────────────────────────────
+    f0r = D["f0r"]; f0rl = f0r[(f0r.control == "vowel_label") & f0r.identified].copy()
+    f0rl = f0rl.sort_values("rank")
+    f0e = D["f0e"]; f0el = f0e[f0e.control == "vowel_label"]
+    f0_add = f0el[f0el.model == "additive"].est_hz.iloc[0]
+    f0_wi  = f0el[(f0el.term == "b_final") & (f0el.model != "additive")].est_hz.iloc[0]
+    f0_uf  = f0el[f0el.model != "additive"].est_hz.sum()
+    f0p = D["f0p"]
+    s21 = [(int(n), float(g[g.sidx==2].f0_rel.iloc[0] - g[g.sidx==1].f0_rel.iloc[0]))
+           for n, g in f0p.groupby("sN") if len(g[g.sidx==2]) and len(g[g.sidx==1])]
+    HI = ' class="hi"'
+    rowcls = lambda rule: HI if rule == "B5" else ""
+    rows = "".join(
+        f'<tr{rowcls(r.rule)}><td>{r.rule}</td>'
+        f'<td class="num">{r.est_st:+.3f}</td><td class="num">{r.est_hz:+.2f}</td>'
+        f'<td class="num">{r.t:.1f}</td></tr>' for r in f0rl.itertuples())
+    S.append(f"""
+  <h2><span class="tag new">new</span>f0, the third cue &mdash; never tested before now</h2>
+  <p class="sub">f0 at the vowel midpoint (mean of steps 10 and 11, the exact
+  analogue of the adopted intensity measure), in semitones from the
+  <strong>speaker's own median</strong>. {D['f0d'][D['f0d'].corpus=='ALL'].pct_usable.iloc[0]:.1f}% of
+  vowels usable; {int(D['f0d'][D['f0d'].corpus=='ALL'].octave_outlier.iloc[0]):,} octave-tracking
+  errors removed. Within-speaker normalisation makes the open question about
+  the Chuvash Voice speaker's sex <em>moot</em> downstream.</p>
+  <div class="cols">
+    <div>
+      <h3>The B rules lead, as on duration</h3>
+      <table>
+        <tr><th>Rule</th><th class="num">semitones</th><th class="num">Hz</th><th class="num">t</th></tr>
+        {rows}
+      </table>
+      <p class="cap">Net of nonparametric position. <code>initial</code> is NOT
+      IDENTIFIED. Same ranking under the vowel_height control set.</p>
+    </div>
+    <div class="panel">
+      <h3>Two of three cues now favour B</h3>
+      <p>duration B5 first &middot; <strong>f0 B6/B5/B4 first</strong> &middot;
+      intensity A6 first. The stressless-word analysis gains its second
+      independent cue.</p>
+      <h3>No syllable-2 f0 peak</h3>
+      <p>f0 peaks on <strong>syllable 1</strong> at every word length, and
+      syllable 2 is lower at every length
+      ({", ".join(f"{d:+.2f}" for _, d in s21)} st for lengths
+      {", ".join(str(n) for n, _ in s21)}). So the syllable-2 effect is
+      intensity-only: duration peaks word-finally, f0 word-initially.</p>
+    </div>
+  </div>
+  {img("fig_f0_rule_ranking.png", "f0 on the stressed syllable relative to the declination trend, both control sets, with Gandour's 1 Hz JND marked.")}""")
+
+    # ── D  the word edge: a revision ──────────────────────────────────
+    fpt = D["fpt"]
+    d_add = fpt[(fpt.dv=="dur_c") & (fpt.model=="additive")].ms.iloc[0]
+    i_add = fpt[(fpt.dv=="int_c") & (fpt.model=="additive")].dB.iloc[0]
+    S.append(f"""
+  <h2><span class="tag fix">revised</span>The word-final rise is a boundary tone, not stress</h2>
+  <p class="sub">A conclusion from earlier in this project was wrong and is
+  corrected here.</p>
+  <table>
+    <tr><th>Word-final syllable, relative to trend</th><th class="num">duration</th><th class="num">intensity</th><th class="num">f0</th></tr>
+    <tr><td>pooled</td><td class="num">{d_add:+.2f} ms</td><td class="num">{i_add:+.3f} dB</td><td class="num">{f0_add:+.2f} Hz</td></tr>
+    <tr><td>word-internal</td><td class="num">{fpt[(fpt.dv=='dur_c') & (fpt.term=='b_final') & (fpt.model!='additive')].ms.iloc[0]:+.2f} ms</td><td class="num">{fpt[(fpt.dv=='int_c') & (fpt.term=='b_final') & (fpt.model!='additive')].dB.iloc[0]:+.3f} dB</td><td class="num">{f0_wi:+.2f} Hz</td></tr>
+    <tr class="hi"><td>utterance-final</td><td class="num">{fpt[(fpt.dv=='dur_c') & (fpt.model!='additive')].ms.sum():+.2f} ms</td><td class="num">{fpt[(fpt.dv=='int_c') & (fpt.model!='additive')].dB.sum():+.3f} dB</td><td class="num"><strong>{f0_uf:+.2f} Hz</strong></td></tr>
+  </table>
+  <p>Earlier this was reported as &ldquo;longer but quieter than trend&rdquo;
+  and counted against final stress on the grounds that the cues disagree. With
+  f0 in hand it is longer, quieter <em>and higher</em> &mdash; two of three
+  cues in the stress direction.</p>
+  <p><strong>But the f0 elevation reverses sign at the utterance edge</strong>
+  ({f0_wi:+.2f} Hz word-internally, {f0_uf:+.2f} Hz utterance-finally,
+  interaction t &minus;179). Lexical stress cannot flip sign according to
+  whether the word ends the utterance; a boundary tone does exactly that. So
+  final stress is still unsupported &mdash; the reason is now
+  &ldquo;it is a boundary tone&rdquo;, not &ldquo;the cues disagree&rdquo;.</p>
+  {img("fig_word_edge_cues.png", "The three cues at the word edge, each in its own units with its own JND. The JND normalisation is NOT comparable across cues: the 1 Hz f0 JND is measured on steady tones.")}
+  <p class="cap">Why <code>final</code> can be tested at all: 1{{sidx == sN}} is
+  <em>identical</em> to syl_final on all 574,344 rows (&phi; = 1.0000), so it is
+  unidentified against a linear trend. Entering position NONPARAMETRICALLY makes
+  the predicate a deterministic but <em>nonlinear</em> function of position, and
+  that is what identifies it. <code>initial</code> stays unidentified.</p>""")
+
+    # ── E  shapes: the leftward walk ──────────────────────────────────
+    spm = D["spm"]; o5 = spm[(spm.inventory=="5full") & (spm.version=="observed")]
+    dmatch = o5[(o5.dv=="duration") & (o5.from_end>=0)]
+    imatch = o5[(o5.dv=="intensity") & (o5.from_end>=0)]
+    S.append(f"""
+  <h2><span class="tag new">new</span>The duration peak walks leftward with the rightmost full vowel</h2>
+  <p class="sub">Shape classes defined by <code>from_end = sN &minus; (position
+  of the rightmost full vowel)</code>, not by strict full/reduced strings, so
+  RFFR, RRFR and FRFR join FFFR in the penultimate class. Computed under both
+  the 5-full and 6-full inventories.</p>
+  <p>The observed duration peak sits on exactly the syllable the rule
+  designates in <strong>{int(dmatch.match.sum())} of {len(dmatch)}</strong>
+  word-length &times; class cells containing a full vowel &mdash; identically
+  under both inventories. The intensity peak matches in only
+  {int(imatch.match.sum())} of {len(imatch)}; it sits on syllable 2 in 13 of 14
+  cells, so it tracks position rather than the rule.</p>
+  {img("fig_shape_profiles_observed.png",
+       "Intensity and duration profiles by generalised shape class, with rings on the rule's stressed syllable.")}
+  <div class="cols">
+    <div class="panel">
+      <h3>A5 or A6?</h3>
+      <p>The coding is the <strong>5-full</strong> inventory
+      (a e i u y), i.e. A5/B5. Adding /&#596;/ &#10216;&#1099;&#10217; moves 2.1% of word tokens, almost
+      all of them disyllables leaving the stressless class for the
+      initially-stressed one &mdash; because &#10216;&#1099;&#10217; is overwhelmingly
+      first-syllable. The peak-match result is identical either way, so these
+      profiles do not adjudicate A5 against A6.</p>
+    </div>
+    <div class="panel">
+      <h3>The controlled version does not test this</h3>
+      <p>Net of vowel quality the longest syllable is word-final in 13 of 14
+      cells &mdash; but that model has <code>vowel_label</code> as a covariate,
+      and the rule's designation <em>is defined on</em> vowel fullness, so it
+      adjusts away the rule's own content. Its failure is not evidence against
+      the rule. The step design above is the controlled test.</p>
+    </div>
+  </div>""")
+
+    # ── F  morphology ─────────────────────────────────────────────────
+    mva = D["mva"]; mvb = mva.loc[mva.f1.idxmax()]
+    mst = D["mst"]
+    mg = lambda lab, col="estimate": mst[mst.test == lab][col].iloc[0]
+    mal = D["mal"]
+    S.append(f"""
+  <h2><span class="tag new">new</span>The suffixation confound, cleared</h2>
+  <p class="sub">The reduced vowels that define the right edge of the
+  penultimate and antepenultimate classes are overwhelmingly
+  <strong>suffixal</strong>, so &ldquo;the rightmost full vowel is the
+  penult&rdquo; and &ldquo;this word carries a suffix&rdquo; are nearly the same
+  statement. No corpus here has morphological annotation, so the parse was
+  induced.</p>
+  <div class="cols">
+    <div>
+      <table>
+        <tr><th>Duration step up into the stressed syllable</th><th class="num">ms</th><th class="num">t</th><th class="num">steps</th></tr>
+        <tr><td>all words</td><td class="num">{mg('d_dur_prev | all words'):+.2f}</td><td class="num">{mg('d_dur_prev | all words','t'):.1f}</td><td class="num">{int(mg('d_dur_prev | all words','n_steps')):,}</td></tr>
+        <tr class="hi"><td><strong>no suffix parsed</strong></td><td class="num"><strong>{mg('d_dur_prev | no suffix parsed'):+.2f}</strong></td><td class="num">{mg('d_dur_prev | no suffix parsed','t'):.1f}</td><td class="num">{int(mg('d_dur_prev | no suffix parsed','n_steps')):,}</td></tr>
+        <tr><td>suffix parsed</td><td class="num">{mg('d_dur_prev | suffix parsed'):+.2f}</td><td class="num">{mg('d_dur_prev | suffix parsed','t'):.1f}</td><td class="num">{int(mg('d_dur_prev | suffix parsed','n_steps')):,}</td></tr>
+      </table>
+      <p>The effect is present and nearly as large in words with no suffix
+      parsed, and the designation &times; suffixal-status interaction is null
+      ({mg('d_dur_prev | interaction'):+.2f} ms, t
+      {mg('d_dur_prev | interaction','t'):.2f}). So the rule is not a stem-edge
+      rule in disguise.</p>
+      <p><strong>A separate finding:</strong> at the same position with the same
+      vowel, a suffixal syllable is
+      {mg('d_dur_prev | suffixal, not designated'):+.2f} ms longer (t
+      {mg('d_dur_prev | suffixal, not designated','t'):.1f}) and
+      {mg('d_int_prev | suffixal, not designated'):+.2f} dB quieter (t
+      {mg('d_int_prev | suffixal, not designated','t'):.1f}) than a stem
+      syllable, independent of stress.</p>
+    </div>
+    <div class="panel">
+      <h3>The parse, and what it is not</h3>
+      <p>Signature induction over 430,008 types on the <em>phonemic</em> form,
+      using <strong>no vowel-quality information</strong> &mdash; essential, or
+      it would reproduce the shape classes it is meant to check. Cut fixed at
+      {int(mvb.min_stems)} stems by F1 against a reference suffix list: recall
+      {mvb.recall:.3f}, precision {mvb.precision:.3f},
+      {len(D['mac'])} suffixes accepted.</p>
+      <p>Only suffixes of &ge;2 phonemes are parsed, because string recurrence
+      <em>cannot</em> tell a genitive <em>-n</em> from a stem-final <em>n</em>.
+      So the monomorphemic class is really <strong>&ldquo;no confident
+      parse&rdquo;</strong>. That contaminates it with genuinely suffixed words
+      and therefore biases this test <em>against</em> finding a difference.</p>
+      <p class="warn">The reference list has not been checked by a Chuvash
+      specialist and the per-word error rate is not measured.
+      &#1241;&#1082;&#1241;&#1088; 'bread' is wrongly split. Both need review.</p>
+    </div>
+  </div>
+  <p class="cap">The confound is real and large as a descriptive fact: outside
+  the word-final class the designated syllable coincides with the last stem
+  syllable {100*mal[mal.from_end==1].desig_is_last_stem_syl.iloc[0]:.1f}% of the
+  time in the penultimate class, against a
+  {100*mal[mal.from_end==1].chance_suffixal.iloc[0]:.1f}% chance rate of being
+  suffixal. It just does not drive the acoustics.</p>""")
 
     # ── 22 reviewer ─────────────────────────────────────────────────
     S.append(f"""
