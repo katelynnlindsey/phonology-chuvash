@@ -1,20 +1,42 @@
-shape_class,shape,sN,vowel_rows,word_tokens,types,kept
-all full,FF,2,97028,48514,2597,TRUE
-all full,FFF,3,43215,14405,3030,TRUE
-all full,FFFF,4,10580,2645,1105,TRUE
-all full,FFFFF,5,1370,274,175,TRUE
-all full,FFFFFF,6,306,51,28,TRUE
-all reduced,RR,2,17516,8758,598,TRUE
-all reduced,RRR,3,3309,1103,323,TRUE
-all reduced,RRRR,4,216,54,32,TRUE
-all reduced,RRRRR,5,5,1,1,FALSE
-all reduced,RRRRRR,6,6,1,1,FALSE
-antepenultimate,FRR,3,7932,2644,577,TRUE
-antepenultimate,FFRR,4,700,175,86,TRUE
-antepenultimate,FFFRR,5,120,24,15,TRUE
-antepenultimate,FFFFRR,6,6,1,1,FALSE
-penultimate,FR,2,43718,21859,1138,TRUE
-penultimate,FFR,3,14496,4832,1259,TRUE
-penultimate,FFFR,4,3380,845,433,TRUE
-penultimate,FFFFR,5,345,69,50,TRUE
-penultimate,FFFFFR,6,66,11,4,FALSE
+inventory,cls,from_end,sN,vowel_rows,word_tokens,types,shapes,kept
+5full,final,0,2,122592,61296,3544,2,TRUE
+5full,no full vowel,-1,2,17516,8758,598,1,TRUE
+5full,antepenultimate,2,3,7932,2644,577,1,TRUE
+5full,penultimate,1,3,20460,6820,1792,2,TRUE
+5full,final,0,3,79080,26360,6036,4,TRUE
+5full,no full vowel,-1,4,216,54,32,1,FALSE
+5full,penultimate,1,2,43718,21859,1138,1,TRUE
+5full,final,0,4,24052,6013,2792,8,TRUE
+5full,penultimate,1,5,880,176,131,8,TRUE
+5full,final,0,5,3730,746,534,16,TRUE
+5full,penultimate,1,4,6964,1741,941,4,TRUE
+5full,antepenultimate,2,4,1116,279,130,2,TRUE
+5full,no full vowel,-1,3,3309,1103,323,1,TRUE
+5full,pre-antepenult,3,4,484,121,59,1,TRUE
+5full,penultimate,1,6,138,23,11,6,FALSE
+5full,antepenultimate,2,5,205,41,27,4,FALSE
+5full,final,0,6,726,121,85,20,TRUE
+5full,pre-antepenult,3,5,50,10,4,1,FALSE
+5full,antepenultimate,2,6,60,10,7,4,FALSE
+5full,no full vowel,-1,6,6,1,1,1,FALSE
+5full,no full vowel,-1,5,5,1,1,1,FALSE
+6full,final,0,2,122802,61401,3552,2,TRUE
+6full,no full vowel,-1,2,12840,6420,473,1,TRUE
+6full,antepenultimate,2,3,8973,2991,652,1,TRUE
+6full,penultimate,1,3,20421,6807,1795,2,TRUE
+6full,final,0,3,79167,26389,6039,4,TRUE
+6full,no full vowel,-1,4,164,41,23,1,FALSE
+6full,penultimate,1,2,48184,24092,1255,1,TRUE
+6full,final,0,4,24052,6013,2792,8,TRUE
+6full,penultimate,1,5,880,176,131,8,TRUE
+6full,final,0,5,3730,746,534,16,TRUE
+6full,penultimate,1,4,7012,1753,948,4,TRUE
+6full,antepenultimate,2,4,1116,279,130,2,TRUE
+6full,no full vowel,-1,3,2220,740,242,1,TRUE
+6full,pre-antepenult,3,4,488,122,61,1,TRUE
+6full,penultimate,1,6,138,23,11,7,FALSE
+6full,antepenultimate,2,5,205,41,27,4,FALSE
+6full,final,0,6,726,121,85,20,TRUE
+6full,pre-antepenult,3,5,50,10,4,1,FALSE
+6full,antepenultimate,2,6,60,10,7,3,FALSE
+6full,no full vowel,-1,6,6,1,1,1,FALSE

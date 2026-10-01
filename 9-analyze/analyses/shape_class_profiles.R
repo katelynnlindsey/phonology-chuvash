@@ -1,103 +1,119 @@
 # =============================================================================
-# shape_class_profiles.R                                          2026-10-01
+# shape_class_profiles.R                           2026-10-01, rev. same day
 #
 # THE "MOVING STRESS" TEST, DRAWN. Intensity and duration profiles across
-# syllable positions, separately for the four full/reduced word shapes that
-# place the rightmost full vowel in a different place:
+# syllable positions, grouped by WHERE THE RIGHTMOST FULL VOWEL SITS.
 #
-#   all full          FF FFF FFFF FFFFF FFFFFF   -> rightmost full = FINAL
-#   penultimate       FR FFR FFFR FFFFR          -> rightmost full = PENULT
-#   antepenultimate   FRR FFRR FFFRR             -> rightmost full = ANTEPENULT
-#   all reduced       RR RRR RRRR                -> no full vowel: leftmost
-#                                                   reduced (rule A) or
-#                                                   stressless (rule B)
+# REVISION, at Kate's suggestion. The first version used strict shapes --
+# all-full (FF, FFF, ...), F...R, F...RR, all-reduced -- which required every
+# syllable before the final reduced one to be full. That is stricter than the
+# rule needs: a rightmost-full-vowel rule cares only about the POSITION of the
+# rightmost full vowel, so RFFR, RRFR and FRFR all make the same prediction as
+# FFFR. Classes are therefore now defined by `from_end = sN - (position of the
+# rightmost full vowel)`:
 #
-# If stress tracks the rightmost full vowel, the prominence peak should sit one
-# syllable further left in each successive class. If stress is word-final it
-# should sit on the last syllable in all four.
+#   from_end 0   final            ...F
+#   from_end 1   penultimate      ...FR
+#   from_end 2   antepenultimate  ...FRR
+#   from_end 3   pre-antepenult   ...FRRR
+#   no full vowel                 all R  (leftmost reduced under A, stressless under B)
 #
-# INVENTORY. F/R uses B5's five full vowels (a e i u y), B5 being the
-# best-fitting rule. A6 differs only in counting ⟨ы⟩ /ʉ/ as full, which is 1.9%
-# of tokens.
+# What generalising buys, in word tokens (5-full inventory): penultimate at 4
+# syllables 845 -> 1,741 and at 5 syllables 69 -> 176, which rescues two cells
+# that were too thin to plot; antepenultimate at 4 syllables 175 -> 279; and a
+# pre-antepenultimate class (121 tokens at 4 syllables) that the strict shapes
+# could not produce at all. The gain is modest overall (penultimate 1.11x,
+# antepenultimate 1.05x) because reduced vowels BEFORE a full vowel are rare in
+# Chuvash -- /ø ɵ/ are largely suffixal and sit to the right.
 #
-# TWO VERSIONS, and the difference between them is the methodological point.
+# INVENTORY -- this is the answer to Kate's other question. The first version
+# used the FIVE-full inventory (a e i u y), i.e. A5/B5, NOT A6. A6/B6 count
+# ⟨ы⟩ /ʉ/ as full, and since /ʉ/ is 96% first-syllable that moves words between
+# classes. BOTH inventories are now run and reported so the choice is visible.
+#
+# TWO VERSIONS of each, because neither settles it alone:
 #   observed    recording-centred cell means, NO vowel-identity control, on
-#               utterance-NON-final words only (the utterance-edge effect would
-#               otherwise dominate the last syllable). This is what these word
-#               shapes actually look like.
-#   controlled  model-based cell means with vowel_label, coda, frequency and
-#               utterance position in the model -- i.e. position effects NET of
-#               intrinsic vowel quality. Comparable to the panels in
-#               output/position_cell_means.csv.
-# The observed version cannot distinguish "the penult is stressed" from "the
-# penult has a full vowel and full vowels are intrinsically longer and louder".
-# The controlled version removes that, at the cost of removing part of what a
-# quality-driven rule predicts. Neither alone settles it; shown together they
-# bound it.
-#
-# SHAPES EXCLUDED as too sparse (any syllable cell under 20 vowel rows):
-#   FFFFFR (11 word tokens), FFFFRR (1), RRRRR (1), RRRRRR (1).
+#               utterance-NON-final words. Cannot separate "the penult is
+#               stressed" from "the penult holds a full vowel".
+#   controlled  vowel_label, coda, frequency and utterance position in the
+#               model -- removes that, but also removes part of what a
+#               quality-driven rule predicts, so it under-reads.
 #
 # Outputs
-#   output/shape_class_profiles.csv      both versions, every cell
-#   output/shape_class_counts.csv        token counts per shape
+#   output/shape_class_profiles.csv   both inventories, both versions
+#   output/shape_class_counts.csv     token counts per (class, length)
 # =============================================================================
 suppressMessages({library(data.table); library(lme4); library(broom.mixed)})
-OUT <- "output"; MIN_CELL <- 20L
-FULL5 <- c("a","e","i","u","y")
+OUT <- "output"; MIN_TOKENS <- 100L
+INV <- list("5full" = c("a","e","i","u","y"),
+            "6full" = c("a","e","i","u","y","ʉ"))
+CLSNAME <- c("-1"="no full vowel","0"="final","1"="penultimate",
+             "2"="antepenultimate","3"="pre-antepenult")
+v0 <- readRDS("/tmp/v2.rds")
+prof <- list(); cnts <- list()
 
-v <- readRDS("/tmp/v2.rds")
-v[, FR := fifelse(vowel_label %in% FULL5, "F", "R")]
-wd <- v[, .(n_syl = .N, sN = sN[1], shape = paste(FR[order(sidx)], collapse="")), by = word_id]
-wd <- wd[n_syl == sN]                       # shape string valid only if complete
-v <- merge(v, wd[, .(word_id, shape)], by = "word_id")
-cls <- function(s) { n <- nchar(s)
-  if (s == strrep("F", n)) "all full"
-  else if (s == paste0(strrep("F", n-1), "R")) "penultimate"
-  else if (n >= 3 && s == paste0(strrep("F", n-2), "RR")) "antepenultimate"
-  else if (s == strrep("R", n)) "all reduced" else NA_character_ }
-shp <- unique(v[, .(shape)]); shp[, shape_class := vapply(shape, cls, character(1))]
-v <- merge(v, shp, by = "shape")[!is.na(shape_class)]
+for (iv in names(INV)) {
+  v <- copy(v0)
+  v[, FR := fifelse(vowel_label %in% INV[[iv]], "F", "R")]
+  wd <- v[, .(n_syl = .N, sN = sN[1],
+              shape = paste(FR[order(sidx)], collapse = "")), by = word_id][n_syl == sN]
+  wd[, fp := vapply(gregexpr("F", shape),
+                    function(m) if (m[1] == -1L) NA_integer_ else max(m), integer(1))]
+  wd[, from_end := fifelse(is.na(fp), -1L, sN - fp)]
+  v <- merge(v, wd[, .(word_id, shape, from_end)], by = "word_id")
+  v <- v[from_end %in% c(-1L, 0L, 1L, 2L, 3L)]
+  v[, cls := CLSNAME[as.character(from_end)]]
+  # data.table will NOT recycle a length-1 scalar inside a `by` list -- it
+  # demands every element be nrow(x) long. Add the constant as a column first.
+  v[, inventory := iv]
 
-keep <- v[, .N, by = .(shape, sidx)][, .(min_cell = min(N)), by = shape][min_cell >= MIN_CELL, shape]
-cnt <- v[, .(vowel_rows = .N, word_tokens = uniqueN(word_id), types = uniqueN(word_label),
-             kept = shape[1] %in% keep), by = .(shape_class, shape, sN)]
-setorder(cnt, shape_class, sN); fwrite(cnt, file.path(OUT,"shape_class_counts.csv"))
-cat("\n== shapes and whether they are usable ==\n"); print(cnt)
-v <- v[shape %in% keep]
-v[, cell := factor(paste(shape, sidx, sep = "_"))]
-v[, cell := relevel(cell, ref = "FF_1")]
+  ct <- v[, .(vowel_rows = .N, word_tokens = uniqueN(word_id),
+              types = uniqueN(word_label), shapes = uniqueN(shape)),
+          by = .(inventory, cls, from_end, sN)]
+  ct[, kept := word_tokens >= MIN_TOKENS]
+  cnts[[iv]] <- ct
+  v <- merge(v, ct[kept == TRUE, .(cls, sN)], by = c("cls","sN"))
+  v[, cell := factor(paste(from_end, sN, sidx, sep = "_"))]
+  v[, cell := relevel(cell, ref = "0_2_1")]
 
-# ── observed: recording-centred means, utterance-non-final words ────────
-obs <- v[is_utt_final == FALSE, .(n = .N,
-          int_mean = mean(int_c), int_se = sd(int_c)/sqrt(.N),
-          dur_mean = mean(exp(log_duration)),
-          dur_c_mean = mean(dur_c), dur_c_se = sd(dur_c)/sqrt(.N)),
-         by = .(shape_class, shape, sN, sidx)]
-obs[, version := "observed"]
+  obs <- v[is_utt_final == FALSE,
+           .(n = .N, int_mean = mean(int_c), int_se = sd(int_c)/sqrt(.N),
+             dur_mean = mean(exp(log_duration)), dur_se = sd(exp(log_duration))/sqrt(.N)),
+           by = .(inventory, cls, from_end, sN, sidx)]
+  obs[, version := "observed"]
 
-# ── controlled: model-based cell means ─────────────────────────────────
-COV <- "vowel_label + syllable_coda + z_freq + poly(rel_word,3) + is_utt_final"
-base_ms <- median(exp(v$log_duration))
-ctl <- rbindlist(lapply(c("int_c","dur_c"), function(this_dv) {
-  m <- lmer(as.formula(paste(this_dv, "~", COV, "+ cell + (1|word_label)")),
-            data = v, REML = FALSE, control = lmerControl(calc.derivs = FALSE))
-  tt <- as.data.table(tidy(m, effects="fixed"))[grepl("^cell", term)]
-  tt[, term := sub("^cell", "", term)]
-  tt <- rbind(data.table(term="FF_1", estimate=0, std.error=NA_real_), tt[, .(term, estimate, std.error)],
-              fill = TRUE)
-  tt[, dv := this_dv]
-  tt[, shape := sub("_\\d+$", "", term)][, sidx := as.integer(sub(".*_(\\d+)$","\\1",term))]
-  tt[, value := if (this_dv=="dur_c") base_ms*(exp(estimate)-1) else estimate]
-  tt[]
-}))
-ctl <- merge(ctl, unique(v[, .(shape, shape_class, sN)]), by = "shape")
-fwrite(rbind(obs, ctl, fill = TRUE), file.path(OUT,"shape_class_profiles.csv"))
-
-for (this_dv in c("int_c","dur_c")) {
-  cat(sprintf("\n== CONTROLLED %s, cell means (ref = FF syllable 1) ==\n",
-              ifelse(this_dv=="int_c","INTENSITY dB","DURATION ms")))
-  u <- dcast(ctl[dv==this_dv], shape_class + shape + sN ~ sidx, value.var="value")
-  setorder(u, shape_class, sN); print(u[, lapply(.SD, function(x) if (is.numeric(x)) round(x,2) else x)])
+  COV <- "vowel_label + syllable_coda + z_freq + poly(rel_word,3) + is_utt_final"
+  base_ms <- median(exp(v$log_duration))
+  ctl <- rbindlist(lapply(c("int_c","dur_c"), function(this_dv) {
+    m <- lmer(as.formula(paste(this_dv, "~", COV, "+ cell + (1|word_label)")),
+              data = v, REML = FALSE, control = lmerControl(calc.derivs = FALSE))
+    tt <- as.data.table(tidy(m, effects = "fixed"))[grepl("^cell", term)]
+    tt[, term := sub("^cell", "", term)]
+    tt <- rbind(data.table(term = "0_2_1", estimate = 0), tt[, .(term, estimate)], fill = TRUE)
+    tt[, from_end := as.integer(sub("^(-?\\d+)_.*", "\\1", term))]
+    tt[, sN   := as.integer(sub("^-?\\d+_(\\d+)_.*", "\\1", term))]
+    tt[, sidx := as.integer(sub(".*_(\\d+)$", "\\1", term))]
+    tt[, val := if (this_dv == "dur_c") base_ms*(exp(estimate)-1) else estimate]
+    tt[, dv := this_dv][]
+  }))
+  ctl <- dcast(ctl, from_end + sN + sidx ~ dv, value.var = "val")
+  setnames(ctl, c("int_c","dur_c"), c("int_mean","dur_mean"))
+  ctl[, `:=`(inventory = iv, version = "controlled", cls = CLSNAME[as.character(from_end)])]
+  prof[[iv]] <- rbind(obs, ctl, fill = TRUE)
+  cat(sprintf("\n%s: %s vowel rows in plotted classes\n", iv, format(nrow(v), big.mark=",")))
 }
+P <- rbindlist(prof, fill = TRUE); C <- rbindlist(cnts, fill = TRUE)
+fwrite(P, file.path(OUT, "shape_class_profiles.csv"))
+fwrite(C, file.path(OUT, "shape_class_counts.csv"))
+
+cat("\n== word tokens per class, both inventories ==\n")
+print(dcast(C, cls + from_end + sN ~ inventory, value.var = "word_tokens", fill = 0))
+cat("\n== where the DURATION peak falls (observed) vs predicted ==\n")
+pk <- P[version == "observed", .SD[which.max(dur_mean)], by = .(inventory, cls, from_end, sN)]
+pk[, predicted := fifelse(from_end == -1L, 1L, sN - from_end)]
+pk[, match := sidx == predicted]
+print(pk[order(inventory, from_end, sN), .(inventory, cls, sN, peak = sidx, predicted, match)])
+cat(sprintf("\nmatches where a full vowel exists: %s\n",
+            paste(pk[from_end >= 0L, .(m = sprintf("%s %d/%d", inventory[1], sum(match), .N)),
+                     by = inventory]$m, collapse = " | ")))
 cat("\n✓ shape_class_profiles.R complete\n")

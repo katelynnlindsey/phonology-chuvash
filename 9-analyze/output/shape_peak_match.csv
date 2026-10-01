@@ -1,45 +1,113 @@
-version,shape_class,shape,sN,dv,predicted,peak,match,designated_minus_final,n
-observed,all full,FF,2,duration,2,2,True,0.0,48514
-observed,all full,FF,2,intensity,2,2,True,0.0,48514
-observed,all full,FFF,3,duration,3,3,True,0.0,14405
-observed,all full,FFF,3,intensity,3,3,True,0.0,14405
-observed,all full,FFFF,4,duration,4,4,True,0.0,2645
-observed,all full,FFFF,4,intensity,4,2,False,0.0,2645
-observed,all full,FFFFF,5,duration,5,5,True,0.0,274
-observed,all full,FFFFF,5,intensity,5,2,False,0.0,274
-observed,penultimate,FR,2,duration,1,1,True,18.952,21859
-observed,penultimate,FR,2,intensity,1,2,False,-0.504,21859
-observed,penultimate,FFR,3,duration,2,2,True,12.45,4832
-observed,penultimate,FFR,3,intensity,2,2,True,2.862,4832
-observed,penultimate,FFFR,4,duration,3,3,True,15.645,845
-observed,penultimate,FFFR,4,intensity,3,2,False,2.216,845
-observed,antepenultimate,FRR,3,duration,1,1,True,15.663,2644
-observed,antepenultimate,FRR,3,intensity,1,2,False,0.458,2644
-observed,antepenultimate,FFRR,4,duration,2,2,True,12.344,175
-observed,antepenultimate,FFRR,4,intensity,2,2,True,1.986,175
-observed,all reduced,RR,2,duration,1,2,False,-2.723,8758
-observed,all reduced,RR,2,intensity,1,2,False,-0.243,8758
-observed,all reduced,RRR,3,duration,1,3,False,-12.169,1103
-observed,all reduced,RRR,3,intensity,1,2,False,0.247,1103
-controlled,all full,FF,2,duration,2,2,True,0.0,48514
-controlled,all full,FF,2,intensity,2,2,True,0.0,48514
-controlled,all full,FFF,3,duration,3,3,True,0.0,14405
-controlled,all full,FFF,3,intensity,3,2,False,0.0,14405
-controlled,all full,FFFF,4,duration,4,4,True,0.0,2645
-controlled,all full,FFFF,4,intensity,4,2,False,0.0,2645
-controlled,all full,FFFFF,5,duration,5,5,True,0.0,274
-controlled,all full,FFFFF,5,intensity,5,2,False,0.0,274
-controlled,penultimate,FR,2,duration,1,1,True,7.065,21859
-controlled,penultimate,FR,2,intensity,1,1,True,1.714,21859
-controlled,penultimate,FFR,3,duration,2,2,True,0.478,4832
-controlled,penultimate,FFR,3,intensity,2,2,True,4.038,4832
-controlled,penultimate,FFFR,4,duration,3,4,False,-0.14,845
-controlled,penultimate,FFFR,4,intensity,3,2,False,3.744,845
-controlled,antepenultimate,FRR,3,duration,1,1,True,1.529,2644
-controlled,antepenultimate,FRR,3,intensity,1,1,True,2.638,2644
-controlled,antepenultimate,FFRR,4,duration,2,2,True,4.684,175
-controlled,antepenultimate,FFRR,4,intensity,2,2,True,2.038,175
-controlled,all reduced,RR,2,duration,1,2,False,-9.393,8758
-controlled,all reduced,RR,2,intensity,1,1,True,1.378,8758
-controlled,all reduced,RRR,3,duration,1,3,False,-20.08,1103
-controlled,all reduced,RRR,3,intensity,1,1,True,2.441,1103
+inventory,version,shape_class,from_end,sN,dv,predicted,peak,match,designated_minus_final,word_tokens,vowel_rows
+5full,controlled,no full vowel,-1,2,duration,1,2,False,-11.806,8758,0
+5full,controlled,no full vowel,-1,3,duration,1,3,False,-24.717,1103,0
+5full,controlled,final,0,2,duration,2,2,True,0.0,61296,0
+5full,controlled,final,0,3,duration,3,3,True,0.0,26360,0
+5full,controlled,final,0,4,duration,4,4,True,0.0,6013,0
+5full,controlled,final,0,5,duration,5,5,True,0.0,746,0
+5full,controlled,final,0,6,duration,6,6,True,0.0,121,0
+5full,controlled,penultimate,1,2,duration,1,2,False,-5.619,21859,0
+5full,controlled,penultimate,1,3,duration,2,3,False,-10.837,6820,0
+5full,controlled,penultimate,1,4,duration,3,4,False,-14.62,1741,0
+5full,controlled,penultimate,1,5,duration,4,5,False,-15.146,176,0
+5full,controlled,antepenultimate,2,3,duration,1,3,False,-12.289,2644,0
+5full,controlled,antepenultimate,2,4,duration,2,4,False,-2.038,279,0
+5full,controlled,pre-antepenult,3,4,duration,1,1,True,7.148,121,0
+5full,controlled,no full vowel,-1,2,intensity,1,1,True,1.369,8758,0
+5full,controlled,no full vowel,-1,3,intensity,1,1,True,2.421,1103,0
+5full,controlled,final,0,2,intensity,2,2,True,0.0,61296,0
+5full,controlled,final,0,3,intensity,3,2,False,0.0,26360,0
+5full,controlled,final,0,4,intensity,4,2,False,0.0,6013,0
+5full,controlled,final,0,5,intensity,5,2,False,0.0,746,0
+5full,controlled,final,0,6,intensity,6,2,False,0.0,121,0
+5full,controlled,penultimate,1,2,intensity,1,1,True,1.386,21859,0
+5full,controlled,penultimate,1,3,intensity,2,2,True,3.668,6820,0
+5full,controlled,penultimate,1,4,intensity,3,2,False,3.575,1741,0
+5full,controlled,penultimate,1,5,intensity,4,2,False,2.9,176,0
+5full,controlled,antepenultimate,2,3,intensity,1,1,True,2.309,2644,0
+5full,controlled,antepenultimate,2,4,intensity,2,2,True,1.941,279,0
+5full,controlled,pre-antepenult,3,4,intensity,1,2,False,0.024,121,0
+5full,observed,no full vowel,-1,2,duration,1,2,False,-2.723,8758,14560
+5full,observed,no full vowel,-1,3,duration,1,3,False,-12.169,1103,2421
+5full,observed,final,0,2,duration,2,2,True,0.0,61296,113384
+5full,observed,final,0,3,duration,3,3,True,0.0,26360,73458
+5full,observed,final,0,4,duration,4,4,True,0.0,6013,22712
+5full,observed,final,0,5,duration,5,5,True,0.0,746,3530
+5full,observed,final,0,6,duration,6,6,True,0.0,121,708
+5full,observed,penultimate,1,2,duration,1,1,True,18.952,21859,32478
+5full,observed,penultimate,1,3,duration,2,2,True,14.41,6820,12783
+5full,observed,penultimate,1,4,duration,3,3,True,17.061,1741,4096
+5full,observed,penultimate,1,5,duration,4,4,True,11.038,176,530
+5full,observed,antepenultimate,2,3,duration,1,1,True,15.663,2644,5319
+5full,observed,antepenultimate,2,4,duration,2,2,True,22.115,279,832
+5full,observed,pre-antepenult,3,4,duration,1,1,True,25.413,121,436
+5full,observed,no full vowel,-1,2,intensity,1,2,False,-0.243,8758,14560
+5full,observed,no full vowel,-1,3,intensity,1,2,False,0.247,1103,2421
+5full,observed,final,0,2,intensity,2,2,True,0.0,61296,113384
+5full,observed,final,0,3,intensity,3,3,True,0.0,26360,73458
+5full,observed,final,0,4,intensity,4,2,False,0.0,6013,22712
+5full,observed,final,0,5,intensity,5,2,False,0.0,746,3530
+5full,observed,final,0,6,intensity,6,2,False,0.0,121,708
+5full,observed,penultimate,1,2,intensity,1,2,False,-0.504,21859,32478
+5full,observed,penultimate,1,3,intensity,2,2,True,2.689,6820,12783
+5full,observed,penultimate,1,4,intensity,3,2,False,2.147,1741,4096
+5full,observed,penultimate,1,5,intensity,4,2,False,2.048,176,530
+5full,observed,antepenultimate,2,3,intensity,1,2,False,0.458,2644,5319
+5full,observed,antepenultimate,2,4,intensity,2,2,True,1.68,279,832
+5full,observed,pre-antepenult,3,4,intensity,1,2,False,-0.373,121,436
+6full,controlled,no full vowel,-1,2,duration,1,2,False,-11.636,6420,0
+6full,controlled,no full vowel,-1,3,duration,1,3,False,-18.96,740,0
+6full,controlled,final,0,2,duration,2,2,True,0.0,61401,0
+6full,controlled,final,0,3,duration,3,3,True,0.0,26389,0
+6full,controlled,final,0,4,duration,4,4,True,0.0,6013,0
+6full,controlled,final,0,5,duration,5,5,True,0.0,746,0
+6full,controlled,final,0,6,duration,6,6,True,0.0,121,0
+6full,controlled,penultimate,1,2,duration,1,2,False,-6.42,24092,0
+6full,controlled,penultimate,1,3,duration,2,3,False,-11.212,6807,0
+6full,controlled,penultimate,1,4,duration,3,4,False,-14.925,1753,0
+6full,controlled,penultimate,1,5,duration,4,5,False,-15.455,176,0
+6full,controlled,antepenultimate,2,3,duration,1,3,False,-15.261,2991,0
+6full,controlled,antepenultimate,2,4,duration,2,4,False,-2.614,279,0
+6full,controlled,pre-antepenult,3,4,duration,1,1,True,3.69,122,0
+6full,controlled,no full vowel,-1,2,intensity,1,1,True,1.439,6420,0
+6full,controlled,no full vowel,-1,3,intensity,1,1,True,2.133,740,0
+6full,controlled,final,0,2,intensity,2,2,True,0.0,61401,0
+6full,controlled,final,0,3,intensity,3,2,False,0.0,26389,0
+6full,controlled,final,0,4,intensity,4,2,False,0.0,6013,0
+6full,controlled,final,0,5,intensity,5,2,False,0.0,746,0
+6full,controlled,final,0,6,intensity,6,2,False,0.0,121,0
+6full,controlled,penultimate,1,2,intensity,1,1,True,1.379,24092,0
+6full,controlled,penultimate,1,3,intensity,2,2,True,3.68,6807,0
+6full,controlled,penultimate,1,4,intensity,3,2,False,3.553,1753,0
+6full,controlled,penultimate,1,5,intensity,4,2,False,2.898,176,0
+6full,controlled,antepenultimate,2,3,intensity,1,2,False,2.398,2991,0
+6full,controlled,antepenultimate,2,4,intensity,2,2,True,1.953,279,0
+6full,controlled,pre-antepenult,3,4,intensity,1,2,False,0.248,122,0
+6full,observed,no full vowel,-1,2,duration,1,2,False,-6.573,6420,10756
+6full,observed,no full vowel,-1,3,duration,1,3,False,-13.031,740,1722
+6full,observed,final,0,2,duration,2,2,True,0.0,61401,113582
+6full,observed,final,0,3,duration,3,3,True,0.0,26389,73542
+6full,observed,final,0,4,duration,4,4,True,0.0,6013,22712
+6full,observed,final,0,5,duration,5,5,True,0.0,746,3530
+6full,observed,final,0,6,duration,6,6,True,0.0,121,708
+6full,observed,penultimate,1,2,duration,1,1,True,17.738,24092,36084
+6full,observed,penultimate,1,3,duration,2,2,True,14.306,6807,12744
+6full,observed,penultimate,1,4,duration,3,3,True,16.747,1753,4144
+6full,observed,penultimate,1,5,duration,4,4,True,11.038,176,530
+6full,observed,antepenultimate,2,3,duration,1,1,True,12.868,2991,5973
+6full,observed,antepenultimate,2,4,duration,2,2,True,21.587,279,832
+6full,observed,pre-antepenult,3,4,duration,1,1,True,22.523,122,428
+6full,observed,no full vowel,-1,2,intensity,1,1,True,0.358,6420,10756
+6full,observed,no full vowel,-1,3,intensity,1,2,False,0.876,740,1722
+6full,observed,final,0,2,intensity,2,2,True,0.0,61401,113582
+6full,observed,final,0,3,intensity,3,3,True,0.0,26389,73542
+6full,observed,final,0,4,intensity,4,2,False,0.0,6013,22712
+6full,observed,final,0,5,intensity,5,2,False,0.0,746,3530
+6full,observed,final,0,6,intensity,6,2,False,0.0,121,708
+6full,observed,penultimate,1,2,intensity,1,2,False,-0.655,24092,36084
+6full,observed,penultimate,1,3,intensity,2,2,True,2.685,6807,12744
+6full,observed,penultimate,1,4,intensity,3,2,False,2.117,1753,4144
+6full,observed,penultimate,1,5,intensity,4,2,False,2.048,176,530
+6full,observed,antepenultimate,2,3,intensity,1,2,False,0.258,2991,5973
+6full,observed,antepenultimate,2,4,intensity,2,2,True,1.673,279,832
+6full,observed,pre-antepenult,3,4,intensity,1,2,False,-0.267,122,428
