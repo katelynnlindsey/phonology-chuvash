@@ -1,0 +1,4 @@
+quantity,value,basis
+"combined type precision, audit-weighted",0.9706,4933 loan_full types x 0.9853 + 1029 lexicon-only types x audit 0.9
+"combined token precision, audit-weighted",0.962,18840 loan_full tokens x 0.9908 + 4850 lexicon-only tokens x audit 0.85
+"combined type recall, conservative lower bound",0.8172,"est. true-positive types / (that + CP95 upper bound of missed loans in S4,S5 SRS draws with 0 FN)"
