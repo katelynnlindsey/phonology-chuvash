@@ -1,0 +1,26 @@
+
+== common_voice_chuvash stop: 62383 tokens, 4769 words, 103 speakers
+
+== common_voice_chuvash fric: 47405 tokens, 4137 words, 101 speakers
+
+== chuvash_voice stop: 216424 tokens, 24313 words, 1 speakers
+
+== chuvash_voice fric: 162194 tokens, 21609 words, 1 speakers
+                            contrast n_speakers mean_diff     ci_lo     ci_hi
+                              <char>      <int>     <num>     <num>     <num>
+1:            VV - initial_postpause         53 0.4652759 0.4141233 0.5164286
+2:                  VV - geminate_VV         20 0.4889217 0.4185184 0.5593250
+3:                           VV - OV         46 0.5577219 0.4995462 0.6158976
+4:                           RV - VR         39 0.2686939 0.1984404 0.3389473
+5: initial_postV - initial_postpause         52 0.2863520 0.2377297 0.3349744
+6:                VV - initial_postV         56 0.1892757 0.1374098 0.2411415
+   n_positive  sign_test_p
+        <int>        <num>
+1:         53 2.220446e-16
+2:         20 1.907349e-06
+3:         46 2.842171e-14
+4:         35 3.353161e-07
+5:         50 6.123990e-13
+6:         49 7.455210e-09
+
+DONE

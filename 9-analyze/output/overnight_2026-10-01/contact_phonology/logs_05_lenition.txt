@@ -1,0 +1,65 @@
+                 corpus       stratum n_tokens n_words n_speakers pct_voiced
+                 <char>        <char>    <int>   <int>      <int>      <num>
+1:        chuvash_voice    crude_loan     3642    1007         11   22.67985
+2:        chuvash_voice   native_both    33846    6558         11   66.43621
+3:        chuvash_voice new_only_loan      541     177          7   21.81146
+4: common_voice_chuvash    crude_loan     1716     264         63   41.25874
+5: common_voice_chuvash   native_both     8916    1062         90   74.57380
+6: common_voice_chuvash new_only_loan      292      43         42   44.52055
+     mean_vf
+       <num>
+1: 0.2373182
+2: 0.6596592
+3: 0.2301423
+4: 0.4141521
+5: 0.7318060
+6: 0.4289384
+                  corpus        loan_def    model           term estimate
+                  <char>          <char>   <char>         <char>    <num>
+ 1: common_voice_chuvash    loan_crude_R   no_dur              x   -0.294
+ 2: common_voice_chuvash    loan_crude_R with_dur              x   -0.234
+ 3: common_voice_chuvash       loan_full   no_dur              x   -0.311
+ 4: common_voice_chuvash       loan_full with_dur              x   -0.249
+ 5: common_voice_chuvash loan_vowelblind   no_dur              x   -0.272
+ 6: common_voice_chuvash loan_vowelblind with_dur              x   -0.220
+ 7: common_voice_chuvash         stratum   no_dur    xcrude_loan   -0.309
+ 8: common_voice_chuvash         stratum   no_dur xnew_only_loan   -0.324
+ 9: common_voice_chuvash         stratum with_dur    xcrude_loan   -0.247
+10: common_voice_chuvash         stratum with_dur xnew_only_loan   -0.260
+11:        chuvash_voice    loan_crude_R   no_dur              x   -0.373
+12:        chuvash_voice    loan_crude_R with_dur              x   -0.316
+13:        chuvash_voice       loan_full   no_dur              x   -0.380
+14:        chuvash_voice       loan_full with_dur              x   -0.326
+15:        chuvash_voice loan_vowelblind   no_dur              x   -0.346
+16:        chuvash_voice loan_vowelblind with_dur              x   -0.292
+17:        chuvash_voice         stratum   no_dur    xcrude_loan   -0.383
+18:        chuvash_voice         stratum   no_dur xnew_only_loan   -0.364
+19:        chuvash_voice         stratum with_dur    xcrude_loan   -0.327
+20:        chuvash_voice         stratum with_dur xnew_only_loan   -0.323
+                  corpus        loan_def    model           term estimate
+                  <char>          <char>   <char>         <char>    <num>
+        lo     hi n_loan_tokens n_loan_words
+     <num>  <num>         <num>        <int>
+ 1: -0.322 -0.266          1716          264
+ 2: -0.259 -0.208          1716          264
+ 3: -0.337 -0.286          2008          307
+ 4: -0.272 -0.226          2008          307
+ 5: -0.305 -0.239          1332          198
+ 6: -0.250 -0.191          1332          198
+ 7: -0.336 -0.282          2008          307
+ 8: -0.384 -0.264          2008          307
+ 9: -0.272 -0.222          2008          307
+10: -0.314 -0.206          2008          307
+11: -0.394 -0.351          3258          932
+12: -0.337 -0.295          3258          932
+13: -0.400 -0.361          3730         1101
+14: -0.346 -0.307          3730         1101
+15: -0.372 -0.319          1961          627
+16: -0.318 -0.266          1961          627
+17: -0.404 -0.362          3730         1101
+18: -0.412 -0.316          3730         1101
+19: -0.348 -0.306          3730         1101
+20: -0.370 -0.276          3730         1101
+        lo     hi n_loan_tokens n_loan_words
+     <num>  <num>         <num>        <int>
+DONE

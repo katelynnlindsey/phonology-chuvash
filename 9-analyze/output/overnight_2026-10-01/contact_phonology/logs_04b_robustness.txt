@@ -1,0 +1,32 @@
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+           subset outcome       term    est     lo     hi n_loan_rows
+           <char>  <char>     <char>  <num>  <num>  <num>       <int>
+ 1: ch_voice_main    ldur     ru_str  0.106  0.069  0.143        1325
+ 2: ch_voice_main    ldur loan_final -0.124 -0.163 -0.085        1325
+ 3: ch_voice_main   int_c     ru_str -0.276 -0.816  0.264        1325
+ 4: ch_voice_main   int_c loan_final  0.250 -0.319  0.818        1325
+ 5: ch_voice_main    f0_c     ru_str -0.189 -0.387  0.009        1325
+ 6: ch_voice_main    f0_c loan_final  0.312  0.103  0.520        1325
+ 7: non_utt_final    ldur     ru_str  0.109  0.075  0.142        1688
+ 8: non_utt_final    ldur loan_final -0.130 -0.165 -0.095        1688
+ 9: non_utt_final   int_c     ru_str  0.133 -0.312  0.578        1688
+10: non_utt_final   int_c loan_final  0.568  0.102  1.033        1688
+11: non_utt_final    f0_c     ru_str -0.239 -0.421 -0.058        1688
+12: non_utt_final    f0_c loan_final  0.191  0.001  0.380        1688
+    n_loan_words
+           <int>
+ 1:          233
+ 2:          233
+ 3:          233
+ 4:          233
+ 5:          233
+ 6:          233
+ 7:          262
+ 8:          262
+ 9:          262
+10:          262
+11:          262
+12:          262

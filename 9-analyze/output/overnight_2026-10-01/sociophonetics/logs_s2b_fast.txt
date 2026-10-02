@@ -1,0 +1,41 @@
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+W20261002 00:16:57.982010 0x1f2d56180 cpu_info.cc:181] IOError: sysctlbyname failed for 'hw.l1dcachesize'. Detail: [errno 1] Operation not permitted
+W20261002 00:16:57.982227 0x1f2d56180 cpu_info.cc:181] IOError: sysctlbyname failed for 'hw.l2cachesize'. Detail: [errno 1] Operation not permitted
+W20261002 00:16:57.982255 0x1f2d56180 cpu_info.cc:181] IOError: sysctlbyname failed for 'hw.l3cachesize'. Detail: [errno 1] Operation not permitted
+all log_duration is_stressed_B5TRUE 0.1711 
+all log_duration is_stressed_A6TRUE 0.1468 
+all log_duration is_reducedTRUE -0.1376 
+all int_midpoint is_stressed_B5TRUE 0.3363 
+all int_midpoint is_stressed_A6TRUE 0.4526 
+all int_midpoint is_reducedTRUE -1.6311 
+all f0_st is_stressed_B5TRUE 0.1775 
+all f0_st is_stressed_A6TRUE 0.2009 
+all f0_st is_reducedTRUE -0.3778 
+no_vm log_duration is_stressed_B5TRUE 0.1653 
+no_vm log_duration is_stressed_A6TRUE 0.1526 
+no_vm log_duration is_reducedTRUE -0.1212 
+no_vm int_midpoint is_stressed_B5TRUE 0.5341 
+no_vm int_midpoint is_stressed_A6TRUE 0.6876 
+no_vm int_midpoint is_reducedTRUE -2.1016 
+no_vm f0_st is_stressed_B5TRUE 0.5666 
+no_vm f0_st is_stressed_A6TRUE 0.5475 
+no_vm f0_st is_reducedTRUE -0.2996 
+cv_only log_duration is_stressed_B5TRUE 0.1623 
+cv_only log_duration is_stressed_A6TRUE 0.1519 
+cv_only log_duration is_reducedTRUE -0.1303 
+cv_only int_midpoint is_stressed_B5TRUE 0.5904 
+cv_only int_midpoint is_stressed_A6TRUE 0.7493 
+cv_only int_midpoint is_reducedTRUE -2.2379 
+cv_only f0_st is_stressed_B5TRUE 0.6116 
+cv_only f0_st is_stressed_A6TRUE 0.5848 
+cv_only f0_st is_reducedTRUE -0.3349 
+vm_only log_duration is_stressed_B5TRUE 0.1754 
+vm_only log_duration is_stressed_A6TRUE 0.147 
+vm_only log_duration is_reducedTRUE -0.1409 
+vm_only int_midpoint is_stressed_B5TRUE 0.2805 
+vm_only int_midpoint is_stressed_A6TRUE 0.3938 
+vm_only int_midpoint is_reducedTRUE -1.4518 
+vm_only f0_st is_stressed_B5TRUE 0.0381 
+vm_only f0_st is_stressed_A6TRUE 0.0829 
+vm_only f0_st is_reducedTRUE -0.392 
+done

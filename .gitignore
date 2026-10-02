@@ -42,6 +42,15 @@ corpora/textgrids_commonvoice/*.lab
 # delete from disk once confirmed unneeded.
 /data/
 
+# ── Overnight 2026-10-01 run: regenerable caches ─────────────────
+# Column-subset exports and per-phone Praat extractions re-created by the
+# scripts in 9-analyze/analyses/overnight/. Four files exceed GitHub's
+# 100 MB limit (mono_raw.parquet 188 MB, raw_vowels_compact.csv 153 MB,
+# phones_ch_part00/01.csv ~105 MB each). Kept on disk; not versioned.
+9-analyze/output/overnight_2026-10-01/*/cache/
+9-analyze/output/overnight_2026-10-01/*/intermediate/
+9-analyze/output/overnight_2026-10-01/segmental_acoustics/extraction/
+
 # ── Scratch ──────────────────────────────────────────────────────
 old/
 9-analyze/config/new.txt

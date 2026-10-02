@@ -1,0 +1,14 @@
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+W20261001 23:52:27.048345 0x1f2d56180 cpu_info.cc:181] IOError: sysctlbyname failed for 'hw.l1dcachesize'. Detail: [errno 1] Operation not permitted
+W20261001 23:52:27.048575 0x1f2d56180 cpu_info.cc:181] IOError: sysctlbyname failed for 'hw.l2cachesize'. Detail: [errno 1] Operation not permitted
+W20261001 23:52:27.048588 0x1f2d56180 cpu_info.cc:181] IOError: sysctlbyname failed for 'hw.l3cachesize'. Detail: [errno 1] Operation not permitted
+cv_only log_duration is_stressed_B5TRUE est=0.1646 se=0.0025 (10s)
+cv_only log_duration is_stressed_A6TRUE est=0.1543 se=0.0024 (21s)
+cv_only log_duration is_reducedTRUE est=-0.1360 se=0.0028 (17s)
+cv_only int_midpoint is_stressed_B5TRUE est=0.5786 se=0.0309 (19s)
+cv_only int_midpoint is_stressed_A6TRUE est=0.7376 se=0.0295 (30s)
+cv_only int_midpoint is_reducedTRUE est=-2.4198 se=0.0337 (24s)
+cv_only f0_st is_stressed_B5TRUE est=0.6427 se=0.0158 (22s)
+cv_only f0_st is_stressed_A6TRUE est=0.6130 se=0.0151 (19s)
+cv_only f0_st is_reducedTRUE est=-0.3621 se=0.0172 (28s)
+done

@@ -1,0 +1,62 @@
+language,type,I,O,L1,R0,R1,domain,description_OLD,morphological,notes,sources,rule_ID
+"Cheremis, Eastern (Mari)",Trigger,,,,,,,conditions suffix allomorphs containing [e] if no preceding vowel,,,,5541
+"Cheremis, Eastern (Mari)",Trigger,,,,,,,conditions suffix allomorphs containing [e] regardless of preceding vowel,,,,5542
+"Cheremis, Eastern (Mari)",Target,,,,,,,X → [ə] / before harmonizing suffix,,,,9227
+"Cheremis, Eastern (Mari)",Trigger,"e,ø",ə,,,#,,"/e, ø/ → mid/high front/central reduced vowel or mid front vowels / __# in polysyllabic words except when preceding vowel is X",in polysyllabic words,mid/high front/central reduced vowel or mid front vowels / __# in polysyllabic words except when preceding vowel is X,,881
+"Cheremis, Eastern (Mari)",Trigger,"i,y",ɨj,,"i,y,u,e,ø,ə,o,a,",,,"/i, y/ → high front/central vowel followed high palatal glides / __X",,high front/central vowel followed high palatal glides,,1371
+"Cheremis, Eastern (Mari)",Trigger,z,s,"p,t̪,tʃ,k,s̪,ʃ,z̪,",,,,2nd person plural imperative suffux begins w/[s] after X,in 2nd person plural imperative suffux,,,3471
+"Cheremis, Eastern (Mari)",Trigger,ʒ,ʃ,"p,t̪,tʃ,k,z̪,ʒ,",,,,2nd person singular suffux begins w/[ʃ] after X,in 2nd person singular suffix,,,3472
+"Cheremis, Eastern (Mari)",Target,y,yː,,#,,,may be prolonged / __#,,,,6682
+"Cheremis, Eastern (Mari)",Target,u,uː,,#,,,may be prolonged / __#,,,,6682
+"Cheremis, Eastern (Mari)",Target,o,oː,,#,,,may be prolonged / __#,,,,6682
+"Cheremis, Eastern (Mari)",Trigger,a,æ,,,,,/a/ → [æ] / after X in preceding syllable,,V is in preceding syllable,,9351
+"Cheremis, Eastern (Mari)",Target,y,∅,,y,,,XX → X (if X=X),,,,11905
+"Cheremis, Eastern (Mari)",Target,u,∅,,u,,,XX → X (if X=X),,,,11905
+"Cheremis, Eastern (Mari)",Target,ø,∅,,ø,,,XX → X (if X=X),,,,11905
+"Cheremis, Eastern (Mari)",Target,o,∅,,o,,,XX → X (if X=X),,,,11905
+"Cheremis, Eastern (Mari)",Trigger,,,,,,,2nd person plural imperative suffix begins w/[z] after X,,,,3470
+"Cheremis, Eastern (Mari)",Trigger,,,,,,,2nd person singular suffux begins w/[ʒ] after X,,,,3473
+"Cheremis, Eastern (Mari)",Target,,,,,,,X → high front/central vowel followed high palatal glide / __V,,,,10021
+"Cheremis, Eastern (Mari)",Target,,,,,,,X → high front/central vowel followed high palatal glide or prolonged / __#,,,,10022
+"Cheremis, Eastern (Mari)",Target,,,,,,,X → mid/high front/central reduced vowel or mid front / __# in polysyllabic words except when preceding vowel is back,,,,10183
+Kirghiz,Trigger,"/i, e, ɨ, y","i, e, ɨ,y̝ ",,"tʃ,dʒ,ʃ,ʒ,j,",,,"/i, e, ɨ, y/ → [i, e, ɨ, raised y] (instead of [ɪ, ɛ, ı, y]) / __X ",,,,A4903
+Kirghiz,Trigger,,,,,,,high vowel suffixes have [i] after X ,,,,A4907
+Kirghiz,Trigger,,,,,,,high vowel suffixes have [y] after X ,,,,A4908
+Kirghiz,Trigger,,,,,,,high vowel suffixes have [ɨ] after X ,,,,A4909
+Kirghiz,Trigger,,,,,,,high vowel suffixes have [u] after X ,,,,A4910
+Kirghiz,Trigger,,,,,,,low vowel suffixes have [e] after X ([o] after /o/) ,,,,A4911
+Kirghiz,Trigger,,,,,,,low vowel suffixes have [a] after X ([o] after /o/) ,,,,A4912
+Kirghiz,Target,q,k,,"i,y,e,ø,",,,X → velar / next to front vowel ,,,,A4898
+Kirghiz,Target,ɢ,ɡ,,"i,y,e,ø,",,,X → velar / next to front vowel ,,,,A4898
+Kirghiz,Target,q,k,,,,,X → velar / next to front vowel ,,,,A4898
+Kirghiz,Target,ɢ,ɡ,,,,,X → velar / next to front vowel ,,,,A4898
+Kirghiz,Trigger,y,ʏ,,"β,ŋ,",,,/y/ → [ʏ] / __X ,,,,A4906
+Turkish,Target,"k,ɡ,l,",,,"iˤː,uˤː,iˤ,uˤ,eː,oˤː,aˤː,aˤ",,,X have front/back variants next to front/back vowels,,,,3740
+Turkish,Trigger,h,pronounced more heavily,,,,,"/h/ can be pronounced more heavily / X__, __X",,plosivize to /GG/,,7554
+Turkish,Target,?,,,,,,verb stem-final X → high / __j-initial suffix,,pre-stopping occurs for vowel-initial words-beginning with X,,7588
+Turkish,Distribution,?,,,"i̤ː,i̤,i̤e̤,ṳo̤,ṳː,ṳ,ɪː,ɪ,ɪɛ,ʊɔ,ʊː,ʊ,e̤ː,e̤,o̤ː,o̤,ɛː,ɛ,ɔː,ɔ,ʌ̤ː,ʌ̤,aː,a",,,"/l, k, ɡ/ can be clear/palatalized / __X (__{a, o} only in Persian borrowings)",,vowel deleted in grammatical morphemes before an X-initial morpheme,,8843
+Turkish,Trigger,"ɨ,u,a,o,",,,,,,conditions [a] allomorph of low vowel suffixes,,/ __+[plural suffix -Cɪ̄],,9954
+Turkish,Trigger,"i,y,e,ø,",,,,,,conditions [e] allomorph of low vowel suffixes,,/ __+[plural suffix -Yɛ̀],,9955
+Turkish,Trigger,"i,e,",,,,,,conditions [i] allomorph of high vowel suffixes,,when geminated,,9992
+Turkish,Trigger,"ɨ,a,",,,,,,conditions [ɨ] allomorph of high vowel suffixes,,/ __+[plural suffix -Cɪ̄],,10783
+Turkish,Trigger,"u,o,",,,,,,conditions [u] allomorph of high vowel suffixes,,/ __+[plural suffix -Yɛ̀],,10784
+Turkish,Trigger,"y,ø,",,,+,,,conditions [y] allomorph of high vowel suffixes,,"in roots, sometimes, when derived",,11390
+Turkish,Trigger,A,e,,,,,conditions [e] allomorph of low vowel suffixes ,,,,A11097
+Turkish,Trigger,h,pronounced more heavily,,,,,"/h/ can be pronounced more heavily / X__, __X ",,can be,,A11098
+Turkish,Trigger,h,pronounced more heavily,,"i,y,ɨ,u,",,,"/h/ can be pronounced more heavily / X__, __X ",,can be,,A11098
+Turkish,Distribution,,,,,,,X is generally only followed by other back vowels,,,,A11101
+Turkish,Distribution,,,,,,,X is generally only followed by other unrounded vowels ,,,,A11115
+Turkish,Distribution,,,,,,,X is generally only followed by rounded or low vowels ,,,,A11116
+Turkish,Trigger,I,i,,,,,conditions [i] allomorph of high vowel suffixes ,,,,A11107
+Turkish,Trigger,I,y,,,,,conditions [y] allomorph of high vowel suffixes ,,,,A11108
+Turkish,Trigger,I,ɨ,,,,,conditions [ɨ] allomorph of high vowel suffixes ,,,,A11109
+Turkish,Trigger,I,u,,,,,conditions [u] allomorph of high vowel suffixes ,,,,A11110
+Turkish,Trigger,,,,"l,n̪,r,",,,vowel often inserted / #__X in loanwords ,,vowel often inserted / #__X in loanwords ,,A11091
+Turkish,Target,k,kʲ,,,,,X palatalized / next to front vowel ,,,,A11095
+Turkish,Target,ɡ,ɡʲ,,,,,X palatalized / next to front vowel ,,,,A11095
+Turkish,Target,k,kʲ,,"i,y,e,ø,",,,X palatalized / next to front vowel ,,,,A11095
+Turkish,Target,ɡ,ɡʲ,,"i,y,e,ø,",,,X palatalized / next to front vowel ,,,,A11095
+Turkish,Trigger,A,a,,,,,conditions [a] allomorph of low vowel suffixes ,,,,A11100
+Turkish,Distribution,"p,t̪,tʃ,k,b,d̪,dʒ,ɡ,i,y,ɨ,u,s,ʃ,h,e,ø,a,o,v,j,",,,,,,occur initially in native words (dʒ in only two words) ,WI,,,A11112
+Turkish,Distribution,"p,t̪,tʃ,k,b,d̪,dʒ,ɡ,i,y,ɨ,u,f,s,ʃ,h,e,ø,a,o,v,z,ʒ,l,m,n̪,r,j,",,,#,,,occur finally in native words,WF,,,A11113
+Turkish,Target,,,,,,,X have front/back variants next to front/back vowels ,,,,A11102
