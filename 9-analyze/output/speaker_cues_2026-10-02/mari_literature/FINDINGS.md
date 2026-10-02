@@ -51,7 +51,7 @@
 - **Vowel quality.** Unstressed vowels centralise, mostly by < 1 Bark. Word-final unstressed /o/ moves 1.38–1.82 Bark in F2 (pp. 84–87).
 - **Speaker variation.**
   - *Placement:* speakers disagreed on 16 of 58 disyllables (p. 64). LV (Bashkortostan) leans to initial stress (p. 65).
-  - *Duration contrast:* per speaker (Table 5A, p. 108), stressed/unstressed duration exceeds 1 in all 12 speaker × position cells with ≥ 2 final-stress words (range 1.13–2.46). The only two values below 1 come from single tokens (VN PF V1 0.88; LV SF 0.96).
+  - *Duration contrast:* per speaker (Table 5A, p. 108), stressed/unstressed duration exceeds 1 in all 12 speaker × position cells with ≥ 2 final-stress words (range 1.13–2.46). The three values below 1 all come from single-token cells (VN PF V1 0.88; LV SF V1 and V2, both 0.96).
   - *F0:* JT's contours are atypical and were excluded from some averages; VN is creaky and near-monotone (pp. 51–60).
 - **Speech style.** Read, maximally clear contrastive frame (p. 93). There are no spontaneous data.
 - **Prior studies** used 1–3 speakers each (p. 29).
