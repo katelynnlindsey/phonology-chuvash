@@ -58,3 +58,9 @@ corpora/textgrids_commonvoice/*.lab
 # ── Scratch ──────────────────────────────────────────────────────
 old/
 9-analyze/config/new.txt
+
+# Large pipeline outputs, kept local only
+7-extract/reextract/phones_chuvash_voice.csv
+9-analyze/output/align_confidence.csv
+9-analyze/output/vowels_for_confidence.csv
+9-analyze/output/vowels_normalised.csv
